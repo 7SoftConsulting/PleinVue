@@ -1,0 +1,496 @@
+I"i<h1 id="personnaliser-scripts-membership">Personnaliser Scripts Membership</h1>
+
+<h2 id="inscription">Inscription</h2>
+
+<h3 id="activation">Activation</h3>
+
+<p>Vous pouvez autoriser l’inscription de nouveaux membres dans une zone web. Mettez la valeur “1” à la propriété <strong>$AutoriserInscription</strong>.</p>
+
+<p>Changez la classe script Inscription de la zone à partir de sa propriété <strong>$NomScriptInscription</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MaZone1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AutoriserInscription</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$NomScriptInscription</span> <span class="o">=</span> <span class="s2">"ScriptInscriptionMonSite"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="profil-nouveau-membre">Profil nouveau membre</h3>
+
+<p>Pendant l’inscription, le nouveau membre peut choisir son profil. Pour restreindre à certains profils, renseignez le tableau <strong>$IdProfilsAcceptes</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$IdProfilsAcceptes</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Sur la page d’inscription, vous verrez une liste déroulante pour choisir le profil. Pour masquer le profil, utilisez la propriété <strong>$IdProfilParDefaut</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$IdProfilsAcceptes</span> <span class="o">=</span> <span class="k">array</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$IdProfilParDefaut</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="statut-du-nouveau-membre">Statut du nouveau membre</h3>
+
+<p>Le script d’inscription peut créer des membres inactifs, pour validation ultérieure. Utilisez la propriété bool <strong>$ValeurActiveParDefaut</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="c1">// Après inscription, le membre ne peut pas se connecter</span>
+<span class="c1">// Accédez à la page des membres pour le valider</span>
+<span class="k">public</span> <span class="nv">$ValeurActiveParDefaut</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="formulaire-dinscription">Formulaire d’inscription</h3>
+
+<p>Si vous créez un formulaire de données, vous l’attribuez à la page d’inscription avec la propriété <strong>NomClasseFormulaireDonnees</strong></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">FormInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvFormulaireInscriptionMembreMS</span>
+<span class="p">{</span>
+<span class="p">}</span> 
+<span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$NomClasseFormulaireDonnees</span> <span class="o">=</span> <span class="s2">"FormInscriptionMonSite"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Pour garder les champs nécessaires, mettez la propriété <strong>$Detaille</strong> à 0/false. Le formulaire affichera uniquement le login, le mots de passe (à confirmer) et l’email.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="c1">// Après inscription, le membre ne peut pas se connecter</span>
+<span class="c1">// Accédez à la page des membres pour le valider</span>
+<span class="k">public</span> <span class="nv">$Detaille</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Vous pouvez également ajouter des filtres au formulaire en réécrivant la méthode <strong>ChargeConfigComposantFormulaireDonnees()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeConfigComposantFormulaireDonnees</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Charger les filtres</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">ChargeConfigComposantFormulaireDonnees</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Récupérer le composant formulaire</span>
+<span class="nv">$form</span> <span class="o">=</span> <span class="o">&amp;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ComposantFormulaireDonnees</span> <span class="p">;</span>
+<span class="c1">// Ajout de filtres specifiques, etc</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FltMetier</span> <span class="o">=</span> <span class="nv">$form</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"metier"</span><span class="p">,</span> <span class="s2">"metier"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FltMetier</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Metier"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FltDateCreation</span> <span class="o">=</span> <span class="nv">$form</span><span class="o">-&gt;</span><span class="nf">InsereFltEditFixe</span><span class="p">(</span><span class="s2">"date_creation"</span><span class="p">,</span> <span class="nb">date</span><span class="p">(</span><span class="s2">"Y-m-d H:i:s"</span><span class="p">),</span> <span class="s2">"date_creation"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$form</span><span class="o">-&gt;</span><span class="nc">CacherFormulaireFiltresApresCmd</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Voici les filtres du formulaire disponibles :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$FiltreLoginMembre</td>
+      <td>Login</td>
+    </tr>
+    <tr>
+      <td>$FiltreMotPasseMembre</td>
+      <td>Mot de passe</td>
+    </tr>
+    <tr>
+      <td>$FiltreConfirmMotPasseMembre</td>
+      <td>Confirmer le mot de passe</td>
+    </tr>
+    <tr>
+      <td>$FiltreEmailMembre</td>
+      <td>Email</td>
+    </tr>
+    <tr>
+      <td>$FiltreContactMembre</td>
+      <td>Contact</td>
+    </tr>
+    <tr>
+      <td>$FiltreAdresseMembre</td>
+      <td>Adresse</td>
+    </tr>
+    <tr>
+      <td>$FiltreNomMembre</td>
+      <td>Nom</td>
+    </tr>
+    <tr>
+      <td>$FiltrePrenomMembre</td>
+      <td>Prénom</td>
+    </tr>
+    <tr>
+      <td>$FiltreActiverMembre</td>
+      <td>Activer</td>
+    </tr>
+    <tr>
+      <td>$FiltreProfilMembre</td>
+      <td>Profil</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeConfigComposantFormulaireDonnees</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Charger les filtres</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">ChargeConfigComposantFormulaireDonnees</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Récupérer le composant formulaire</span>
+<span class="nv">$form</span> <span class="o">=</span> <span class="o">&amp;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ComposantFormulaireDonnees</span> <span class="p">;</span>
+<span class="c1">// Modifier les filtres du formulaire</span>
+<span class="nv">$form</span><span class="o">-&gt;</span><span class="nc">FiltreAdresseMembre</span><span class="o">-&gt;</span><span class="nc">Invisible</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="nv">$form</span><span class="o">-&gt;</span><span class="nc">FiltreContactMembre</span><span class="o">-&gt;</span><span class="nc">Invisible</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="validation-par-mail">Validation par mail</h3>
+
+<p>Après l’inscription, vous pouvez activer le membre par mail.</p>
+
+<p>D’une part, créez deux colonnes <strong>enable_confirm_mail</strong> et <strong>code_confirm_mail</strong> dans votre table des membres.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">alter</span> <span class="k">table</span> <span class="n">membership_member</span> <span class="k">add</span> <span class="p">(</span>
+<span class="n">enable_confirm_mail</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">default</span> <span class="mi">0</span><span class="p">,</span>
+<span class="n">code_confirm_mail</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="k">null</span>
+<span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p>D’autre part, mettez la valeur 1 à <strong>$ActiverConfirmMail</strong> de la classe du script Inscription. Vous devez définir l’adresse email qui enverra les mails avec <strong>$EmailEnvoiConfirm</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$ActiverConfirmMail</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$EmailEnvoiConfirm</span> <span class="o">=</span> <span class="s1">'nepasrepondre@monsite.com'</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>En plus, vous pouvez personnaliser chaque message :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$SujetMailConfirm</td>
+      <td>Sujet du mail de confirmation</td>
+    </tr>
+    <tr>
+      <td>$CorpsMailConfirm</td>
+      <td>Corps du mail de confirmation. Mettez toujours le lien de confirmation <strong>${url}</strong> dans cette valeur.</td>
+    </tr>
+    <tr>
+      <td>$SujetMailSuccesConfirm</td>
+      <td>Sujet du mail de validation d’inscription</td>
+    </tr>
+    <tr>
+      <td>$CorpsMailSuccesConfirm</td>
+      <td>Corps du mail de validation d’inscription</td>
+    </tr>
+    <tr>
+      <td>$MsgSuccesCmdExecuter</td>
+      <td>Message succès exécution du bouton d’inscription</td>
+    </tr>
+    <tr>
+      <td>$MsgSuccesEnvoiMailConfirm</td>
+      <td>Message d’alerte d’envoi du mail de confirmation. Elle apparait sur la page d’inscription</td>
+    </tr>
+    <tr>
+      <td>$MsgSuccesConfirmMail</td>
+      <td>Message d’alerte d’inscription validée. Elle apparait sur la page d’inscription, après vérification du bouton.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Pour chaque propriété, vous avez un tableau contenant toutes les colonnes de <strong>“membership_member”</strong> pour personnaliser. Ce tableau possède aussi ces clés.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MEMBER_LOGIN</td>
+      <td>Login du nouveau membre</td>
+    </tr>
+    <tr>
+      <td>login_member</td>
+      <td>Alias de la clé MEMBER_LOGIN</td>
+    </tr>
+    <tr>
+      <td>password_member</td>
+      <td>Mot de passe du nouveau membre</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$ActiverConfirmMail</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$EmailEnvoiConfirm</span> <span class="o">=</span> <span class="s1">'nepasrepondre@monsite.com'</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$SujetMailConfirm</span> <span class="o">=</span> <span class="s1">'Confirmez votre inscription, ${login_member}'</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$CorpsMailConfirm</span> <span class="o">=</span> <span class="s1">'&lt;p&gt;Bonjour ${login_member},&lt;/p&gt;
+&lt;p&gt;Nous vous prions de confirmer votre inscription en cliquant sur ce lien :&lt;/p&gt;
+&lt;p&gt;&lt;a href="${url}"&gt;${url}&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Cordialement, &lt;a href="http://www.monsite.com/"&gt;MonSite&lt;/a&gt;&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$SujetMailSuccesConfirm</span> <span class="o">=</span> <span class="s1">'Inscription validée, ${login_member}'</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$CorpsMailSuccesConfirm</span> <span class="o">=</span> <span class="s1">'&lt;p&gt;Bonjour ${MEMBER_LOGIN},&lt;/p&gt;
+&lt;p&gt;Votre compte a ete bien confirmé. Bienvenue sur notre site &lt;b&gt;MonSite&lt;/b&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Login :&lt;/b&gt; ${MEMBER_LOGIN}&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Mot de passe :&lt;/b&gt; ${password_member}&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Email :&lt;/b&gt; ${email}&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.monsite.com/"&gt;MonSite&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Cordialement&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="redirection">Redirection</h3>
+
+<p>Après validation d’un nouveau membre sur cette page, vous pouvez le connecter automatiquement avec <strong>$ConnecterNouveauMembre</strong>. En plus, vous avez la propriété <strong>$UrlAutoConnexionMembre</strong> pour la redirection.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$ConnecterNouveauMembre</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$UrlAutoConnexionMembre</span> <span class="o">=</span> <span class="s2">"?appelleScript=tableau_bord"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Envoyez un mail avec la propriété <strong>$EnvoiMailSucces</strong>, si vous n’avez pas activé de confirmation par mail. Renseignez aussi l’expéditeur <strong>$EmailEnvoiConfirm</strong>, le sujet <strong>$SujetMailSuccesConfirm</strong> et le corps du mail <strong>$CorpsMailSuccesConfirm</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptInscriptionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptInscriptionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$EnvoiMailSucces</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$EmailEnvoiConfirm</span> <span class="o">=</span> <span class="s1">'nepasrepondre@monsite.com'</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$SujetMailConfirm</span> <span class="o">=</span> <span class="s1">'Bienvenue sur MonSite, ${login_member}'</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$SujetMailSuccesConfirm</span> <span class="o">=</span> <span class="s1">'Bienvenue, ${login_member}'</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$CorpsMailSuccesConfirm</span> <span class="o">=</span> <span class="s1">'&lt;p&gt;Bonjour ${MEMBER_LOGIN},&lt;/p&gt;
+&lt;p&gt;Bienvenue sur notre site &lt;b&gt;MonSite&lt;/b&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Login :&lt;/b&gt; ${MEMBER_LOGIN}&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Mot de passe :&lt;/b&gt; ${password_member}&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Email :&lt;/b&gt; ${email}&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://www.monsite.com/"&gt;MonSite&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Cordialement&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="connexion">Connexion</h2>
+
+<h3 id="activation-1">Activation</h3>
+
+<p>Changez la classe script Connexion de la zone à partir de sa propriété <strong>$NomScriptConnexion</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptConnexionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptConnexionWeb</span>
+<span class="p">{</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MaZone1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$NomScriptConnexion</span> <span class="o">=</span> <span class="s2">"ScriptConnexionMonSite"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="propriétés-de-formulaire">Propriétés de formulaire</h3>
+
+<p>Le script de connexion contient ces propriétés de formulaire :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$LibellePseudo</td>
+      <td>Libellé du champ Login</td>
+    </tr>
+    <tr>
+      <td>$LibelleMotPasse</td>
+      <td>Libellé du champ Mot de passe</td>
+    </tr>
+    <tr>
+      <td>$NomParamPseudo</td>
+      <td>Nom du champ Login</td>
+    </tr>
+    <tr>
+      <td>$NomParamMotPasse</td>
+      <td>Nom du champ Mot de passe</td>
+    </tr>
+    <tr>
+      <td>$ValeurParamPseudo</td>
+      <td>Valeur du champ Login</td>
+    </tr>
+    <tr>
+      <td>$ValeurParamMotPasse</td>
+      <td>Valeur du champ Mot de passe</td>
+    </tr>
+    <tr>
+      <td>$AlignBoutonSoumettre</td>
+      <td>Alignement du bouton Connexion. Par défaut “center”.</td>
+    </tr>
+    <tr>
+      <td>$LibelleBoutonSoumettre</td>
+      <td>Libellé du bouton Connexion</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptConnexionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptConnexionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$LibellePseudo</span> <span class="o">=</span> <span class="s2">"Compte Marchand"</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$LibelleMotPasse</span> <span class="o">=</span> <span class="s2">"Clé"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="rendu">Rendu</h3>
+
+<p>Pour changer le rendu des champs de connexion, réecrivez la méthode <strong>RenduTableauParametres()</strong>. Vous devez inscrire un champ caché de nom <strong>$NomParamSoumetTentative</strong>. Sa valeur doit être <strong>$ValeurParamSoumetTentative</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptConnexionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptConnexionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduTableauParametres</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;div&gt;
+&lt;label for="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomParamPseudo</span><span class="mf">.</span><span class="s1">'"&gt;'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">LibellePseudo</span><span class="mf">.</span><span class="s1">'&lt;/label&gt;
+&lt;input type="text" name="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomParamPseudo</span><span class="mf">.</span><span class="s1">'" id="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomParamPseudo</span><span class="mf">.</span><span class="s1">'" value="'</span><span class="mf">.</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ValeurParamPseudo</span><span class="p">)</span><span class="mf">.</span><span class="s1">'" /&gt;
+&lt;/div&gt;
+&lt;div&gt;
+&lt;label for="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomParamMotPasse</span><span class="mf">.</span><span class="s1">'"&gt;'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">LibelleMotPasse</span><span class="mf">.</span><span class="s1">'&lt;/label&gt;
+&lt;input type="password" name="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomParamMotPasse</span><span class="mf">.</span><span class="s1">'" id="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomParamMotPasse</span><span class="mf">.</span><span class="s1">'" value="" /&gt;
+&lt;/div&gt;
+&lt;!-- Paramètre pour valider la tentative de connexion --&gt;
+&lt;input type="hidden" name="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomParamSoumetTentative</span><span class="mf">.</span><span class="s1">'" value="'</span><span class="mf">.</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ValeurParamSoumetTentative</span><span class="p">)</span><span class="mf">.</span><span class="s1">'" /&gt;'</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="critères-de-connexion">Critères de connexion</h3>
+
+<p>En utilisant la méthode <strong>ValideTentativeConnexion()</strong>, vous pouvez ajouter des conditions avant la confrontation login/mot de passe.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptConnexionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptConnexionWeb</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ValideTentativeConnexion</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD1</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// On accepte si le login possede une carte</span>
+<span class="nv">$lgn</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">FetchSqlRow</span><span class="p">(</span>
+<span class="s1">'select * from carte_membre where login=:login'</span><span class="p">,</span>
+<span class="k">array</span><span class="p">(</span><span class="s1">'login'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ValeurParamPseudo</span><span class="p">)</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="nb">count</span><span class="p">(</span><span class="nv">$lgn</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="redirection-1">Redirection</h3>
+
+<p>Pour activer la redirection après connexion, mettez la propriété <strong>$AutoriserUrlsRetour</strong> à 1.</p>
+
+<p>Le paramètre GET est <strong>urlRetour</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Exemple de URL :</span>
+<span class="c1">// ?appelleScript=connexion&amp;urlRetour=%3FappelleScript%3Dcontact</span>
+<span class="kd">class</span> <span class="nc">ScriptConnexionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptConnexionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AutoriserUrlsRetour</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$NomParamUrlRetour</span> <span class="o">=</span> <span class="s2">"urlRetour"</span> <span class="p">;</span> <span class="c1">// Paramètre GET</span>
+<span class="c1">// Message d'erreur affiché si l'URL retour est renseignée</span>
+<span class="k">public</span> <span class="nv">$MessageAccesUrlRetour</span> <span class="o">=</span> <span class="s2">"Vous devez être connecté pour accéder à cette page"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Vous pouvez éventuellement définir un lien (<strong>$UrlConnexionReussie</strong>) ou le nom du script (<strong>$NomScriptConnexionReussie</strong>) pour après connexion réussie.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptConnexionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptConnexionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$NomScriptConnexionReussie</span> <span class="o">=</span> <span class="s2">"tableau_bord"</span> <span class="p">;</span> <span class="c1">// Meme valeur</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Avec la méthode <strong>SauveSessionMembre()</strong>, vous pouvez manipuler le membre identifié par la paire login/mot de passe. Vous avez l’ID du membre avec la propriété <strong>$IdMembre</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptConnexionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptConnexionWeb</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">SauveSessionMembre</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Sauvegarde l'ID du membre dans la session courante</span>
+<span class="c1">// Toujours l'invoquer</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">SauveSessionMembre</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// On sauvegarde la connexion réussi dans une autre table...</span>
+<span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">RunSql</span><span class="p">(</span>
+	<span class="s1">'insert into connexion (id_membre, id_session)
+values (:id_membre, :id_session)'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s1">'id_membre'</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">IdMembre</span><span class="p">,</span> <span class="s1">'id_session'</span> <span class="o">=&gt;</span> <span class="nb">session_id</span><span class="p">())</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="déconnexion">Déconnexion</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$UrlDeconnexionReussie</td>
+      <td>URL après avoir déconnecté le membre</td>
+    </tr>
+    <tr>
+      <td>$NomScriptDeconnexionReussie</td>
+      <td>Nom du script après déconnexion réussie</td>
+    </tr>
+    <tr>
+      <td>$MessageDeconnexionReussie</td>
+      <td>Message affiché si aucune URL ou script n’est défini</td>
+    </tr>
+    <tr>
+      <td>$FiltreProfilMembre</td>
+      <td>Profil</td>
+    </tr>
+    <tr>
+      <td>$MessageRetourAccueil</td>
+      <td>Libellé du lien pour rediriger vers l’accueil</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptDeconnexionMonSite</span> <span class="kd">extends</span> <span class="nc">PvScriptDeconnexionWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$UrlDeconnexionReussie</span> <span class="o">=</span> <span class="s2">"?appelleScript=accueil"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+:ET

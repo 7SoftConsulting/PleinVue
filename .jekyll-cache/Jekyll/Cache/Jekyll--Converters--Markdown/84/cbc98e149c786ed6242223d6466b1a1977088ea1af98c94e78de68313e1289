@@ -1,0 +1,210 @@
+I"�,<h1 id="la-classe-application---php-pv">La classe Application - PHP-PV</h1>
+
+<h2 id="présentation">Présentation</h2>
+
+<p>L’Application dans PHP-PV contient toutes les interfaces exécutables (zone web, tache programmée…).</p>
+
+<p><img src="images/diagramme-application.png" alt="Fonctionnement" /></p>
+
+<h2 id="méthodes-principales">Méthodes principales</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Contexte</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InitConfig()</td>
+      <td>A réécrire</td>
+      <td>Définit les membres à l’instanciation de l’application</td>
+    </tr>
+    <tr>
+      <td>Execute()</td>
+      <td>A partir d’une instance</td>
+      <td>Exécute l’application</td>
+    </tr>
+    <tr>
+      <td>ChargeConfig()</td>
+      <td>A réécrire. Invoquée par Execute().</td>
+      <td>Définit les membres pour l’exécution de l’application.</td>
+    </tr>
+    <tr>
+      <td>ChargeIHMs()</td>
+      <td>A réécrire. Invoquée par ChargeConfig()</td>
+      <td>Définit les Interfaces (Web, Console, SOAP, …) de l’application</td>
+    </tr>
+    <tr>
+      <td>ChargeTachesProgs()</td>
+      <td>A réécrire. Invoquée par ChargeConfig()</td>
+      <td>Invoquée par la méthode ChargeConfig().Définit les tâches programmées de l’application.</td>
+    </tr>
+    <tr>
+      <td>ChargeServsPersists()</td>
+      <td>A réécrire. Invoquée par ChargeConfig()</td>
+      <td>Invoquée par la méthode ChargeConfig()</td>
+    </tr>
+    <tr>
+      <td>InsereIHM(string $nom, &amp; PvIHM $ihm)</td>
+      <td>Utiliser dans ChargeIHMs()</td>
+      <td>Inscrit une IHM (Interface web, console ou SOAP) dans l’application</td>
+    </tr>
+    <tr>
+      <td>InsereTacheProg(string $nom, &amp; PvTacheProg $tacheProg)</td>
+      <td>Utiliser dans ChargeTachesProgs()</td>
+      <td>Inscrit une tâche programmée dans l’application</td>
+    </tr>
+    <tr>
+      <td>InsereServPersist(string $nom, &amp; PvServicePersist $servPersist)</td>
+      <td>Utiliser dans ChargeServsPersists()</td>
+      <td>Inscrit un service persistant dans l’application</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonApplication1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">InitConfig</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">InitConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Var1</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ChargeIHMs</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s2">"zone1"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MaZone1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MonApplication1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$app</span><span class="o">-&gt;</span><span class="nf">Execute</span><span class="p">()</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="lélement-dapplication">L’élement d’application</h2>
+
+<h3 id="présentation-1">Présentation</h3>
+
+<p>L’élément d’application est la classe <strong>PvElementApplication</strong>. Elle est le noyau des interfaces web, console, SOAP, services et tâche programmée.</p>
+
+<p>Plusieurs classes héritent de <strong>PvElementApplication</strong> :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PvIHM</td>
+      <td>Classe de base pour toutes les Interfaces (Web, console, SOAP…)</td>
+    </tr>
+    <tr>
+      <td>PvTacheProg</td>
+      <td>Classe de base pour toutes les tâches prog (Web, console, SOAP…)</td>
+    </tr>
+    <tr>
+      <td>PvServicePersist</td>
+      <td>Classe de base pour tous les services persistants prog (Web, console, SOAP…)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="utilisation">Utilisation</h3>
+
+<p>Quand l’application s’exécute, elle parcourt tous ses éléments d’application. Si l’un d’entre eux est actif, l’application démarre l’exécution de cet élément et arrête le parcours.
+Pour savoir si un élément d’application est actif, l’application a deux possibilités :</p>
+<ul>
+  <li>Vérifier si le chemin relatif de l’élément est celui du script PHP. La propriété est <strong>CheminFichierRelatif</strong>.</li>
+  <li>La propriété <strong>AccepterTousChemins</strong> de cet élément a pour valeur <strong>1</strong>.</li>
+</ul>
+
+<p>Exemple :
+Mettez ce code source dans le fichier <strong>mapage1.php</strong>.</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Classe MaPage1, à enregistrer dans mapage1.php</span>
+<span class="kd">class</span> <span class="nc">MaPage1</span> <span class="kd">extends</span> <span class="nc">PvIHM</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$CheminFichierRelatif</span> <span class="o">=</span> <span class="s2">"mapage1.php"</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">Execute</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"Page 1 appelee"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MaPage2</span> <span class="kd">extends</span> <span class="nc">PvIHM</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">Execute</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"Page 2 appelee"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MonApplication1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ChargeIHMs</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Page1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s2">"page1"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MaPage1</span><span class="p">())</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Page2</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s2">"page2"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MaPage2</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Créez ensuite un fichier <strong>mapage2.php</strong> qui inclut <strong>mapage1.php</strong>.</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">include</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span><span class="mf">.</span><span class="s2">"/mapage1.php"</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p>Chaque classe affichera en fonction du fichier PHP appelé.</p>
+
+<p><img src="images/elemapp_mapage1.png" alt="Résultat ma page 1" /></p>
+
+<p><img src="images/elemapp_mapage2.png" alt="Résultat ma page 2" /></p>
+
+<h3 id="propriétés--méthodes-principales">Propriétés / Méthodes principales</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$ApplicationParent</td>
+      <td>Accède à l’application contenant</td>
+    </tr>
+    <tr>
+      <td>$NomElementApplication</td>
+      <td>Nom de l’élément dans l’application</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaPage2</span> <span class="kd">extends</span> <span class="nc">PvIHM</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">Execute</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"Page 2 appelee sous le nom &lt;b&gt;"</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomElementApplication</span><span class="mf">.</span><span class="s2">"&lt;/b&gt;"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="filtrage-daccès">Filtrage d’accès</h3>
+
+<p>Veuillez réeccrire la méthode <strong>EstActif()</strong> pour filtrer l’accès à l’élément d’application.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonInterfaceWeb</span> <span class="kd">extends</span> <span class="nc">PvIHM</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">EstActif</span><span class="p">(</span><span class="nv">$cheminFichierAbsolu</span><span class="p">,</span> <span class="nv">$cheminFichierElementActif</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$ok</span> <span class="o">=</span> <span class="k">parent</span><span class="o">::</span><span class="nf">EstActif</span><span class="p">(</span><span class="nv">$cheminFichierAbsolu</span><span class="p">,</span> <span class="nv">$cheminFichierElementActif</span><span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$ok</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="nv">$ok</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="nb">php_sapi_name</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">"CLI"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+:ET

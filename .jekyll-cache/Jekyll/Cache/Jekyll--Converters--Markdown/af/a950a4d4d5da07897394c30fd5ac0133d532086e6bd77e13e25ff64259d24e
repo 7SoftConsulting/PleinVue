@@ -1,0 +1,596 @@
+I"��<h1 id="passerelles-de-paiement---php-pv">Passerelles de paiement - PHP-PV</h1>
+
+<h2 id="présentation">Présentation</h2>
+
+<p>La passerelle de paiement est une IHM de l’application, pour payer des services de l’application (facture, article etc).
+Elle se connecte sur un système de paiement en ligne.
+Exemple :
+Paypal, Skrill…
+Une fois le paiement réussi, elle affecte le service demandé avec le client.</p>
+
+<h2 id="processus">Processus</h2>
+
+<p><img src="images/process-passerelle-paiement.jpg" alt="Processus de paiement" /></p>
+
+<p>A partir d’une zone web, vous soumettez une transaction à la passerelle de paiement.
+Elle contactera le système de paiement en ligne. Une fois le paiement réussi, la passerelle exécute le service après paiement.</p>
+
+<h2 id="passerelle-de-paiement-test-assistance---php-pv">Passerelle de paiement Test (Assistance) - PHP-PV</h2>
+
+<h3 id="préparation">Préparation</h3>
+
+<p>Les passerelles de paiement enregistrent les transactions dans une base de données MySQL.</p>
+
+<p>Vous devez télécharger à cette adresse :</p>
+
+<p>(https://github.com/PvSolutions/php-pv/blob/sql/Paiement/transaction_paiement.sql)</p>
+
+<p>Importez le script dans votre base de données. Il crée une table “transaction_paiement”</p>
+
+<h3 id="utilisation">Utilisation</h3>
+
+<ol>
+  <li>Déclarez la base de données des transactions</li>
+</ol>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">BdTransact1</span> <span class="kd">extends</span> <span class="nc">MysqlPdoDB</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">InitConnectionParams</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">InitConnectionParams</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s2">"server"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"localhost"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s2">"user"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"user"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s2">"password"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"pass"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s2">"schema"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"mabd1"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Déclarez la base de données des informations de paiement</li>
+</ol>
+
+<p>Vous devez télécharger à cette adresse :</p>
+
+<p>(https://github.com/PvSolutions/php-pv/blob/sql/Paiement/Assistance/Install.sql)</p>
+
+<p>Importez le script dans votre base de données. Il crée une table “assistance_paiement”.</p>
+
+<p>Déclarez la classe Base de données MySQL.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">BdAssistance1</span> <span class="kd">extends</span> <span class="nc">MysqlPdoDB</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">InitConnectionParams</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">InitConnectionParams</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s2">"server"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"localhost"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s2">"user"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"root"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s2">"password"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"xxxxx"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s2">"schema"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"mabd1"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Déclarez le service après paiement, pour une transaction réussie</li>
+</ol>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ServicePaye1</span> <span class="kd">extends</span> <span class="nc">PvSvcAprPaiementBase</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ConfirmeSucces</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$transaction</span><span class="p">)</span> <span class="c1">// Si la transaction aboutit</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"BRAVO ! Paiement reussi !!!"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ConfirmeEchec</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$transaction</span><span class="p">)</span> <span class="c1">// Si la transaction echoue</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"Désolé, votre transaction a échoué !!!"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">Annule</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$transaction</span><span class="p">)</span> <span class="c1">// Si la transaction est annulee</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"Désolé, vous avez annulé votre transaction !!!"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<ol>
+  <li>Incluez le fichier de la passerelle.</li>
+</ol>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">include</span> <span class="o">&lt;</span><span class="n">chemin_php_pv</span><span class="o">&gt;/</span><span class="nc">Pv</span><span class="o">/</span><span class="no">IHM</span><span class="o">/</span><span class="nc">PasserelleSiteWeb</span><span class="o">/</span><span class="nc">Paiement</span><span class="o">/</span><span class="nc">Assistance</span><span class="mf">.</span><span class="n">class</span><span class="mf">.</span><span class="n">php</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Déclarez la passerelle de paiement et assignez le service après paiement.</li>
+</ol>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaPasserellePaie1</span> <span class="kd">extends</span> <span class="nc">PvPasserelleAssistance</span>
+<span class="p">{</span>
+<span class="c1">// Base de données transactions</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">CreeBdTransaction</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="k">new</span> <span class="nc">BdTransact1</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// déclarez le service après paiement</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ChargeConfig</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereSvcAprPaiement</span><span class="p">(</span><span class="s2">"service1"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">ServicePaye1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Insérez cette passerelle dans l’application</li>
+</ol>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Application1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ChargeIHMs</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">PasserellePaie1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s2">"passerelle1"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MaPasserellePaie1</span><span class="p">())</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Dans une zone, demandez le paiement.</li>
+</ol>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZone1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeScripts</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScriptParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">MonScript1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="c1">// ....</span>
+<span class="c1">// Accédez à la passerelle de paiement</span>
+<span class="nv">$passerellePaie</span> <span class="o">=</span> <span class="o">&amp;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ApplicationParent</span><span class="o">-&gt;</span><span class="nc">PasserellePaie1</span> <span class="p">;</span>
+<span class="c1">// Initier une transaction</span>
+<span class="nv">$transaction</span> <span class="o">=</span> <span class="nv">$passerellePaie</span><span class="o">-&gt;</span><span class="nf">Transaction</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$transaction</span><span class="o">-&gt;</span><span class="nc">Montant</span> <span class="o">=</span> <span class="mi">20</span> <span class="p">;</span>
+<span class="nv">$transaction</span><span class="o">-&gt;</span><span class="nc">Monnaie</span> <span class="o">=</span> <span class="s1">'EUR'</span> <span class="p">;</span> <span class="c1">// EURO</span>
+<span class="nv">$transaction</span><span class="o">-&gt;</span><span class="nc">Designation</span> <span class="o">=</span> <span class="s2">"Paiement du produit AAAA"</span> <span class="p">;</span>
+<span class="nv">$transaction</span><span class="o">-&gt;</span><span class="nc">Cfg</span><span class="o">-&gt;</span><span class="nc">NomSvcAprPaiement</span> <span class="o">=</span> <span class="s2">"monService1"</span> <span class="p">;</span> <span class="c1">// Nom du service après paiement</span>
+<span class="nv">$transaction</span><span class="o">-&gt;</span><span class="nc">Cfg</span><span class="o">-&gt;</span><span class="nc">Arg01</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ZoneParent</span><span class="o">-&gt;</span><span class="nf">IdMembreConnecte</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Démarrer le processus</span>
+<span class="nv">$passerellePaie</span><span class="o">-&gt;</span><span class="nf">DemarreProcessus</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="références-dans-lapplication">Références dans l’Application</h2>
+
+<p>Les passerelles de paiement sont des IHMs dans l’application. Intégrez les avec la méthode <strong>InsereInterfPaiement()</strong> au lieu de <strong>InsereIHM()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonApp</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeIHMs</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Zone1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s2">"zone1"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MaZone1</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">PassPaie1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereInterfPaiement</span><span class="p">(</span><span class="s2">"passPaie1"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MaPassPaie1</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété / Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$NomsInterfsPaiement</td>
+      <td>Contient les noms des passerelles de paiement</td>
+    </tr>
+    <tr>
+      <td>InterfsPaiement()</td>
+      <td>Renvoie les passerelles de paiement</td>
+    </tr>
+    <tr>
+      <td>InterfPaiement($nom)</td>
+      <td>Retourne la passerelle de paiement nommée <strong>$nom</strong>.</td>
+    </tr>
+    <tr>
+      <td>ExisteInterfPaiement($nom)</td>
+      <td>Vérifie s’il existe une passerelle de paiement <strong>$nom</strong>.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">if</span><span class="p">(</span><span class="k">isset</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s2">"payerPar"</span><span class="p">]))</span>
+<span class="p">{</span>
+<span class="nv">$nomPassPaie</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s2">"payerPar"</span><span class="p">]</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ApplicationParent</span><span class="o">-&gt;</span><span class="nf">ExisteInterfPaiement</span><span class="p">(</span><span class="nv">$nomPassPaie</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="nv">$passPaie</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ApplicationParent</span><span class="o">-&gt;</span><span class="nf">InterfPaiement</span><span class="p">(</span><span class="nv">$nomPassPaie</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">//...</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="s1">'&lt;p&gt;Veuillez choisir votre moyen de paiement :&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="nv">$interfsPaie</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ApplicationParent</span><span class="o">-&gt;</span><span class="nf">InterfsPaiement</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">foreach</span><span class="p">(</span><span class="nv">$interfsPaie</span> <span class="k">as</span> <span class="nv">$i</span> <span class="o">=&gt;</span> <span class="nv">$passPaie</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">echo</span> <span class="s1">'&lt;p&gt;- &lt;a href="?payerPar='</span><span class="mf">.</span><span class="nv">$passPaie</span><span class="o">-&gt;</span><span class="nc">NomElementApplication</span><span class="mf">.</span><span class="s1">'"&gt;'</span><span class="mf">.</span><span class="nv">$passPaie</span><span class="o">-&gt;</span><span class="nc">Titre</span><span class="mf">.</span><span class="s1">'&lt;/a&gt;&lt;/p&gt;'</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="caractéristiques-service-après-paiement">Caractéristiques service après paiement</h2>
+
+<p>Vous accédez à l’arborescence de la passerelle avec ces propriétés :</p>
+
+<ul>
+  <li><strong>InterfPaiemtParent</strong> : Passerelle de paiement contenant ce service</li>
+  <li><strong>ApplicationParent()</strong> : Application racine</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ServicePaye1</span> <span class="kd">extends</span> <span class="nc">PvSvcAprPaiementBase</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ConfirmeSucces</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$transaction</span><span class="p">)</span> <span class="c1">// Si la transaction aboutit</span>
+<span class="p">{</span>
+	<span class="nv">$interfParent</span> <span class="o">=</span> <span class="o">&amp;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">InterfPaiemtParent</span> <span class="p">;</span>
+	<span class="nv">$app</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">ApplicationParent</span><span class="p">()</span> <span class="p">;</span>
+	<span class="k">echo</span> <span class="s2">"&lt;p&gt;BRAVO ! Paiement reussi sur "</span><span class="mf">.</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$app</span><span class="o">-&gt;</span><span class="nc">Titre</span><span class="p">)</span><span class="mf">.</span><span class="s2">" !!!&lt;/p&gt;"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Vous avez aussi la propriété <strong>NomElementInterfPaiemt</strong>, retournant le nom du service dans la passerelle.</p>
+
+<h2 id="passerelle-de-paiement-paypal">Passerelle de paiement PAYPAL</h2>
+
+<p>Elle permet d’effectuer les paiements par PAYPAL (www.paypal.com).</p>
+
+<h3 id="pré-requis-sql">Pré-requis SQL</h3>
+
+<p>Téléchargez et importez le fichier dans votre base de données MySQL :</p>
+
+<p>https://github.com/PvSolutions/php-pv/blob/sql/Paiement/Paypal/install.sql</p>
+
+<h3 id="déclaration-de-la-classe">Déclaration de la classe</h3>
+
+<p>Rendez-vous sur le site www.paypal.com.</p>
+
+<p>Connectez-vous avec un compte business.
+Créez un nouveau service pour obtenir le Client ID et le Secret.</p>
+
+<p>Avec ces informations, déclarez votre classe.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Inclure le fichier </span>
+<span class="k">include</span> <span class="o">&lt;</span><span class="n">chemin_php_pv</span><span class="o">&gt;/</span><span class="nc">Pv</span><span class="o">/</span><span class="no">IHM</span><span class="o">/</span><span class="nc">PasserelleSiteWeb</span><span class="o">/</span><span class="nc">Paiement</span><span class="o">/</span><span class="nc">Paypal</span><span class="mf">.</span><span class="n">class</span><span class="mf">.</span><span class="n">php</span>
+
+<span class="c1">// Déclarez la classe</span>
+<span class="kd">class</span> <span class="nc">PassPaie1</span> <span class="kd">extends</span> <span class="nc">PvInterfacePaiementPaypal</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$ClientIdCompteMarchand</span> <span class="o">=</span> <span class="s2">"&lt;Mon Client ID&gt;"</span> <span class="p">;</span> <span class="c1">// mettre le Client ID</span>
+<span class="k">public</span> <span class="nv">$SecretCompteMarchand</span> <span class="o">=</span> <span class="s2">"&lt;Mon secret&gt;"</span> <span class="p">;</span> <span class="c1">// mettre le Secret</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">CreeBdTransaction</span><span class="p">()</span> <span class="c1">// Définissez la classe BD qui contient les transactions</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="présentation-web-de-la-transaction-en-cours">Présentation web de la transaction en cours</h3>
+
+<p>Cette passerelle affiche au milieu de l’écran les boutons de paypal. Le client clique sur l’un de ces boutons pour accéder à Paypal.</p>
+
+<p>Si vous voulez changer l’allure de cette page, réécrivez les méthodes <strong>RenduEnteteDocument()</strong>, <strong>RenduEnteteCorpsDocument()</strong>, <strong>RenduPiedCorpsDocument()</strong>, <strong>RenduPiedDocument()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">PassPaie1</span> <span class="kd">extends</span> <span class="nc">PvInterfacePaiementPaypal</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$MsgSoumetFormPaiement</span> <span class="o">=</span> <span class="s2">"Cliquez sur le bouton en dessous pour payer"</span> <span class="p">;</span> <span class="c1">// Message avant les boutons paypal</span>
+<span class="c1">// ...</span>
+<span class="c1">// Contenu HTML jusqu'au &lt;body&gt;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">RenduEnteteDocument</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Contenu original</span>
+<span class="k">return</span> <span class="s1">'&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="utf-8"&gt;
+&lt;title&gt;'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">TitreSoumetFormPaiement</span><span class="mf">.</span><span class="s1">'&lt;/title&gt;
+&lt;meta http-equiv="X-UA-Compatible" content="IE=edge" /&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+&lt;/head&gt;
+&lt;body align="center"&gt;'</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Contenu HTML avant le code généré pour Paypal</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">RenduEnteteCorpsDocument</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Contenu HTML après le code généré pour Paypal</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">RenduPiedCorpsDocument</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Contenu HTML à partir de &lt;/body&gt;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">RenduPiedDocument</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Contenu original</span>
+<span class="k">return</span> <span class="s1">'&lt;/body&gt;
+&lt;/html&gt;'</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="passerelle-de-paiement-skrill">Passerelle de paiement SKRILL</h2>
+
+<p>Elle permet d’effectuer les paiements par SKRILL (www.skrill.com).</p>
+
+<h3 id="pré-requis-sql-1">Pré-requis SQL</h3>
+
+<p>Téléchargez et importez le fichier dans votre base de données MySQL :</p>
+
+<p>https://github.com/PvSolutions/php-pv/blob/sql/Paiement/Skrill/install.sql</p>
+
+<h3 id="déclaration-de-la-classe-1">Déclaration de la classe</h3>
+
+<p>Rendez-vous sur le site www.skrill.com.</p>
+
+<p>Connectez-vous avec un compte business.</p>
+
+<p>Déclarez votre classe.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Inclure le fichier </span>
+<span class="k">include</span> <span class="o">&lt;</span><span class="n">chemin_php_pv</span><span class="o">&gt;/</span><span class="nc">Pv</span><span class="o">/</span><span class="no">IHM</span><span class="o">/</span><span class="nc">PasserelleSiteWeb</span><span class="o">/</span><span class="nc">Paiement</span><span class="o">/</span><span class="nc">Skrill</span><span class="mf">.</span><span class="n">class</span><span class="mf">.</span><span class="n">php</span>
+
+<span class="c1">// Déclarez la classe</span>
+<span class="kd">class</span> <span class="nc">PassPaie1</span> <span class="kd">extends</span> <span class="nc">PvInterfacePaiementSkrill</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$EmailBenefCompteMarchand</span> <span class="o">=</span> <span class="s2">"&lt;Mon Email Skrill&gt;"</span> <span class="p">;</span> <span class="c1">// mettre l'email</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">CreeBdTransaction</span><span class="p">()</span> <span class="c1">// Définissez la classe BD qui contient les transactions</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="passerelle-de-paiement-cinetpay">Passerelle de paiement CINETPAY</h2>
+
+<p>Elle permet d’effectuer les paiements par CINETPAY (www.cinetpay.com). Cette solution est disponible pour les résidents de l’Afrique de l’Ouest.</p>
+
+<h3 id="pré-requis-sql-2">Pré-requis SQL</h3>
+
+<p>Téléchargez et importez le fichier dans votre base de données MySQL :</p>
+
+<p>https://github.com/PvSolutions/php-pv/blob/sql/Paiement/Cinetpay/structure.sql</p>
+
+<h3 id="déclaration-de-la-classe-2">Déclaration de la classe</h3>
+
+<p>Rendez-vous sur le site www.cinetpay.com.</p>
+
+<p>Connectez-vous avec un compte marchand.
+Créez un nouveau service pour obtenir le API Key et le Site Id.</p>
+
+<p>Avec ces informations, déclarez votre classe.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Inclure le fichier </span>
+<span class="k">include</span> <span class="o">&lt;</span><span class="n">chemin_php_pv</span><span class="o">&gt;/</span><span class="nc">Pv</span><span class="o">/</span><span class="no">IHM</span><span class="o">/</span><span class="nc">PasserelleSiteWeb</span><span class="o">/</span><span class="nc">Paiement</span><span class="o">/</span><span class="nc">CinetPay</span><span class="mf">.</span><span class="n">class</span><span class="mf">.</span><span class="n">php</span>
+
+<span class="c1">// Déclarez la classe</span>
+<span class="kd">class</span> <span class="nc">PassPaieCinetpay1</span> <span class="kd">extends</span> <span class="nc">PvInterfacePaiementCinetpay</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$ApiKeyCompteMarchand</span> <span class="o">=</span> <span class="s2">"mon_api_key"</span> <span class="p">;</span> <span class="c1">// mettre le API Key</span>
+<span class="k">public</span> <span class="nv">$SiteIdCompteMarchand</span> <span class="o">=</span> <span class="s2">"mon_site_id"</span> <span class="p">;</span> <span class="c1">// mettre le Site ID</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">CreeBdTransaction</span><span class="p">()</span> <span class="c1">// Définissez la classe BD qui contient les transactions</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="passerelle-de-paiement-coinspayment">Passerelle de paiement COINSPAYMENT</h2>
+
+<p>Elle permet d’effectuer les paiements par COINSPAYMENT (https://www.coinpayments.net/).</p>
+
+<h3 id="pré-requis-sql-3">Pré-requis SQL</h3>
+
+<p>Téléchargez et importez le fichier dans votre base de données MySQL :</p>
+
+<p>https://github.com/PvSolutions/php-pv/blob/sql/Paiement/CoinPayments/install.sql</p>
+
+<h3 id="déclaration-de-la-classe-3">Déclaration de la classe</h3>
+
+<p>Rendez-vous sur le site https://www.coinpayments.net/.</p>
+
+<p>Connectez-vous avec un compte Business, et obtenez vos identifiants Merchant et IPNSecret.</p>
+
+<p>Avec ces informations, déclarez votre classe.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Inclure le fichier </span>
+<span class="k">include</span> <span class="o">&lt;</span><span class="n">chemin_php_pv</span><span class="o">&gt;/</span><span class="nc">Pv</span><span class="o">/</span><span class="no">IHM</span><span class="o">/</span><span class="nc">PasserelleSiteWeb</span><span class="o">/</span><span class="nc">Paiement</span><span class="o">/</span><span class="nc">CoinPayments</span><span class="mf">.</span><span class="n">class</span><span class="mf">.</span><span class="n">php</span>
+
+<span class="c1">// Déclarez la classe</span>
+<span class="kd">class</span> <span class="nc">PassPaieCoinsPayment1</span> <span class="kd">extends</span> <span class="nc">PvInterfacePaiementCoinPayments</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$MerchantCompteMarchand</span> <span class="o">=</span> <span class="s2">"mon merchant"</span> <span class="p">;</span> <span class="c1">// Mettre la valeur du merchant</span>
+<span class="k">public</span> <span class="nv">$IPNSecretCompteMarchand</span> <span class="o">=</span> <span class="s2">"MyIPN Secret"</span> <span class="p">;</span> <span class="c1">// Mettre la valeur du IPN Secret</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">CreeBdTransaction</span><span class="p">()</span> <span class="c1">// Définissez la classe BD qui contient les transactions</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="passerelle-de-paiement-personnalisée">Passerelle de paiement personnalisée</h2>
+
+<h3 id="pré-requis-sql-4">Pré-requis SQL</h3>
+
+<p>Vous pouvez faire votre passerelle pour un système de paiement mobile ou internet.</p>
+
+<p>D’abord, identifiez les détails d’une transaction à sauvegarder. Voici quelques informations :</p>
+
+<ul>
+  <li>le montant</li>
+  <li>la date d’initiation de la demande au système de paiement</li>
+  <li>la date retour de la demande au système de paiement</li>
+  <li>les frais</li>
+  <li>le contenu HTTP envoyé pour chaque appel</li>
+  <li>le contenu HTTP reçu pour chaque appel</li>
+  <li>la référence de la transaction</li>
+</ul>
+
+<h3 id="déclaration-de-la-classe-4">Déclaration de la classe</h3>
+
+<p>Votre passerelle doit hériter de la classe <strong>PvInterfacePaiementBase</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaPasserellePaiePerso</span> <span class="kd">extends</span> <span class="nc">PvInterfacePaiementBase</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$IdentifiantMarchand1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$IdentifiantMarchand2</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="envoi-de-transaction-au-système-en-ligne">Envoi de transaction au système en ligne</h3>
+
+<p>Réécrivez la méthode <strong>PrepareTransaction()</strong> pour vérifier si le système de paiement en ligne acceptera votre transaction. En cas de réponse positive, marquez l’état de l’exécution à <strong>“verification_ok”</strong>.</p>
+
+<p>Inscrivez les détails de la transaction en ligne à ce niveau.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">protected</span> <span class="k">function</span> <span class="n">PrepareTransaction</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Vérifier si le paiement est possible</span>
+<span class="mf">...</span>
+<span class="c1">// Sauvegarde des traces dans la base de données</span>
+<span class="nv">$ok</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">RunSql</span><span class="p">(</span>
+	<span class="s2">"insert into transaction_spec(id_transaction, date_creation, valeur_verif) values (:id_transaction, NOW(), :valeur_verif)"</span><span class="p">,</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"id_transaction"</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="n">_Transaction</span><span class="o">-&gt;</span><span class="nc">IdTransaction</span><span class="p">,</span> <span class="s2">"valeur_verif"</span> <span class="o">=&gt;</span> <span class="s2">"1"</span><span class="p">)</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Confirmer quand la préparation a réussi</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$ok</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">DefinitEtatExecution</span><span class="p">(</span><span class="s2">"verification_ok"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">DefinitEtatExecution</span><span class="p">(</span><span class="s2">"verification_echoue"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Enfin, Envoyez de la transaction au système en ligne en réécrivant la méthode <strong>SoumetTransaction()</strong></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Soumet la transaction au système de paiement</span>
+<span class="c1">// si la vérification a réussi</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">SoumetTransaction</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Pour les systèmes de paiement qui demandent les liens de retour, utilisez ces méthodes :</p>
+
+<ul>
+  <li><strong>UrlTermine()</strong> : URL de la passerelle pour recevoir le règlement de la transaction</li>
+  <li><strong>UrlAnnule()</strong> : URL de la passerelle pour annuler le règlement de la transaction</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Soumet la transaction au système de paiement</span>
+<span class="c1">// si la vérification a réussi</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">SoumetTransaction</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s1">'&lt;form action="https://api_lien_externe" method="post"&gt;
+&lt;input type="hidden" name="mm_trans_id" value="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">_Transaction</span><span class="o">-&gt;</span><span class="nc">IdTransaction</span><span class="mf">.</span><span class="s1">'" /&gt;
+&lt;input type="hidden" name="mm_amount" value="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">_Transaction</span><span class="o">-&gt;</span><span class="nc">Montant</span><span class="mf">.</span><span class="s1">'" /&gt;
+&lt;input type="hidden" name="mm_currency" value="'</span><span class="mf">.</span><span class="nb">htmlspecialchars</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">_Transaction</span><span class="o">-&gt;</span><span class="nc">Monnaie</span><span class="p">)</span><span class="mf">.</span><span class="s1">'" /&gt;
+&lt;input type="hidden" name="mm_label" value="'</span><span class="mf">.</span><span class="nb">htmlspecialchars</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="n">_Transaction</span><span class="o">-&gt;</span><span class="nc">Designation</span><span class="p">)</span><span class="mf">.</span><span class="s1">'" /&gt;
+&lt;input type="hidden" name="mm_return_url" value="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">UrlTermine</span><span class="p">()</span><span class="mf">.</span><span class="s1">'" /&gt;
+&lt;input type="hidden" name="mm_cancel_url" value="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">UrlAnnule</span><span class="p">()</span><span class="mf">.</span><span class="s1">'" /&gt;
+&lt;/form&gt;'</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="statuts-des-règlements">Statuts des règlements</h3>
+
+<p>Vous pouvez mettre une API pour recevoir l’évolution d’un paiement soumis.</p>
+
+<p>Votre API le recevra à partir du paramètre GET <strong>resultat</strong>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>?resultat=maj_statut
+</code></pre></div></div>
+
+<p>Pour ce faire, réécrivez <strong>DetermineResultatPaiement()</strong>. Examinez la valeur <strong>$_GET[$this-&gt;NomParamResultat]</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">protected</span> <span class="k">function</span> <span class="n">DetermineResultatPaiement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Conserver les vérifications précédentes</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">DetermineResultatPaiement</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Inclure votre vérification</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ValeurParamResultat</span> <span class="o">==</span> <span class="s1">''</span> <span class="o">&amp;&amp;</span> <span class="k">isset</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomParamResultat</span><span class="p">]))</span>
+<span class="p">{</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomParamResultat</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"maj_statut"</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ValeurParamResultat</span> <span class="o">=</span> <span class="s2">"maj_statut"</span> <span class="p">;</span>
+<span class="c1">// Traiter les informations de la transaction</span>
+<span class="nv">$etat</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Si la transaction est en cours de traitement sur le système de paiement en ligne, confirmez en définissant la méthode <strong>TransactionEnCours()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Confirmer que la transaction est toujours en cours</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">TransactionEnCours</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ValeurParamResultat</span> <span class="o">==</span> <span class="s2">"maj_statut"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="réception-du-règlement-de-la-transaction">Réception du règlement de la transaction</h3>
+
+<p>Lorsque le client quitte le système de paiement en ligne, vous pouvez définir le succès/échec du réglement en utilisant le lien <strong>“?resultat=termine”</strong>.</p>
+
+<p>Réécrivez la méthode <strong>RestaureTransactionEnCours()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">protected</span> <span class="k">function</span> <span class="n">RestaureTransactionEnCours</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">RestaureTransactionEnCours</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Le systeme de paiement a renvoyé les resultats</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">IdEtatExecution</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"termine"</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">// Traiter les résultats reçus.</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s2">"status_code"</span><span class="p">]</span> <span class="o">===</span> <span class="mi">200</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">// Paiement réussi</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">DefinitEtatExecution</span><span class="p">(</span><span class="s2">"paiement_reussi"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Mettre à jour la transaction dans la base de données</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="c1">// Paiement échoué</span>
+<span class="nv">$codeErr</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s2">"status_code"</span><span class="p">]</span> <span class="p">;</span>
+<span class="nv">$msgErr</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s2">"status_message"</span><span class="p">]</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">DefinitEtatExecution</span><span class="p">(</span><span class="s2">"paiement_echoue"</span><span class="p">,</span> <span class="nv">$codeErr</span><span class="mf">.</span><span class="s2">": "</span><span class="mf">.</span><span class="nv">$msgErr</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Mettre à jour la transaction dans la base de données</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Le systeme de paiement a annulé la transaction</span>
+<span class="k">elseif</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">IdEtatExecution</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"annule"</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">// Traiter la transaction comme annulée</span>
+<span class="c1">// Mettre à jour la transaction dans la base de données</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+:ET

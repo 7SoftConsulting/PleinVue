@@ -1,0 +1,474 @@
+I"a�<h1 id="services-persistants-php-pv">Services Persistants PHP-PV</h1>
+
+<h2 id="présentation">Présentation</h2>
+
+<p>Un Service Persistant est un script PHP qui s’exécute en ligne de commande sans s’arrêter.</p>
+
+<p>Il est idéal pour le traitement des queues, et les connexions persistantes.</p>
+
+<p>Le service persistant est un élément d’application. Il hérite de la classe <strong>PvServPersist</strong>, et doit réécrire sa méthode <strong>ExecuteSession()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonServicePersistant1</span> <span class="kd">extends</span> <span class="nc">PvServPersist</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteSession</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"Traitement effectue !</span><span class="se">\n</span><span class="s2">"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Inscrivez le service persistant dans la méthode <strong>ChargeServsPersists()</strong> de l’application. Utilisez la méthode <strong>InsereServPersist($nom, $serv)</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonApplication1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ChargeServsPersists</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereServPersist</span><span class="p">(</span><span class="s2">"monServ1"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MonServicePersistant1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Chaque 5 secondes, le service persistant exécute les instructions de <strong>ExecuteSession()</strong>.</p>
+
+<p><img src="images/test1_serv_persist.png" alt="Résultat" /></p>
+
+<h2 id="propriétés--méthodes-principales">Propriétés / Méthodes principales</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Fonction</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$DelaiAttente</td>
+      <td>Délai (en sécondes) entre chaque exécution de session. Valeur par défaut : 5</td>
+    </tr>
+    <tr>
+      <td>$Arreter</td>
+      <td>Valeur bool, pour arrêter le script à la fin d’une session. Valeur par défaut : false.</td>
+    </tr>
+    <tr>
+      <td>$MaxSessions</td>
+      <td>Maximum de session à exécuter, avant d’arrêter le script. Si la valeur est 0, le script ne s’arrêtera jamais.</td>
+    </tr>
+    <tr>
+      <td>$TotalSessions</td>
+      <td>Total de sessions terminées. Ainsi, la valeur sera 1 pour la 2ème session.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonServicePersistant1</span> <span class="kd">extends</span> <span class="nc">PvServPersist</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$DelaiAttente</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteSession</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"Traitement effectue !</span><span class="se">\n</span><span class="s2">"</span> <span class="p">;</span>
+<span class="c1">// On arrete apres la 4ème session</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">TotalSessions</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Arreter</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="etats-du-service">Etats du service</h2>
+
+<p>Le service persistant capture les temps entre chaque session, pour redémarrer en cas de plantage.</p>
+
+<p>Pour le configurer, commencez par déclarer le répertoire sauvegarde des états dans l’application. Renseignez la propriété <strong>$ChemRelRegServsPersists</strong>. Le chemin est relatif au dossier racine de PHP-PV.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonApplication1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$ChemRelRegServsPersists</span> <span class="o">=</span> <span class="s2">"services/data"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Dans ce cas, la structure des dossiers sera :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/php-pv-master
+/services
+	/data
+mon_service.php
+</code></pre></div></div>
+
+<p>Exécutez votre script PHP, et vous verrez le fichier Etat généré dans votre répertoire.</p>
+
+<h2 id="vérification-du-service">Vérification du service</h2>
+
+<p>Un service peut être planté dans plusieurs cas :</p>
+
+<ul>
+  <li>il est toujours d’exécution</li>
+  <li>il sauvegarde régulièrement son état</li>
+</ul>
+
+<p>Pour vérifier son fonctionnement, vous pouvez réécrire sa méthode <strong>Verifie()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonServicePersistant1</span> <span class="kd">extends</span> <span class="nc">PvServPersist</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteSession</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Traitement des lignes. Supprimer toutes celles</span>
+<span class="c1">// qui ont une date_creation antérieures à 1 jour</span>
+<span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">RunSql</span><span class="p">(</span><span class="s2">"delete from matable where date_creation &lt; SELECT ADDDATE(NOW(), INTERVAL -1 DAY)"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">Verifie</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$lgn</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">FetchSqlRow</span><span class="p">(</span><span class="s2">"select count(0) total from matable where date_creation &lt; SELECT ADDDATE(NOW(), INTERVAL -2 DAY)"</span><span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nb">is_array</span><span class="p">(</span><span class="nv">$lgn</span><span class="p">)</span> <span class="o">||</span> <span class="nv">$lgn</span><span class="p">[</span><span class="s2">"total"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// Connexion à la base de données échoué ou lignes non traitée</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="kc">false</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="kc">true</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>L’application crée une tâche programmée qui exécutera les méthodes <strong>Verifie()</strong> des services persistants. Pour l’activer, inscrivez la tâche avec la méthode <strong>InscritCtrlServsPersists($nomTache)</strong>. Personnalisez la avec la propriété <strong>$CtrlServsPersists</strong>.</p>
+
+<p>Structure des fichiers</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/php-pv-master
+/services
+	/data
+	/verifie.php
+mon_service.php
+</code></pre></div></div>
+
+<p>Déclaration de l’application dans <strong>/mon_service.php</strong>.</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonApplication1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$ChemRelRegServsPersists</span> <span class="o">=</span> <span class="s2">"services/data"</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ChargeServsPersists</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InscritCtrlServsPersists</span><span class="p">(</span><span class="s2">"ctrlServs"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Chemin du script rattaché à la tache programmée</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">CtrlServsPersists</span><span class="o">-&gt;</span><span class="nc">CheminFichierRelatif</span> <span class="o">=</span> <span class="s2">"services/verifie.php"</span> <span class="p">;</span>
+<span class="c1">// Inscrire les autres services...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereServPersist</span><span class="p">(</span><span class="s2">"monServ1"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MonServicePersistant1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Déclarez les autres classes (services persistants etc)</span>
+<span class="kd">class</span> <span class="nc">MonServicePersistant1</span> <span class="kd">extends</span> <span class="nc">PvServPersist</span>
+</code></pre></div></div>
+
+<p>Contenu du fichier <strong>/services/verifie.php</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">include</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span><span class="mf">.</span><span class="s2">"/../mon_service.php"</span> <span class="p">;</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<h2 id="le-processeur-de-queues">Le processeur de queues</h2>
+
+<p>Ce service persistant automatise le traitement de queues. La classe est <strong>PvProcesseurQueueBase</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ProcesseurQueue1</span> <span class="kd">extends</span> <span class="nc">PvProcesseurQueueBase</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Dans la classe, réécrivez la méthode <strong>ChargeElements()</strong>, pour récupérer les éléments en attente.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ProcesseurQueue1</span> <span class="kd">extends</span> <span class="nc">PvProcesseurQueueBase</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeElements</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ElementsBruts</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">FetchSqlRows</span><span class="p">(</span><span class="s2">"select * from matable limit 0, 10"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Manipulez la propriété <strong>$ElementActif</strong>-&gt;<strong>ContenuBrut</strong> dans la méthode, dans la méthode <strong>TraiteElementActif()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ProcesseurQueue1</span> <span class="kd">extends</span> <span class="nc">PvProcesseurQueueBase</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeElements</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ElementsBruts</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">FetchSqlRows</span><span class="p">(</span><span class="s2">"select * from matable limit 0, 10"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">TraiteElementActif</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"Champ 1 : "</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ElementActif</span><span class="o">-&gt;</span><span class="nc">ContenuBrut</span><span class="p">[</span><span class="s2">"champ1"</span><span class="p">]</span><span class="mf">.</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="p">;</span>
+<span class="c1">// Supprimer l'element en base</span>
+<span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$ok</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">RunSql</span><span class="p">(</span><span class="s2">"delete from matable where id=:id"</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ElementActif</span><span class="o">-&gt;</span><span class="nc">ContenuBrut</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]))</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="le-serveur-dappels-socket">Le serveur d’appels socket</h2>
+
+<h3 id="déclaration">Déclaration</h3>
+
+<p>Le serveur d’appels socket installe un serveur socket. Sa classe est <strong>PvServeurAppelsSocket</strong>.</p>
+
+<p>La classe est <strong>PvServeurAppelsSocket</strong>. Renseignez ces propriétés :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$Port</td>
+      <td>Port d’écoute du serveur socket. Par défaut, 4401</td>
+    </tr>
+    <tr>
+      <td>$Hote</td>
+      <td>Nom d’hote du serveur socket. Par défaut, “127.0.0.1”</td>
+    </tr>
+    <tr>
+      <td>$Scheme</td>
+      <td>Protocole : “tcp” (par défaut) ou “udp”</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonServeurSocket</span> <span class="kd">extends</span> <span class="nc">PvServeurAppelsSocket</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Scheme</span> <span class="o">=</span> <span class="s2">"tcp"</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Hote</span> <span class="o">=</span> <span class="s2">"127.0.0.1"</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Port</span> <span class="o">=</span> <span class="mi">4401</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="méthodes-socket">Méthodes socket</h3>
+
+<p>Le serveur socket contient des méthodes, qui correspondent à la requête reçue.</p>
+
+<p>Vous créez de nouvelles méthodes à partir de la classe <strong>PvMethodeSocketBase</strong>. Réécrivez sa méthode <strong>ExecuteInstructions()</strong>. A l’intérieur, utilisez les méthodes suivantes pour les valeurs retours : <strong>ConfirmeSucces($msg, $resultat=null)</strong> pour le succès sinon <strong>RenseigneErreur($code, $msg, $resultat=null)</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MtdSockAPropos</span> <span class="kd">extends</span> <span class="nc">PvMethodeSocketBase</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">ConfirmeSucces</span><span class="p">(</span><span class="s2">"OK"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Après la déclaration, inscrivez la dans la classe Serveur socket, dans <strong>ChargeConfig()</strong>. Utilisez <strong>InsereMethode($nom, $mtd)</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonServeurSocket</span> <span class="kd">extends</span> <span class="nc">PvServeurAppelsSocket</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Port</span> <span class="o">=</span> <span class="mi">4401</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ChargeConfig</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereMethode</span><span class="p">(</span><span class="s2">"a_propos"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MtdSockAPropos</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Le serveur socket contient aussi 3 méthodes spécifiques :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Méthode d’initiation</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$MethodeNonTrouve</td>
+      <td>CreeMethodeNonTrouve()</td>
+      <td>Méthode exécutée si aucune méthode spécifiée</td>
+    </tr>
+    <tr>
+      <td>$MethodeTest</td>
+      <td>CreeMethodeTest()</td>
+      <td>Méthode de test</td>
+    </tr>
+    <tr>
+      <td>$MethodeVerif</td>
+      <td>CreeMethodeVerif()</td>
+      <td>Vérifie si le serveur Socket n’est pas planté</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MtdSockNonTrouve</span> <span class="kd">extends</span> <span class="nc">PvMethodeSocketBase</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">RenseigneErreur</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"La methode que vous avez demandee n'existe pas"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MonServeurSocket</span> <span class="kd">extends</span> <span class="nc">PvServeurAppelsSocket</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Port</span> <span class="o">=</span> <span class="mi">4401</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">CreeMethodeNonTrouve</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="k">new</span> <span class="nc">MtdSockNonTrouve</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="tests-de-requête">Tests de requête</h3>
+
+<p>Le serveur socket encode les requêtes au format natif PHP. Veuillez changer au format JSON, si vous testez les requêtes. Retournez l’instance <strong>PvFormatPaquetJSON</strong> dans sa méthode <strong>CreeFormatPaquet()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonServeurSocket</span> <span class="kd">extends</span> <span class="nc">PvServeurAppelsSocket</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Port</span> <span class="o">=</span> <span class="mi">4422</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">CreeFormatPaquet</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="k">new</span> <span class="nc">PvFormatPaquetJSON</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Démarrez ensuite le serveur socket. Le format des requêtes est :</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="nl">nom</span> <span class="p">:</span> <span class="dl">"</span><span class="s2">nom_methode</span><span class="dl">"</span><span class="p">,</span> <span class="nx">args</span> <span class="p">:</span> <span class="p">{</span> <span class="dl">"</span><span class="s2">prop1</span><span class="dl">"</span> <span class="p">:</span> <span class="dl">"</span><span class="s2">val1</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">prop2</span><span class="dl">"</span> <span class="p">:</span> <span class="dl">"</span><span class="s2">val2</span><span class="dl">"</span> <span class="p">}}</span>
+</code></pre></div></div>
+
+<p>Si vous invoquez la méthode “test”, vous enverrez :</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="nl">nom</span><span class="p">:</span><span class="dl">"</span><span class="s2">test</span><span class="dl">"</span><span class="p">,</span><span class="nx">args</span><span class="p">:{}}</span>
+</code></pre></div></div>
+
+<p>Testez avec PHP à partir des fonctions socket <strong>fsockopen()</strong>…</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$hote</span> <span class="o">=</span> <span class="s1">'127.0.0.1'</span> <span class="p">;</span>
+<span class="nv">$port</span> <span class="o">=</span> <span class="mi">4422</span> <span class="p">;</span>
+<span class="nv">$fh</span> <span class="o">=</span> <span class="nb">fsockopen</span><span class="p">(</span><span class="s1">'tcp://'</span><span class="mf">.</span><span class="nv">$hote</span><span class="p">,</span> <span class="nv">$port</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$contenu</span> <span class="o">=</span> <span class="s1">'{nom:"test",args:{}}'</span><span class="mf">.</span><span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span> <span class="p">;</span>
+<span class="nb">fputs</span><span class="p">(</span><span class="nv">$fh</span><span class="p">,</span> <span class="nv">$contenu</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">stream_get_contents</span><span class="p">(</span><span class="nv">$fh</span><span class="p">)</span> <span class="p">;</span>
+<span class="nb">fclose</span><span class="p">(</span><span class="nv">$fh</span><span class="p">)</span> <span class="p">;</span>
+<span class="k">echo</span> <span class="s2">"&lt;p&gt;Contenu : &lt;/p&gt;&lt;pre&gt;"</span><span class="mf">.</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$contenu</span><span class="p">)</span><span class="mf">.</span><span class="s1">'&lt;/pre&gt;'</span> <span class="p">;</span>
+<span class="k">echo</span> <span class="s2">"&lt;p&gt;Resultat : &lt;/p&gt;&lt;pre&gt;"</span><span class="mf">.</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$result</span><span class="p">)</span><span class="mf">.</span><span class="s1">'&lt;/pre&gt;'</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="arguments-de-requête">Arguments de requête</h3>
+
+<p>La méthode filtre les arguments reçus. Donnez leurs valeurs par défaut dans la propriété <strong>$ArgsParDefaut</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MtdSockInfoClient</span> <span class="kd">extends</span> <span class="nc">PvMethodeSocketBase</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$ArgsParDefaut</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s2">"code_reference"</span> <span class="o">=&gt;</span> <span class="kc">null</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Vous accédez aux valeurs reçues avec la propriété <strong>$Args</strong>, disponible dans <strong>ExecuteInstructions()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MtdSockInfoClient</span> <span class="kd">extends</span> <span class="nc">PvMethodeSocketBase</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$ArgsParDefaut</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$id</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Args</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span> <span class="p">;</span>
+<span class="nv">$client</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StdClass</span> <span class="p">;</span>
+<span class="nv">$client</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">=</span> <span class="nv">$id</span> <span class="p">;</span>
+<span class="nv">$client</span><span class="o">-&gt;</span><span class="n">nom</span> <span class="o">=</span> <span class="s2">"Client"</span> <span class="p">;</span>
+<span class="nv">$client</span><span class="o">-&gt;</span><span class="n">prenom</span> <span class="o">=</span> <span class="s2">"Sans nom"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">ConfirmeSucces</span><span class="p">(</span><span class="s2">"Client trouve"</span><span class="p">,</span> <span class="nv">$client</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MonServeurSocket1</span> <span class="kd">extends</span> <span class="nc">PvServeurAppelsSocket</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Port</span> <span class="o">=</span> <span class="mi">4422</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">CreeFormatPaquet</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="k">new</span> <span class="nc">PvFormatPaquetJSON</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ChargeConfig</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereMethode</span><span class="p">(</span><span class="s2">"info_client"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MtdSockInfoClient</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="images/args_socket.png" alt="Résultat" /></p>
+
+<h3 id="méthodes--propriétés-principales">Méthodes / Propriétés principales</h3>
+
+<p>La méthode possède ces propriétés :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Méthode d’initiation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PrepareExecution(&amp; $serveur, $nom, $args=array())</td>
+      <td>Assigne le serveur socket à la méthode lors de l’appel. Vous devez garder l’instruction <strong>parent::PrepareExecution($serveur, $nom, $args)</strong> à l’intérieur</td>
+    </tr>
+    <tr>
+      <td>TermineExecution()</td>
+      <td>Exécutée après <strong>ExecuteInstructions()</strong>. Gardez <strong>parent::TermineExecution()</strong> à l’intérieur.</td>
+    </tr>
+    <tr>
+      <td>$Serveur</td>
+      <td>Serveur socket qui a reçu l’appel</td>
+    </tr>
+    <tr>
+      <td>$NomAppel</td>
+      <td>Nom de la méthode appelée</td>
+    </tr>
+    <tr>
+      <td>ErreurTrouvee()</td>
+      <td>Verifie si le retour défini est une erreur</td>
+    </tr>
+    <tr>
+      <td>EstSucces()</td>
+      <td>Verifie si le retour défini est un succès</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MtdSockInfoClient</span> <span class="kd">extends</span> <span class="nc">PvMethodeSocketBase</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="nv">$BdSupport</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">PrepareExecution</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$serveur</span><span class="p">,</span> <span class="nv">$nom</span><span class="p">,</span> <span class="nv">$args</span><span class="o">=</span><span class="k">array</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">PrepareExecution</span><span class="p">(</span><span class="nv">$serveur</span><span class="p">,</span> <span class="nv">$nom</span><span class="p">,</span> <span class="nv">$args</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">BdSupport</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">BdSupport</span><span class="o">-&gt;</span><span class="nc">AutoCloseConnection</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">BdSupport</span><span class="o">-&gt;</span><span class="nf">InitConnection</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">RenseigneErreur</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">BdSupport</span><span class="o">-&gt;</span><span class="nc">ConnectionException</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">BdSupport</span> <span class="o">=</span> <span class="kc">null</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">ConfirmeSucces</span><span class="p">(</span><span class="s2">"Connexion etablie"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">EstSucces</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">TermineExecution</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">BdSupport</span><span class="o">-&gt;</span><span class="nf">FinalConnection</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">TermineExecution</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+:ET

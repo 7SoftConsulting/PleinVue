@@ -1,0 +1,267 @@
+I"�A<h1 id="routage-des-api-restful---php-pv">Routage des API Restful - PHP PV</h1>
+
+<h2 id="déclaration-de-routes">Déclaration de routes</h2>
+
+<p>Vous devez déclarer les routes en réécrivant la méthode <strong>ChargeRoutes()</strong>. Utilisez 2 méthodes :</p>
+
+<ul>
+  <li><strong>InsereRouteParDefaut($route)</strong> : Remplace la route par défaut</li>
+  <li><strong>InsereRoute($nom, $chemin, $route)</strong> : Inscrit une route dans l’API.</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ApiRestful1</span> <span class="kd">extends</span> <span class="nc">PvApiRestful</span>
+<span class="p">{</span>
+<span class="c1">// ...</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeRoutes</span><span class="p">()</span>
+<span class="p">{</span>
+	<span class="c1">// Route par défaut</span>
+	<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereRouteParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">RouteAccueilRestful1</span><span class="p">())</span> <span class="p">;</span>
+	<span class="c1">// Route accessible /categories/presentation</span>
+	<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereRoute</span><span class="p">(</span><span class="s2">"present_categ"</span><span class="p">,</span> <span class="s2">"/categories/presentation"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">RoutePresentCategRestful1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">RoutePresentCategRestful1</span> <span class="kd">extends</span> <span class="nc">PvRouteNoyauRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="s2">"Page de présentation des categories"</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Le lien de la route inscrite dans l’exemple est http://localhost/mon_api_rest/api.php/categories/presentation</p>
+
+<p><img src="../images/api_rest_inscrit_route1.png" alt="Apercu de route" /></p>
+
+<p>Vous pouvez définir des variables en inscrivant une route, dans le paramètre <strong>$chemin</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereRoute</span><span class="p">(</span><span class="s2">"info_article"</span><span class="p">,</span> <span class="s2">"/categories/</span><span class="si">{</span><span class="nv">id_article</span><span class="si">}</span><span class="s2">/info"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">RouteInfoCategRestful1</span><span class="p">())</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p>Dans la route, vous avez accès à ces variables dans le tableau <strong>$ApiParent-&gt;ArgsRouteAppelee</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteInfoCategRestful1</span> <span class="kd">extends</span> <span class="nc">PvRouteNoyauRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="s2">"Article N°"</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ApiParent</span><span class="o">-&gt;</span><span class="nc">ArgsRouteAppelee</span><span class="p">[</span><span class="s2">"id_article"</span><span class="p">]</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="../images/api_rest_arg_route.png" alt="Apercu de route" /></p>
+
+<h2 id="route-de-base">Route de Base</h2>
+
+<p>La classe de base est <strong>PvRouteNoyauRestful</strong>. Réécrivez sa méthode <strong>ExecuteInstructions()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Route1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteNoyauRestful</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="s2">"Route 1"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="caractéristiques-de-la-requête">Caractéristiques de la requête</h2>
+
+<p>La requête reçue est disponible sur la propriété <strong>$Requete</strong>. Ses membres importants sont :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$Methode</td>
+      <td>Méthode HTTP reçue</td>
+    </tr>
+    <tr>
+      <td>$EnteteContentType</td>
+      <td>Type de contenu du document soumis</td>
+    </tr>
+    <tr>
+      <td>$CheminRelatifRoute</td>
+      <td>Chemin de la route appelée</td>
+    </tr>
+    <tr>
+      <td>AttrEntete($nom, $valeurDefaut=null)</td>
+      <td>Valeur de l’entête HTTP $nom reçue.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Route1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteNoyauRestful</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Requete</span><span class="o">-&gt;</span><span class="nc">Methode</span> <span class="o">==</span> <span class="s2">"GET"</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="s2">"Methode GET Appelee"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="s2">"Les autres methodes renvoient un autre contenu..."</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Vous pouvez accéder au corps du message avec la propriété <strong>$CorpsBrut</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Route1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteNoyauRestful</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">ConfirmeData</span><span class="p">(</span><span class="s2">"Contenu recu : "</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Requete</span><span class="o">-&gt;</span><span class="nc">CorpsBrut</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Si vous recevez du contenu de type <strong>application/json</strong> ou <strong>application/x-www-form-urlencoded</strong>, vous aurez la propriété objet <strong>$CorpsBrut</strong> qui contient les paramètres.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Route1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteNoyauRestful</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">ConfirmeData</span><span class="p">(</span><span class="s2">"ID recu : "</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Requete</span><span class="o">-&gt;</span><span class="nc">Corps</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="../images/api_rest_corps_requete.png" alt="Corps de réponse formatté" /></p>
+
+<h2 id="personnalisation-de-la-réponse">Personnalisation de la Réponse</h2>
+
+<p>Pour définir la contenu de la réponse, utilisez la propriété <strong>$ContenuReponse</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="s2">"Route 1"</span> <span class="p">;</span>
+</code></pre></div></div>
+<p>Pour changer le statut HTTP, vous avez plusieurs possibilités.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ConfirmeData($data)</td>
+      <td>Renseigne la valeur de l’API, et confirme le succès HTTP 200.</td>
+    </tr>
+    <tr>
+      <td>RenseigneErreur($message)</td>
+      <td>Renseigne le message d’erreur, et renvoie l’erreur HTTP 400.</td>
+    </tr>
+    <tr>
+      <td>RenseigneException($message)</td>
+      <td>Renseigne le message d’erreur, et renvoie l’erreur HTTP 500.</td>
+    </tr>
+    <tr>
+      <td>EstSucces()</td>
+      <td>Vérifie si la réponse actuelle a le statut HTTP 200</td>
+    </tr>
+    <tr>
+      <td>EstEchec()</td>
+      <td>Vérifie si la réponse actuelle n’a pas le statut HTTP 200</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Route1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteNoyauRestful</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">RenseigneErreur</span><span class="p">(</span><span class="s2">"Page actuellement en construction"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Vous pouvez accéder à la réponse à partir de la propriété de l’API <strong>$Reponse</strong>.</p>
+
+<h2 id="propriétésméthodes-spécifiques">Propriétés/méthodes spécifiques</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$MethodeHttp</td>
+      <td>Nom de la méthode HTTP acceptée. Par défaut, possède la valeur vide. Ainsi la route accepte toutes les méthodes.</td>
+    </tr>
+    <tr>
+      <td>$ApiParent</td>
+      <td>Api contenant la route.</td>
+    </tr>
+    <tr>
+      <td>$NomElementApi</td>
+      <td>Nom de la route dans l’API</td>
+    </tr>
+    <tr>
+      <td>$CheminRouteApi</td>
+      <td>Chemin de la route déclaré sur l’API</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Route1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteNoyauRestful</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$MethodeHttp</span> <span class="o">=</span> <span class="s2">"GET"</span> <span class="p">;</span> <span class="c1">// Acceptera uniquement la méthode GET</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+	<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="s2">"Route appelée sous le nom "</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomElementApi</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="exécution-de-la-route">Exécution de la route</h2>
+
+<p>Vous pouvez réécrire 3 méthodes pour personnaliser l’exécution d’une route :</p>
+
+<ul>
+  <li>PrepareExecution()</li>
+  <li>ExecuteInstructions()</li>
+  <li>TermineExecution()</li>
+</ul>
+
+<p>Utilisez la propriété bool <strong>$ArreterExecution</strong> pour terminer l’exécution.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Route1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteNoyauRestful</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">PrepareExecution</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ResFic</span> <span class="o">=</span> <span class="nb">fopen</span><span class="p">(</span><span class="s2">"mon_fichier.txt"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ResFic</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">RenseigneErreur</span><span class="p">(</span><span class="s2">"Fichier mon_fichier.txt introuvable"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ArreterExecution</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+	<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="s2">"Contenu fichier : "</span><span class="mf">.</span><span class="nb">fgets</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ResFic</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">TermineExecution</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nb">fclose</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ResFic</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="autres-liens">Autres liens</h2>
+
+<ul>
+  <li><a href="collection.html">La route Collection</a></li>
+  <li><a href="individuel.html">La route Individuelle</a></li>
+</ul>
+:ET

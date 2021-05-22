@@ -1,0 +1,271 @@
+I"�X<h1 id="le-composant-chartjs---php-pv">Le composant ChartJS - PHP-PV</h1>
+
+<h2 id="présentation">Présentation</h2>
+
+<p>C’est un composant IU pour afficher les diagrammes de la librairie JS <a href="https://www.chartjs.org/">ChartJS</a>.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>Identifiez la dernière version de ChartJS sur CDN, https://cdnjs.com/libraries/Chart.js. Copiez l’URL de la version minifiée, dont le nom a ce format https://cdnjs.cloudflare.com/ajax/libs/Chart.js/x.x.x/chart.min.js.</p>
+
+<p>Exemple :</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js
+</code></pre></div></div>
+
+<p><img src="../images/cdn_chartjs.png" alt="Apercu" /></p>
+
+<p>Ouvrez le code source de votre script web, et déclarez le composant dans la méthode <strong>DetermineEnvironnement()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Autres instructions avant</span>
+<span class="c1">// ...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvChartJs</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définir la source JS </span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nc">CheminJsSource</span> <span class="o">=</span> <span class="s2">"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"</span> <span class="p">;</span>
+<span class="c1">// Désactiver la source CSS</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nc">CheminCSSSource</span> <span class="o">=</span> <span class="s2">""</span> <span class="p">;</span>
+<span class="c1">// </span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"chartPrinc"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesDirect</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">Valeurs</span><span class="p">[</span><span class="s2">"stats"</span><span class="p">]</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"mois"</span> <span class="o">=&gt;</span> <span class="s2">"Janvier"</span><span class="p">,</span> <span class="s2">"total"</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">),</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"mois"</span> <span class="o">=&gt;</span> <span class="s2">"Fevrier"</span><span class="p">,</span> <span class="s2">"total"</span> <span class="o">=&gt;</span> <span class="mi">8</span><span class="p">),</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"mois"</span> <span class="o">=&gt;</span> <span class="s2">"Mars"</span><span class="p">,</span> <span class="s2">"total"</span> <span class="o">=&gt;</span> <span class="mi">15</span><span class="p">),</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nf">DefinitColLabel</span><span class="p">(</span><span class="s2">"mois"</span><span class="p">,</span> <span class="s2">"Mois"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$colData</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nf">InsereColData</span><span class="p">(</span><span class="s2">"total"</span><span class="p">,</span> <span class="s2">"Total"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Fin</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Déclarez la méthode <strong>RenduSpecifique()</strong> pour le rendu.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;h4&gt;Statistiques&lt;/h4&gt;'</span> <span class="p">;</span>
+<span class="c1">// Rendu du Chart</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;div style="width:600px"&gt;'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span><span class="mf">.</span><span class="s1">'&lt;/div&gt;'</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Resultat :</p>
+
+<p><img src="../images/sample_chartjs.png" alt="Apercu" /></p>
+
+<h2 id="formes-du-graphique">Formes du graphique</h2>
+
+<p>Vous pouvez modifier la configuration Javascript du composant avec la propriété <strong>$CfgInit</strong>. Sa propriété <strong>$type</strong> contient la forme du diagramme.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Changer en diagramme en baton</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nc">CfgInit</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="s2">"line"</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p>Référez vous à la documentation de <a href="https://www.chartjs.org/docs/latest/charts/radar.html">ChartJS</a> pour l’initiation de chaque type de graphique.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Cas d'un diagramme radar</span>
+<span class="c1">// URL de la documentation : https://www.chartjs.org/docs/latest/charts/radar.html</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nc">CfgInit</span><span class="o">-&gt;</span><span class="n">type</span> <span class="o">=</span> <span class="s2">"radar"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nc">CfgInit</span><span class="o">-&gt;</span><span class="n">options</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span><span class="s1">'{
+	elements: {
+		line: {
+			borderWidth: 6
+		}
+	}
+}'</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="propriétés-dinitiation">Propriétés d’initiation</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$CheminJsSource</td>
+      <td>Chemin du fichier <strong>Chart.js</strong>. Valeur par défaut : <strong>js/Chart.bundle.min.js</strong>.</td>
+    </tr>
+    <tr>
+      <td>$CheminCSSSource</td>
+      <td>Chemin du fichier <strong>Chart.css</strong>. Valeur par defaut : <strong>js/Chart.min.css</strong>. Les nouvelles versions de ChartJS n’utilisent pas de CSS. Mettez cette propriété à la valeur vide (<strong>”“</strong>).</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvChartJs</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Initiation</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nc">CheminJsSource</span> <span class="o">=</span> <span class="s2">"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nc">CheminCSSSource</span> <span class="o">=</span> <span class="s2">""</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"chart1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="filtres-de-sélection">Filtres de sélection</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InsereFltSelectHttpGet($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http GET</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectHttpPost($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http POST</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectHttpUpload($nom, $cheminDossierDest=””, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http UPLOAD. Tous les fichiers téléchargés seront déposés dans le dossier $cheminDossierDest.</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectSession($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre contenant la valeur d’une session</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectFixe($nom, $valeur, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre basé sur une valeur fixe</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectCookie($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre contenant la valeur d’un cookie</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// ...</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Insertion d'un filtre Fixe</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectFixe</span><span class="p">(</span><span class="s2">"idMembre"</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ZoneParent</span><span class="o">-&gt;</span><span class="nf">IdMembreConnecte</span><span class="p">(),</span> <span class="s2">"id_membre = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Insertion d'un filtre Http Get</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"idCateg"</span><span class="p">,</span> <span class="s2">"id_categorie = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="propriétés--méthodes-spécifiques">Propriétés / méthodes spécifiques</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InsereColData($nom, $libelle=’’, $alias=’’)</td>
+      <td>Insere une colonne dataset, pour l’ordonnée.</td>
+    </tr>
+    <tr>
+      <td>InsereColonne($nom, $libelle=’’, $alias=’’)</td>
+      <td>Insere une colonne dataset, pour l’ordonnée.</td>
+    </tr>
+    <tr>
+      <td>DefinitColLabel($nom, $libelle=’’, $alias=’’)</td>
+      <td>Définit la colonne libellé. (en abcisse)</td>
+    </tr>
+    <tr>
+      <td>IndexColonneTri</td>
+      <td>Index de la colonne pour le tri. 0 par défaut (colonne libellé)</td>
+    </tr>
+    <tr>
+      <td>SensColonneTri</td>
+      <td>Sens de tri des valeurs.</td>
+    </tr>
+    <tr>
+      <td>Largeur</td>
+      <td>Largeur du graphique</td>
+    </tr>
+    <tr>
+      <td>Hauteur</td>
+      <td>Hauteur du graphique</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nf">InsereColonne</span><span class="p">(</span><span class="s2">"total_abonnes"</span><span class="p">,</span> <span class="s2">"Abonnés"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nf">InsereColonne</span><span class="p">(</span><span class="s2">"montant_transactions"</span><span class="p">,</span> <span class="s2">"Transactions"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nf">DefinitColLabel</span><span class="p">(</span><span class="s2">"date_souscription"</span><span class="p">,</span> <span class="s2">"Jour"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Fournisseur de données</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesSql</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Chart1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"(
+select
+	date(date_souscription) date_souscription,
+	count(id_abonne) total_abonnes,
+	sum(montant) montant_transactions
+from souscription
+)"</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="couleurs-du-graphique">Couleurs du graphique</h2>
+
+<p>Chaque colonne dataset possède deux propriétés pour les couleurs :</p>
+<ul>
+  <li><strong>$CouleursBackground</strong> : arrière plan</li>
+  <li><strong>$CouleursBordure</strong> : arrière plan</li>
+</ul>
+
+<p>Ce sont des tableaux avec des valeurs du format <strong>rgb(R, V, B, O)</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$colData</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nf">InsereColData</span><span class="p">(</span><span class="s2">"total"</span><span class="p">,</span> <span class="s2">"Total"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$colData</span><span class="o">-&gt;</span><span class="nc">CouleursBackground</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+	<span class="s1">'rgba(255, 220, 132, 0.2)'</span>
+<span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p><img src="../images/couleur_chartjs.png" alt="Apercu des couleurs" /></p>
+
+<h2 id="propriétés-après-rendu">Propriétés après rendu</h2>
+
+<p>Après avoir utilisé la méthode <strong>RenduDispositif()</strong>, ce composant renseigne la propriété <strong>$Elements</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ChartPrinc</span><span class="o">-&gt;</span><span class="nc">Elements</span><span class="p">)</span><span class="mf">.</span><span class="s1">' valeurs trouv&amp;eacute;es'</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Vous pouvez ainsi faire le tableau récapitulatif :</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;table&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;thead&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;tr&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;th&gt;'</span><span class="mf">.</span><span class="nv">$chart</span><span class="o">-&gt;</span><span class="nc">ColonneLabel</span><span class="o">-&gt;</span><span class="nc">Libelle</span><span class="mf">.</span><span class="s1">'&lt;/th&gt;'</span> <span class="p">;</span>
+<span class="k">foreach</span><span class="p">(</span><span class="nv">$chart</span><span class="o">-&gt;</span><span class="nc">ColonnesDataset</span> <span class="k">as</span> <span class="nv">$i</span> <span class="o">=&gt;</span> <span class="nv">$col</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;th&gt;'</span><span class="mf">.</span><span class="nv">$col</span><span class="o">-&gt;</span><span class="nc">Libelle</span><span class="mf">.</span><span class="s1">'&lt;/th&gt;'</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;/tr&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;/thead&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;tbody&gt;'</span> <span class="p">;</span>
+<span class="k">foreach</span><span class="p">(</span><span class="nv">$chart</span><span class="o">-&gt;</span><span class="nc">Elements</span> <span class="k">as</span> <span class="nv">$i</span> <span class="o">=&gt;</span> <span class="nv">$lgn</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;tr&gt;'</span> <span class="p">;</span>
+<span class="k">foreach</span><span class="p">(</span><span class="nv">$lgn</span> <span class="k">as</span> <span class="nv">$n</span> <span class="o">=&gt;</span> <span class="nv">$v</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;td&gt;'</span><span class="mf">.</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$v</span><span class="p">)</span><span class="mf">.</span><span class="s1">'&lt;/td&gt;'</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;/tr&gt;'</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;/tbody&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;/table&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;/table&gt;'</span> <span class="p">;</span>
+</code></pre></div></div>
+:ET

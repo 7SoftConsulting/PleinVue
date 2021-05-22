@@ -1,0 +1,93 @@
+I"�<h1 id="api-restful-php-pv">API Restful PHP-PV</h1>
+
+<h2 id="présentation">Présentation</h2>
+
+<p>L’API Restful est l’élément d’Application qui délivre un service web JSON-RPC, respectant l’architecture REST.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>Mettons en place cette structure de notre projet :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/mon_api_rest
+	/php-pv-master
+	/api.php
+	/.htaccess
+</code></pre></div></div>
+
+<p>Placez ce contenu dans le <strong>.htaccess</strong>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;IfModule mod_rewrite.c&gt;
+    Options -MultiViews
+    RewriteEngine On
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^.*$ api.php [L,QSA]
+&lt;/IfModule&gt;
+</code></pre></div></div>
+
+<p>Maintenant, déclarez l’application, l’API Restful et sa ressource par défaut dans <strong>api.php</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Inclure la librairie PHP-PV nécessaire</span>
+<span class="k">include</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span><span class="mf">.</span><span class="s2">"/php-pv-master/Pv/IHM/ApiRestful.class.php"</span> <span class="p">;</span>
+<span class="c1">// Déclaration de la route par défaut</span>
+<span class="kd">class</span> <span class="nc">RouteAccueilRestful1</span> <span class="kd">extends</span> <span class="nc">PvRouteNoyauRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="s2">"Bienvenue, sur l'API Restful"</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Déclaration de l'API Restful</span>
+<span class="kd">class</span> <span class="nc">ApiRestful1</span> <span class="kd">extends</span> <span class="nc">PvApiRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+	<span class="k">public</span> <span class="nv">$CheminRacineApi</span> <span class="o">=</span> <span class="s2">"/mon_api_rest/api.php"</span> <span class="p">;</span> <span class="c1">// Chemin relatif du serveur web</span>
+	<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeRoutes</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereRouteParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">RouteAccueilRestful1</span><span class="p">())</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Application</span>
+<span class="kd">class</span> <span class="nc">Application1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+<span class="p">{</span>
+	<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeIHMs</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// déclarez l'API comme IHM</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s1">'api1'</span><span class="p">,</span> <span class="k">new</span> <span class="nc">ApiRestful1</span><span class="p">())</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Exécuter l'Application</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Application1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$app</span><span class="o">-&gt;</span><span class="nf">Execute</span><span class="p">()</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p>Exécutez (http://localhost/mon_api_rest/api.php)</p>
+
+<p><img src="images/api_rest_install.png" alt="Apercu de api.php" /></p>
+
+<h2 id="caractéristiques">Caractéristiques</h2>
+
+<ul>
+  <li><a href="apirestful/routage.html">Gestion du routage</a></li>
+  <li><a href="apirestful/collection.html">La route Collection</a></li>
+  <li><a href="apirestful/individuel.html">La route Individuelle</a></li>
+</ul>
+
+<h2 id="propriétés-dinitiation">Propriétés d’initiation</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CheminRacineApi</td>
+      <td>Chemin Racine de l’API Restful</td>
+    </tr>
+  </tbody>
+</table>
+
+:ET

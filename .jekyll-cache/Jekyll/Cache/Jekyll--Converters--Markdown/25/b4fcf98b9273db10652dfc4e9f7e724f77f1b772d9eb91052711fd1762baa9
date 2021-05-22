@@ -1,0 +1,286 @@
+I"�D<h1 id="la-route-restful-collection---php-pv">La Route Restful collection - PHP-PV</h1>
+
+<h2 id="présentation">Présentation</h2>
+
+<p>La route collection est <strong>PvRouteCollectionRestful</strong>. Elle affiche une liste d’éléments sous forme de rangée.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteCollect1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteCollectionRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"terme"</span><span class="p">,</span> <span class="s2">"champ1 like concat('%', &lt;self&gt;, '%')"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"ID"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">,</span> <span class="s2">"Champ No.1"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">,</span> <span class="s2">"Champ No.2"</span><span class="p">)</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="../images/api_rest_collection_present.png" alt="Présentation route collection" /></p>
+
+<h2 id="métadonnées-renvoyées">Métadonnées renvoyées</h2>
+
+<p>Pour naviguer, la route retourne les métadonnées :</p>
+
+<ul>
+  <li>page : Numero de la rangée sélectionnée, commençant par 1.</li>
+  <li>per_page : Nombre d’éléments maximum dans une rangée</li>
+  <li>page_count : Nombre de rangées</li>
+  <li>total_count : Total d’éléments</li>
+</ul>
+
+<h2 id="filtres-de-données">Filtres de données</h2>
+
+<p>La route possède les filtres de sélection dans sa propriété <strong>$FiltresSelection</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteCollect1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteCollectionRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"titre"</span><span class="p">,</span> <span class="s2">"titre = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FiltresSelection</span><span class="p">)</span><span class="mf">.</span><span class="s2">" colonnes trouvees"</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Plusieurs méthodes sont disponibles pour inscrire un filtre de données.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InsereFltSelectFixe($nom, $valeur, $exprDonnees=’’)</td>
+      <td>Inscrit un filtre avec la valeur fixe $valeur</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectHttpGet($nom, $exprDonnees=’’)</td>
+      <td>Inscrit un filtre issu d’un paramètre GET</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectHttpCorps($nom, $exprDonnees=’’)</td>
+      <td>Inscrit un filtre issu d’un paramètre soumis dans le corps de le requête</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteCollect1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteCollectionRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectFixe</span><span class="p">(</span><span class="s2">"est_actif"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"active = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"id = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Pour vérifier si les filtres sont bien renseignés, réécrivez la méthode <strong>ValideFiltresExecution()</strong> et placez le message d’erreur dans <strong>$MessageErreurExecution</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteCollect1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteCollectionRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FltTitre</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"titre"</span><span class="p">,</span> <span class="s2">"Titre"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ValideFiltresExecution</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FltTitre</span><span class="o">-&gt;</span><span class="nf">Lie</span><span class="p">()</span> <span class="o">==</span> <span class="s2">""</span><span class="p">)</span>
+		<span class="p">{</span>
+			<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">MessageErreurExecution</span> <span class="o">=</span> <span class="s2">"Veuillez renseigner un titre"</span> <span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="colonnes-de-données">Colonnes de données</h2>
+
+<p>La route possède les colonnes dans sa propriété <strong>$DefinitionsColonnes</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteCollect1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteCollectionRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"titre"</span><span class="p">,</span> <span class="s2">"Titre"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">DefinitionsColonnes</span><span class="p">)</span><span class="mf">.</span><span class="s2">" colonnes trouvees"</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Plusieurs méthodes sont disponibles pour inscrire une colonne.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InsereDefCol($nomDonnees, $libelle=””, $aliasDonnees=””)</td>
+      <td>Inscrit une colonne</td>
+    </tr>
+    <tr>
+      <td>InsereDefColBool($nomDonnees, $libelle=””, $aliasDonnees=””, $valPositive=””, $valNegative=””)</td>
+      <td>Inscrit une colonne Booléenne.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColChoix($nomDonnees, $libelle=””, $aliasDonnees=””, $valsChoix=array())</td>
+      <td>Inscrit une colonne dont la valeur correspond à des mots clés</td>
+    </tr>
+    <tr>
+      <td>InsereDefColMonnaie($nomDonnees, $libelle=””, $aliasDonnees=””)</td>
+      <td>Inscrit une colonne dont les valeurs seront formattées en monnaie.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColMoney($nomDonnees, $libelle=””, $aliasDonnees=””)</td>
+      <td>Inscrit une colonne dont les valeurs seront formattées en monnaie.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColDateFr($nomDonnees, $libelle=””, $inclureHeure=0)</td>
+      <td>Inscrit une colonne dont les valeurs seront formattées en date d/m/Y.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColDateTimeFr($nomDonnees, $libelle=””, $aliasDonnees=””)</td>
+      <td>Inscrit une colonne dont les valeurs seront formattées en date d/m/Y H:i:s.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColFixe($valeur, $libelle=””)</td>
+      <td>Inscrit une colonne avec une valeur par défaut</td>
+    </tr>
+    <tr>
+      <td>InsereDefColHtml($modeleHtml=””, $libelle=””)</td>
+      <td>Inscrit une colonne qui renvoie du contenu HTML</td>
+    </tr>
+    <tr>
+      <td>InsereDefColTimestamp($nomDonnees, $libelle=””, $formatDate=”d/m/Y H:i:s”)</td>
+      <td>Inscrit une colonne dont les valeurs seront converties du timestamp en date d/m/Y H:i:s.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteCollect1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteCollectionRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"ID"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereDefColBool</span><span class="p">(</span><span class="s2">"est_actif"</span><span class="p">,</span> <span class="s2">"Actif"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereDefColMoney</span><span class="p">(</span><span class="s2">"montant"</span><span class="p">,</span> <span class="s2">"Montant"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereDefColDateTimeFr</span><span class="p">(</span><span class="s2">"date_creation"</span><span class="p">,</span> <span class="s2">"Date_creation"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="propriétésméthodes-spécifiques">Propriétés/méthodes spécifiques</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$IndiceColonneTri</td>
+      <td>Index de colonne de tri par défaut.</td>
+    </tr>
+    <tr>
+      <td>$NePasTrier</td>
+      <td>N’autorise pas le tri sur les colonnes</td>
+    </tr>
+    <tr>
+      <td>$MessageAucunElement</td>
+      <td>Message à renvoyer si le tableau ne possède pas d’éléments</td>
+    </tr>
+    <tr>
+      <td>$MaxElementsPossibles</td>
+      <td>Tableau contenant les maximums d’éléments que la route peut renvoyer.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteCollect1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteCollectionRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">MessageAucunElement</span> <span class="o">=</span> <span class="s2">"Aucune categorie trouvée"</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="propriétésméthodes-après-rendu">Propriétés/méthodes après rendu</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$ElementsEnCoursBruts</td>
+      <td>Lignes renvoyées depuis le fournisseur de données, sans formattage.</td>
+    </tr>
+    <tr>
+      <td>$ElementsEnCours</td>
+      <td>Lignes formattées à partir des colonnes.</td>
+    </tr>
+    <tr>
+      <td>$IndiceDebut</td>
+      <td>Index de l’élémént</td>
+    </tr>
+    <tr>
+      <td>$TotalElements</td>
+      <td>Total de lignes dans la requête du fournisseur de données</td>
+    </tr>
+    <tr>
+      <td>$TotalRangees</td>
+      <td>Total de rangées dans la requête du fournisseur de données</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteCollect1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteCollectionRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">TermineExecution</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="k">parent</span><span class="o">::</span><span class="nf">TermineExecution</span><span class="p">()</span> <span class="p">;</span>
+		<span class="k">if</span><span class="p">(</span><span class="nb">count</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ElementsEnCours</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+		<span class="p">{</span>
+			<span class="k">foreach</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="k">as</span> <span class="nv">$i</span> <span class="o">=&gt;</span> <span class="nv">$val</span><span class="p">)</span>
+			<span class="p">{</span>
+				<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="nv">$i</span><span class="p">][</span><span class="s2">"position"</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$i</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">;</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="autres-liens">Autres liens</h2>
+
+<ul>
+  <li><a href="routage.md">La gestion du routage</a></li>
+  <li><a href="individuel.md">La route Individuelle</a></li>
+</ul>
+
+:ET

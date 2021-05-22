@@ -1,0 +1,3087 @@
+I"�<h1 id="zone-web-simple">Zone Web Simple</h1>
+
+<h2 id="présentation">Présentation</h2>
+
+<p>La zone web simple représente un ensemble de pages web. L’utilisateur pourra y accéder s’il possède les droits adéquats.</p>
+
+<h2 id="entêtes-document">Entêtes document</h2>
+
+<h3 id="propriétés-html">Propriétés HTML</h3>
+
+<p>La zone web possède des propriétés pour le rendu HTML.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Rôle</th>
+      <th>Contenu HTML généré</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>EncodageDocument</td>
+      <td>Fixe l’encodage de la page web. Par défaut : “utf-8”</td>
+      <td>&lt;meta charset=”$valeur” /&gt;</td>
+    </tr>
+    <tr>
+      <td>MotsCleMeta</td>
+      <td>Mots clé META</td>
+      <td>&lt;meta name=”keywords” value=”$valeur” /&gt;</td>
+    </tr>
+    <tr>
+      <td>DescriptionMeta</td>
+      <td>Description META</td>
+      <td>&lt;meta name=”description” value=”$valeur” /&gt;</td>
+    </tr>
+    <tr>
+      <td>LangueDocument</td>
+      <td>Langage du document</td>
+      <td>&lt;html lang=”$valeur”&gt;</td>
+    </tr>
+    <tr>
+      <td>TitreDocument</td>
+      <td>Titre du document</td>
+      <td>&lt;title&gt;$valeur&lt;/title&gt;</td>
+    </tr>
+    <tr>
+      <td>ViewportMeta</td>
+      <td>Viewport Meta</td>
+      <td>&lt;meta name=”viewport” content=”$valeur” /&gt;</td>
+    </tr>
+    <tr>
+      <td>UrlBase</td>
+      <td>Lien de Base</td>
+      <td>&lt;base href=”$valeur” /&gt;</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Exemple :</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+	<span class="k">include</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span><span class="mf">.</span><span class="s2">"/php-pv-master/Pv/Base.class.php"</span> <span class="p">;</span>
+	
+	<span class="kd">class</span> <span class="nc">MonApplication1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+	<span class="p">{</span>
+		<span class="k">public</span> <span class="nv">$ZonePrinc</span> <span class="p">;</span>
+		<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeIHMs</span><span class="p">()</span>
+		<span class="p">{</span>
+			<span class="c1">// Inscrire la zone web de l'Application</span>
+			<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ZonePrinc</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s2">"zonePrinc"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">ZoneWebApplication1</span><span class="p">())</span> <span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="c1">// Déclaration de la zone web</span>
+	<span class="kd">class</span> <span class="nc">ZoneWebApplication1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+	<span class="p">{</span>
+		<span class="c1">// Afficher la zone web en fonction du chemin dans le navigateur</span>
+		<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+		<span class="k">public</span> <span class="nv">$ScriptAccueil</span> <span class="p">;</span>
+		<span class="k">public</span> <span class="nv">$EncodageDocument</span> <span class="o">=</span> <span class="s1">'utf-8'</span> <span class="p">;</span>
+		<span class="k">public</span> <span class="nv">$MotsCleMeta</span> <span class="o">=</span> <span class="s1">'Attributs, Zone, Web Simple'</span> <span class="p">;</span>
+		<span class="k">public</span> <span class="nv">$DescriptionMeta</span> <span class="o">=</span> <span class="s1">'Description d\'une Zone Web Simple'</span> <span class="p">;</span>
+		<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeScripts</span><span class="p">()</span>
+		<span class="p">{</span>
+			<span class="c1">// Inscrire le script web par défaut</span>
+			<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ScriptAccueil</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScriptParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">ScriptAccueilApplication1</span><span class="p">())</span> <span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="c1">// Déclaration du script web par défaut.</span>
+	<span class="kd">class</span> <span class="nc">ScriptAccueilApplication1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+	<span class="p">{</span>
+		<span class="c1">// Code HTML qui sera affiché dans le navigateur</span>
+		<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+		<span class="p">{</span>
+			<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+			<span class="nv">$ctn</span> <span class="o">=</span> <span class="s2">"BIENVENUE SUR MA APPLICATION 1"</span> <span class="p">;</span>
+			<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	
+	<span class="nv">$app</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MonApplication1</span><span class="p">()</span> <span class="p">;</span>
+	<span class="nv">$app</span><span class="o">-&gt;</span><span class="nf">Execute</span><span class="p">()</span> <span class="p">;</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<h2 id="css-et-javascript">CSS et Javascript</h2>
+
+<h3 id="bibliothèques-css-et-javascript">Bibliothèques CSS et Javascript</h3>
+
+<p>La zone web simple inclut automatiquement les scripts &amp; styles CSS des librairies Javascript populaires.</p>
+
+<h4 id="jquery">JQuery</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Spécification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$InclureJQuery</td>
+      <td>Mettre à 1 pour inclure la librairie jquery</td>
+    </tr>
+    <tr>
+      <td>$CheminJQuery</td>
+      <td>Chemin relatif du fichier Js jQuery. Par défaut : “js/jquery.min.js”</td>
+    </tr>
+    <tr>
+      <td>$InclureJQueryMigrate</td>
+      <td>Mettre à 1 pour inclure la librairie jquery-migrate 1.x</td>
+    </tr>
+    <tr>
+      <td>$CheminJQueryMigrate</td>
+      <td>Chemin relatif du fichier Js JQueryMigrate. Par défaut : “js/jquery-migrate.min.js”</td>
+    </tr>
+    <tr>
+      <td>$InclureJQueryMigrate3</td>
+      <td>Mettre à 1 pour inclure la librairie jquery-migrate 3.x</td>
+    </tr>
+    <tr>
+      <td>$CheminJQueryMigrate3</td>
+      <td>Chemin relatif du fichier Js JQueryMigrate. Par défaut : “js/jquery-migrate.min.js”</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZone1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$InclureJQuery</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$CheminJQuery</span> <span class="o">=</span> <span class="s2">"vendor/jquery/jquery.min.js"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="jquery-ui">JQuery UI</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Spécification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$InclureJQueryUi</td>
+      <td>Mettre à 1 pour inclure la librairie jqueryui</td>
+    </tr>
+    <tr>
+      <td>$CheminJsJQueryUi</td>
+      <td>Chemin relatif du fichier Js JQuery Ui. Par défaut : “js/jquery-ui.min.js”</td>
+    </tr>
+    <tr>
+      <td>$CheminCSSJQueryUi</td>
+      <td>Chemin relatif du fichier CSS jQuery Ui. Par défaut : “css/jquery-ui.css”</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZone1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$InclureJQueryUi</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$CheminJsJQueryUi</span> <span class="o">=</span> <span class="s2">"vendor/jquery-ui/jquery-ui.min.js"</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$CheminCSSJQueryUi</span> <span class="o">=</span> <span class="s2">"vendor/jquery-ui/jquery-ui.css"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="bootstrap">Bootstrap</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Spécification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$InclureBootstrap</td>
+      <td>Mettre à 1 pour inclure la librairie bootstrap</td>
+    </tr>
+    <tr>
+      <td>$CheminJsBootstrap</td>
+      <td>Chemin relatif du fichier Js Bootstrap. Par défaut : “js/bootstrap.min.js”</td>
+    </tr>
+    <tr>
+      <td>$CheminCSSBootstrap</td>
+      <td>Chemin relatif du fichier CSS Bootstrap. Par défaut : “css/bootstrap.css”</td>
+    </tr>
+    <tr>
+      <td>$InclureBootstrapTheme</td>
+      <td>Mettre à 1 pour inclure un thème personnalisé Bootstrap</td>
+    </tr>
+    <tr>
+      <td>$CheminCSSBootstrapTheme</td>
+      <td>Chemin relatif du fichier CSS Bootstrap. Par défaut : “css/bootstrap-theme.min.css”</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZone1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$InclureBootstrap</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$CheminJsBootstrap</span> <span class="o">=</span> <span class="s2">"vendor/bootstrap/bootstrap.min.js"</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$CheminCSSBootstrap</span> <span class="o">=</span> <span class="s2">"vendor/bootstrap/bootstrap.min.css"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="font-awesome">Font Awesome</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Spécification</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$InclureFontAwesome</td>
+      <td>Mettre à 1 pour inclure Font Awesome</td>
+    </tr>
+    <tr>
+      <td>$CheminFontAwesome</td>
+      <td>Chemin relatif du fichier CSS Font Awesome. Par défaut : “css/font-awesome.css”</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZone1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$InclureFontAwesome</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$CheminFontAwesome</span> <span class="o">=</span> <span class="s2">"vendor/fontawesome/css/all.min.css"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="contenus-css-et-javascript">Contenus CSS et Javascript</h3>
+
+<p>La zone a également des méthodes pour insérer du contenu CSS et JS.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InscritContenuCSS ($contenu)</td>
+      <td>Insère un tag &lt;style&gt; avec le $contenu</td>
+    </tr>
+    <tr>
+      <td>InscritLienCSS ($href)</td>
+      <td>Insère un tag &lt;link rel=”stylesheet” type=”text/css” href=”$href” /&gt;</td>
+    </tr>
+    <tr>
+      <td>InscritContenuJs ($contenu)</td>
+      <td>Insère un tag &lt;script&gt; avec le $contenu</td>
+    </tr>
+    <tr>
+      <td>InscritContenuJsCmpIE ($contenu, $versionMin=9)</td>
+      <td>Insère un tag &lt;script&gt; avec le $contenu, avec les directives IE</td>
+    </tr>
+    <tr>
+      <td>InscritLienJs ($src)</td>
+      <td>Insère un tag &lt;script&gt; avec la source $src</td>
+    </tr>
+    <tr>
+      <td>InscritLienJsCmpIE ($src, $versionMin=9)</td>
+      <td>Insère un tag &lt;script&gt; avec la source $src, avec les directives IE</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Veuillez réécrire la méthode <strong>InclutLibrairiesExternes()</strong>, en invoquant la méthode parente.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZone1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">Protected</span> <span class="k">function</span> <span class="n">InclutLibrairiesExternes</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">Parent</span><span class="o">::</span><span class="nf">InclutLibrairiesExternes</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Inscrire les autres librairies JS &amp; CSS…</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InscritContenuCSS</span><span class="p">(</span><span class="s2">"body { text-align:center ; }"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InscritLienJs</span><span class="p">(</span><span class="s2">"js/main.js"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span> 
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="service-dauthentification">Service d’authentification</h2>
+
+<h3 id="filtrage-des-scripts">Filtrage des scripts</h3>
+
+<p>La méthode <strong>ChargeScripts()</strong> s’exécute avant que la zone web charge le membre connecté. Par conséquent, vous ne pouvez pas filtrer les scripts à ce stade.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">ChargeScripts</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScriptParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">MonScript1</span><span class="p">())</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScript</span><span class="p">(</span><span class="s2">"presentation"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MonScript2</span><span class="p">())</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">PossedeMembreConnecte</span><span class="p">())</span> <span class="c1">// Ramènera false même s'il y a un membre connecté</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScript</span><span class="p">(</span><span class="s2">"contact"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MonScript2</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Pour y parvenir, déclarez les scripts dans la méthode <strong>ChargeScriptsMembership()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">public</span> <span class="k">function</span> <span class="n">ChargeScriptsMembership</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">ChargeScriptsMembership</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScriptParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">MonScript1</span><span class="p">())</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScript</span><span class="p">(</span><span class="s2">"presentation"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MonScript2</span><span class="p">())</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">PossedeMembreConnecte</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScript</span><span class="p">(</span><span class="s2">"chat"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MonScript2</span><span class="p">())</span> <span class="p">;</span> <span class="c1">// Script créé si un membre est connecté</span>
+<span class="p">}</span>
+<span class="k">else</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScript</span><span class="p">(</span><span class="s2">"contact"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MonScript3</span><span class="p">())</span> <span class="p">;</span> <span class="c1">// Script créé si un membre n'est pas connecté</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="scripts-web-membership">Scripts web Membership</h3>
+
+<p>Lorsque vous déclarez un membership dans la zone web, la zone crée automatiquement des scripts.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom du script</th>
+      <th>Classe script web</th>
+      <th>Pré-requis</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>connexion</td>
+      <td>PvScriptConnexionWeb</td>
+      <td>Aucun</td>
+      <td>Page de connexion</td>
+    </tr>
+    <tr>
+      <td>deconnexion</td>
+      <td>PvScriptDeconnexionWeb</td>
+      <td>Aucun</td>
+      <td>Page de déconnexion</td>
+    </tr>
+    <tr>
+      <td>recouvreMP</td>
+      <td>PvScriptRecouvreMPWeb</td>
+      <td>Aucun</td>
+      <td>Page pour récupérer son mot de passe, à partir du login et du mot de passe</td>
+    </tr>
+    <tr>
+      <td>inscription</td>
+      <td>PvScriptInscriptionWeb</td>
+      <td>Mettre la propriété $AutoriserInscription à 1</td>
+      <td>Page d’inscription d’un membre</td>
+    </tr>
+    <tr>
+      <td>modifPrefs</td>
+      <td>PvScriptModifPrefsWeb</td>
+      <td>Mettre la propriété $AutoriserModifPrefs à 1</td>
+      <td>Page pour modifier les informations du membre (nom, prénom, …)</td>
+    </tr>
+    <tr>
+      <td>doitChangerMotPasse</td>
+      <td>PvScriptDoitChangerMotPasseWeb</td>
+      <td>Aucun</td>
+      <td>Page qui force le membre connecté à changer son mot de passe</td>
+    </tr>
+    <tr>
+      <td>changeMotPasse</td>
+      <td>PvScriptChangeMotPasseWeb</td>
+      <td>Aucun</td>
+      <td>Page pour modifier le mot de passe</td>
+    </tr>
+    <tr>
+      <td>ajoutMembre</td>
+      <td>PvScriptAjoutMembreMSWeb</td>
+      <td>Aucun</td>
+      <td>Ajouter un membre</td>
+    </tr>
+    <tr>
+      <td>importMembre</td>
+      <td>PvScriptImportMembreMSWeb</td>
+      <td>Aucun</td>
+      <td>Importe des membres à partir d’un fichier CSV</td>
+    </tr>
+    <tr>
+      <td>modifMembre</td>
+      <td>PvScriptModifMembreMSWeb</td>
+      <td>Aucun</td>
+      <td>Modifie un membre</td>
+    </tr>
+    <tr>
+      <td>supprMembre</td>
+      <td>PvScriptSupprMembreMSWeb</td>
+      <td>Aucun</td>
+      <td>Désactive le membre</td>
+    </tr>
+    <tr>
+      <td>listeMembres</td>
+      <td>PvScriptListeMembresMSWeb</td>
+      <td>Aucun</td>
+      <td>Liste les membres</td>
+    </tr>
+    <tr>
+      <td>ajoutProfil</td>
+      <td>PvScriptAjoutProfilMSWeb</td>
+      <td>Aucun</td>
+      <td>Ajoute un profil</td>
+    </tr>
+    <tr>
+      <td>modifProfil</td>
+      <td>PvScriptModifProfilMSWeb</td>
+      <td>Aucun</td>
+      <td>Modifie un profil</td>
+    </tr>
+    <tr>
+      <td>supprProfil</td>
+      <td>PvScriptSupprProfilMSWeb</td>
+      <td>Aucun</td>
+      <td>Désactive le profil</td>
+    </tr>
+    <tr>
+      <td>listeProfils</td>
+      <td>PvScriptListeProfilsMSWeb</td>
+      <td>Aucun</td>
+      <td>Liste les profils</td>
+    </tr>
+    <tr>
+      <td>ajoutRole</td>
+      <td>PvScriptAjoutRoleMSWeb</td>
+      <td>Aucun</td>
+      <td>Ajoute un rôle</td>
+    </tr>
+    <tr>
+      <td>modifRole</td>
+      <td>PvScriptModifRoleMSWeb</td>
+      <td>Aucun</td>
+      <td>Modifie un rôle</td>
+    </tr>
+    <tr>
+      <td>supprRole</td>
+      <td>PvScriptSupprRoleMSWeb</td>
+      <td>Aucun</td>
+      <td>Désactive un rôle</td>
+    </tr>
+    <tr>
+      <td>listeRoles</td>
+      <td>PvScriptListeRolesMSWeb</td>
+      <td>Aucun</td>
+      <td>Liste les rôles</td>
+    </tr>
+    <tr>
+      <td>ajoutServeurAD</td>
+      <td>PvScriptAjoutServeurADWeb</td>
+      <td>Aucun</td>
+      <td>Ajoute une connexion LDAP</td>
+    </tr>
+    <tr>
+      <td>modifServeurAD</td>
+      <td>PvScriptModifServeurADWeb</td>
+      <td>Aucun</td>
+      <td>Modifie une connexion LDAP</td>
+    </tr>
+    <tr>
+      <td>supprServeurAD</td>
+      <td>PvScriptSupprServeurADWeb</td>
+      <td>Aucun</td>
+      <td>Supprime une connexion LDAP</td>
+    </tr>
+    <tr>
+      <td>listeServeursAD</td>
+      <td>PvScriptListeServeursADWeb</td>
+      <td>Aucun</td>
+      <td>Liste les connexions LDAP</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Vous pouvez personnaliser chacun de ces scripts quand vous déclarez la zone web.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZoneWeb1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="c1">// Cas du script connexion</span>
+<span class="k">public</span> <span class="nv">$NomScriptConnexion</span> <span class="o">=</span> <span class="s2">"connecter"</span> <span class="p">;</span> 
+<span class="k">public</span> <span class="nv">$NomClasseScriptConnexion</span> <span class="o">=</span> <span class="s2">"MonScriptConnexion"</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">MonScriptConnexion</span> <span class="kd">extends</span> <span class="nc">PvScriptConnexionWeb</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h3 id="composants-web-membership">Composants web Membership</h3>
+
+<p>Plusieurs scripts de membership utilisent un tableau de données ou un formulaire de données spécifique.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom du script</th>
+      <th>Classe script web</th>
+      <th>Classe composant</th>
+      <th>Propriété composant</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>recouvreMP</td>
+      <td>PvScriptRecouvreMPWeb</td>
+      <td>PvFormulaireRecouvreMPMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>inscription</td>
+      <td>PvScriptInscriptionWeb</td>
+      <td>PvFormulaireInscriptionMembreMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>modifPrefs</td>
+      <td>PvScriptModifPrefsWeb</td>
+      <td>PvFormulaireModifInfosMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>doitChangerMotPasse</td>
+      <td>PvScriptDoitChangerMotPasseWeb</td>
+      <td>PvFormulaireDoitChangerMotPasseMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>changeMotPasse</td>
+      <td>PvScriptChangeMotPasseWeb</td>
+      <td>PvFormulaireChangeMotPasseMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>ajoutMembre</td>
+      <td>PvScriptAjoutMembreMSWeb</td>
+      <td>PvFormulaireAjoutMembreMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>modifMembre</td>
+      <td>PvScriptModifMembreMSWeb</td>
+      <td>PvFormulaireModifMembreMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>supprMembre</td>
+      <td>PvScriptSupprMembreMSWeb</td>
+      <td>PvFormulaireSupprMembreMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>listeMembres</td>
+      <td>PvScriptListeMembresMSWeb</td>
+      <td>PvTableauMembresMSHtml</td>
+      <td>$NomClasseTableauDonnees</td>
+    </tr>
+    <tr>
+      <td>ajoutProfil</td>
+      <td>PvScriptAjoutProfilMSWeb</td>
+      <td>PvFormulaireAjoutProfilMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>modifProfil</td>
+      <td>PvScriptModifProfilMSWeb</td>
+      <td>PvFormulaireModifProfilMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>supprProfil</td>
+      <td>PvScriptSupprProfilMSWeb</td>
+      <td>PvFormulaireSupprProfilMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>listeProfils</td>
+      <td>PvScriptListeProfilsMSWeb</td>
+      <td>PvTableauProfilsMSHtml</td>
+      <td>$NomClasseTableauDonnees</td>
+    </tr>
+    <tr>
+      <td>ajoutRole</td>
+      <td>PvScriptAjoutRoleMSWeb</td>
+      <td>PvFormulaireAjoutRoleMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>modifRole</td>
+      <td>PvScriptModifRoleMSWeb</td>
+      <td>PvFormulaireModifRoleMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>supprRole</td>
+      <td>PvScriptSupprRoleMSWeb</td>
+      <td>PvFormulaireSupprRoleMS</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>listeRoles</td>
+      <td>PvScriptListeRolesMSWeb</td>
+      <td>PvTableauAjoutRoleMS</td>
+      <td>$NomClasseTableauDonnees</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZoneWeb1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AutoriserModifPrefs</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span> 
+<span class="k">public</span> <span class="nv">$NomClasseScriptConnexion</span> <span class="o">=</span> <span class="s2">"MonScriptModifPrefs"</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">FormModifPrefs1</span> <span class="kd">extends</span> <span class="nc">PvFormulaireModifInfosMS</span>
+<span class="p">{</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MonScriptModifPrefs</span> <span class="kd">extends</span> <span class="nc">PvScriptModifPrefsWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$NomClasseFormulaireDonnees</span> <span class="o">=</span> <span class="s2">"FormModifPrefs1"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="le-remplisseur-de-config-membership">Le remplisseur de config Membership</h3>
+
+<p>La zone, pour remplir chaque script de membership, utilise sa propriété <strong>$NomClasseRemplisseurConfigMembership</strong>.
+C’est un objet qui hérite de la classe <strong>PvRemplisseurConfigMembership</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZoneWeb1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span> 
+<span class="k">public</span> <span class="nv">$NomClasseRemplisseurConfigMembership</span> <span class="o">=</span> <span class="s2">"MonRemplCfgMembership"</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">MonRemplCfgMembership</span> <span class="kd">extends</span> <span class="nc">PvRemplisseurConfigMembership</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Pour le personnaliser, veuillez créer une classe héritant de celle-ci et réécrivez les méthodes suivantes.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété / Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RemplitFormulaireGlobalProfil(&amp; $form)</td>
+      <td>S’applique à n’importe quel formulaire de profil</td>
+    </tr>
+    <tr>
+      <td>RemplitFormulaireGlobalRole(&amp; $form)</td>
+      <td>S’applique à n’importe quel formulaire de rôle</td>
+    </tr>
+    <tr>
+      <td>RemplitFiltresEditionFormMembre(&amp; $form)</td>
+      <td>Assigne les filtres d’édition à n’importe quel formulaire de membre.</td>
+    </tr>
+    <tr>
+      <td>InitFormulaireRole(&amp; $form)</td>
+      <td>Initialise n’importe quel formulaire de rôle.</td>
+    </tr>
+    <tr>
+      <td>InitFormulaireProfil(&amp; $form)</td>
+      <td>Initialise n’importe quel formulaire de profil.</td>
+    </tr>
+    <tr>
+      <td>InitFormulaireMembre(&amp; $form)</td>
+      <td>Initialise n’importe quel formulaire de membre.</td>
+    </tr>
+    <tr>
+      <td>RemplitFiltresMPFormMembre(&amp; $form)</td>
+      <td>Assigne les filtres sur n’importe quel formulaire de mot de passe</td>
+    </tr>
+    <tr>
+      <td>RemplitFormulaireGlobalMembre(&amp; $form)</td>
+      <td>Définit les caractéristiques de n’importe quel formulaire de profil</td>
+    </tr>
+    <tr>
+      <td>RemplitFormulaireInfosMembre(&amp; $form)</td>
+      <td>Définit les caractéristiques de n’importe quel formulaire de membre</td>
+    </tr>
+    <tr>
+      <td>RemplitFormulaireChangeMPMembre(&amp; $form)</td>
+      <td>Définit les caractéristiques de n’importe quel formulaire de mot de passe</td>
+    </tr>
+    <tr>
+      <td>InitTableauMembre(&amp; $table)</td>
+      <td>Initialise le tableau de données des membres</td>
+    </tr>
+    <tr>
+      <td>InitTableauProfil(&amp; $table)</td>
+      <td>Initialise le tableau de données des profils</td>
+    </tr>
+    <tr>
+      <td>InitTableauRole(&amp; $table)</td>
+      <td>Initialise le tableau de données des rôles</td>
+    </tr>
+    <tr>
+      <td>RemplitFiltresTableauMembre(&amp; $table)</td>
+      <td>Assigne les filtres du tableau de données des membres</td>
+    </tr>
+    <tr>
+      <td>RemplitDefinitionsColonneTableauMembre(&amp; $table)</td>
+      <td>Assigne les colonnes de tableau de données des membres</td>
+    </tr>
+    <tr>
+      <td>RemplitDefinitionColActionsTableauMembre(&amp; $table)</td>
+      <td>Assigne les actions du tableau de données des membres</td>
+    </tr>
+    <tr>
+      <td>RemplitFiltresTableauRole(&amp; $table)</td>
+      <td>Assigne les filtres du tableau de données des rôles</td>
+    </tr>
+    <tr>
+      <td>RemplitDefinitionsColonneTableauRole(&amp; $table)</td>
+      <td>Assigne les colonnes de tableau de données des rôles</td>
+    </tr>
+    <tr>
+      <td>RemplitDefinitionColActionsTableauRole(&amp; $table)</td>
+      <td>Assigne les actions du tableau de données des rôles</td>
+    </tr>
+    <tr>
+      <td>RemplitFiltresTableauProfil(&amp; $table)</td>
+      <td>Assigne les filtres du tableau de données des profils</td>
+    </tr>
+    <tr>
+      <td>RemplitDefinitionsColonneTableauProfil(&amp; $table)</td>
+      <td>Assigne les colonnes de tableau de données des profils</td>
+    </tr>
+    <tr>
+      <td>RemplitDefinitionColActionsTableauProfil(&amp; $table)</td>
+      <td>Assigne les actions du tableau de données des profils</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="scripts-web">Scripts Web</h2>
+
+<p>La zone web contient des scripts, qui renvoient un contenu spécifique en fonction d’un paramètre GET (appelleScript par défaut).</p>
+
+<p>Les scripts varient le contenu d’une zone, tout en gardant les mêmes entêtes et pieds de document HTML.</p>
+
+<h3 id="utilisation">Utilisation</h3>
+
+<p>Vous devez déclarer chaque script, et réécrire sa méthode de rendu.</p>
+
+<p>Insérez les dans la zone, à partir des méthodes <strong>ChargeScripts</strong> ou <strong>ChargeScriptsMembership</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// </span>
+<span class="kd">class</span> <span class="nc">MaZoneWeb1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="c1">// Inscription des scripts</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ChargeScripts</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Inscrire la page d'accueil</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScriptParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">MonScriptAccueil</span><span class="p">())</span> <span class="p">;</span>
+<span class="c1">// Inscrire la page d'a propos</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScript</span><span class="p">(</span><span class="s2">"a_propos"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MonScriptAPropos</span><span class="p">())</span> <span class="p">;</span>
+<span class="c1">// Inscrire la page de contact</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScript</span><span class="p">(</span><span class="s2">"contact"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MonScriptContact</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="c1">// Déclaration du script d'accueil</span>
+<span class="kd">class</span> <span class="nc">MonScriptAccueil</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="s2">"&lt;p&gt;Page d'accueil&lt;/p&gt;"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Déclaration du script a propos</span>
+<span class="kd">class</span> <span class="nc">MonScriptAPropos</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="s2">"&lt;p&gt;A propos de mon site&lt;/p&gt;"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Déclaration du script de contact</span>
+<span class="kd">class</span> <span class="nc">MonScriptContact</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="s2">"&lt;p&gt;Ma page de contact&lt;/p&gt;"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="propriétés-et-méthodes-principales">Propriétés et Méthodes principales</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Membre</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$IDInstanceCalc</td>
+      <td>ID Unique du script parmi les objets créés</td>
+    </tr>
+    <tr>
+      <td>$ZoneParent</td>
+      <td>Accède à la zone web contenant le script</td>
+    </tr>
+    <tr>
+      <td>$NomElementZone</td>
+      <td>Nom du script dans la zone</td>
+    </tr>
+    <tr>
+      <td>$ApplicationParent</td>
+      <td>Accède à l’application contenant le script</td>
+    </tr>
+    <tr>
+      <td>$TitreDocument</td>
+      <td>Titre du document HTML sur le navigateur</td>
+    </tr>
+    <tr>
+      <td>$MotsCleMeta</td>
+      <td>Mots clés méta HTML</td>
+    </tr>
+    <tr>
+      <td>$DescriptionMeta</td>
+      <td>Description méta HTML</td>
+    </tr>
+    <tr>
+      <td>$ViewportMeta</td>
+      <td>Viewport méta HTML</td>
+    </tr>
+    <tr>
+      <td>$Titre</td>
+      <td>Titre du script, utilisé dans le corps du document HTML</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration du script</span>
+<span class="kd">class</span> <span class="nc">MonScriptAPropos</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$TitreDocument</span> <span class="o">=</span> <span class="s2">"A propos de mon site"</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Titre</span> <span class="o">=</span> <span class="s2">"A propos"</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$MotsCleMeta</span> <span class="o">=</span> <span class="s2">"A propos, informations, relativement, concernant"</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$DescriptionMeta</span> <span class="o">=</span> <span class="s2">"Trouvez sur cette page des informations sur mon site"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="restrictions-membership">Restrictions membership</h3>
+
+<p>Vous devez initialiser ces propriétés dans la déclaration du script.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Membre</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$NecessiteMembreConnecte</td>
+      <td>bool</td>
+      <td>Indique si le membre doit se connecter pour accéder au script</td>
+    </tr>
+    <tr>
+      <td>$Privileges</td>
+      <td>array</td>
+      <td>Indique au moins un rôle que le membre doit posséder pour accéder au script</td>
+    </tr>
+    <tr>
+      <td>$PrivilegesStricts</td>
+      <td>bool</td>
+      <td>Refuse l’accès au script si le membre ne posséde pas un des privilièges. Les super administrateurs n’accéderont pas s’ils n’ont pas un des rôles nécéssaires.</td>
+    </tr>
+    <tr>
+      <td>$AnnulDetectMemberCnx</td>
+      <td>bool</td>
+      <td>Annule la détection du membre connecté</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration du script</span>
+<span class="kd">class</span> <span class="nc">MonScriptModifArticle</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$NecessiteMembreConnecte</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Privileges</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s2">"edit_article"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Si vous avez besoin de faire plus de contrôle, réecrivez leur méthode <strong>EstAccessible()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration du script</span>
+<span class="kd">class</span> <span class="nc">MonScriptDetailArticle</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">EstAccessible</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ok</span> <span class="o">=</span> <span class="k">parent</span><span class="o">::</span><span class="nf">EstAccessible</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// S'arrêter si l'accès est déjà refusé</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$ok</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="kc">false</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Procéder à nos contrôles :</span>
+<span class="c1">// S'assurer que le script contient un paramètre "id"</span>
+<span class="c1">// supérieur à 0</span>
+<span class="k">return</span> <span class="p">(</span><span class="k">isset</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s2">"id"</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nb">intval</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s2">"id"</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s2">"&lt;p&gt;Article N&amp;deg; '.intval(</span><span class="nv">$_GET["id"]</span><span class="s2">).'&lt;/p&gt;"</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="environnement-du-script">Environnement du script</h3>
+
+<p>Le script possède la méthode <strong>DetermineEnvironnement</strong>(), pour définir les variables nécessaires au rendu.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration du script</span>
+<span class="kd">class</span> <span class="nc">MonScriptDetailArticle</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ParamId</span> <span class="o">=</span> <span class="nb">intval</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s2">"id"</span><span class="p">])</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">LgnPrinc</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">FetchSqlRow</span><span class="p">(</span><span class="s1">'select * from article where id=:id'</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ParamId</span><span class="p">))</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="nb">count</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">LgnPrinc</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">// Définir les entêtes HTML à partir des variables environnement</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">TitreDocument</span> <span class="o">=</span> <span class="s2">"Article "</span><span class="mf">.</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">LgnPrinc</span><span class="p">[</span><span class="s2">"titre"</span><span class="p">])</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Titre</span> <span class="o">=</span> <span class="s2">"Infos article "</span><span class="mf">.</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">LgnPrinc</span><span class="p">[</span><span class="s2">"titre"</span><span class="p">])</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Insérer du CSS uniquement sur ce script</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ZoneParent</span><span class="o">-&gt;</span><span class="nf">InsereContenuCSS</span><span class="p">(</span><span class="s2">"h1 { color: red ; }"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Insérer du Javascript uniquement sur ce script</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ZoneParent</span><span class="o">-&gt;</span><span class="nf">InsereContenuJs</span><span class="p">(</span><span class="s2">"function test1() { alert("</span><span class="no">OK</span><span class="s2">") ; }"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s2">"&lt;p&gt;ID : "</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">LgnPrinc</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="mf">.</span><span class="s2">"&lt;/p&gt;"</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s2">"&lt;p&gt;Titre : "</span><span class="mf">.</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">LgnPrinc</span><span class="p">[</span><span class="s2">"titre"</span><span class="p">])</span><span class="mf">.</span><span class="s2">"&lt;/p&gt;"</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s2">"&lt;p&gt;PU : "</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">LgnPrinc</span><span class="p">[</span><span class="s2">"PU"</span><span class="p">]</span><span class="mf">.</span><span class="s2">" Eur.&lt;/p&gt;"</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="gestion-du-rendu">Gestion du rendu</h3>
+
+<p>Pour le rendu, voici les membres principaux de la classe script :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Membre</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$InclureRenduTitre</td>
+      <td>bool</td>
+      <td>Confirme ou Annule le rendu du titre pour le script en cours</td>
+    </tr>
+    <tr>
+      <td>$InclureRenduDescription</td>
+      <td>bool</td>
+      <td>Confirme ou Annule le rendu du titre pour le script en cours</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration du script</span>
+<span class="kd">class</span> <span class="nc">MonScriptDetailArticle</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$InclureRenduTitre</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s2">"Ce script sera affiché sans titre"</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>Vous pouvez réecrire certaines méthodes pour personnaliser le rendu :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Membre</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>RenduChemin()</td>
+      <td>string</td>
+      <td>Contenu HTML de l’arborescence du script</td>
+    </tr>
+    <tr>
+      <td>RenduTitre()</td>
+      <td>string</td>
+      <td>Contenu HTML spécifique du script</td>
+    </tr>
+    <tr>
+      <td>RenduDescription()</td>
+      <td>string</td>
+      <td>Contenu HTML spécifique du script</td>
+    </tr>
+    <tr>
+      <td>RenduSpecifique()</td>
+      <td>string</td>
+      <td>Contenu HTML spécifique du script</td>
+    </tr>
+    <tr>
+      <td>RenduDispositifBrut()</td>
+      <td>string</td>
+      <td>Contenu HTML brut du script. Par défaut, cette méthode appelle les méthodes RenduChemin(), RenduTitre(), RenduDescription(), RenduSpecifique().</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration du script</span>
+<span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduTitre</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s2">"&lt;h1&gt;Ma page web&lt;/h1&gt;"</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s2">"Ce script sera affiché avec un titre très grand !"</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="impression">Impression</h3>
+
+<p>Pour rendre une page imprimable, déclarez sa propriété <em>$Imprimable</em> à 1.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Imprimable</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Lors du rendu, le lien d’impression est disponible dans l’action web <strong>$ActionImprime</strong>.</p>
+
+<p>Utilisez également la méthode <strong>ImpressionEnCours()</strong> pour masquer les contenus à l’impression.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Imprimable</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;p&gt;Voici un script imprimable&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="c1">// Afficher le bouton si la page n'est pas en mode impression</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">ImpressionEnCours</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;p&gt;&lt;a href="'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ActionImprime</span><span class="o">-&gt;</span><span class="nf">ObtientUrl</span><span class="p">()</span><span class="mf">.</span><span class="s1">'"&gt;Imprimer&lt;/a&gt;&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Personnalisez ainsi les styles d’impression dans <strong>DetermineEnvironnement()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Imprimable</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Mettre une taille de police 12px pendant l'impression</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">ImpressionEnCours</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ZoneParent</span><span class="o">-&gt;</span><span class="nf">InsereContenuCSS</span><span class="p">(</span><span class="s2">"body {
+font-size:12px ;
+}"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="documents-web">Documents Web</h2>
+
+<p>Un document web personnalise l’affichage complet de chaque script.
+Dans la zone, il est utile :</p>
+<ul>
+  <li>pour les scripts à imprimer</li>
+  <li>pour les scripts qui s’afficheront dans une boîte de dialogue</li>
+</ul>
+
+<h3 id="déclaration">Déclaration</h3>
+
+<p>Chaque document web hérite de la classe <strong>PvDocumentWebHtml</strong>.</p>
+
+<p>Veuillez réecrire les méthodes <strong>PrepareRendu(&amp; $zone)</strong>, <strong>RenduEntete(&amp; $zone)</strong> et <strong>RenduPied(&amp; $zone)</strong>.
+Vous pouvez manipuler le script sélectionné avec <strong>$zone-&gt;ScriptPourRendu</strong></p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonDocumentWeb1</span> <span class="kd">extends</span> <span class="nc">PvDocumentWebHtml</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">PrepareRendu</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$zone</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">// Garder la préparation du document web html</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">PrepareRendu</span><span class="p">(</span><span class="nv">$zone</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Inclure des librairies CSS du document</span>
+<span class="nv">$zone</span><span class="o">-&gt;</span><span class="nf">InsereLienCSS</span><span class="p">(</span><span class="s2">"css/style.css"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Inclure des librairies Js du document</span>
+<span class="nv">$zone</span><span class="o">-&gt;</span><span class="nf">InsereLienJs</span><span class="p">(</span><span class="s2">"js/main.js"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduEntete</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$zone</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="c1">// Retourne le contenu HTML jusqu'au tag body</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="k">parent</span><span class="o">::</span><span class="nf">RenduEntete</span><span class="p">(</span><span class="nv">$zone</span><span class="p">)</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span> 
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduPied</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$zone</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="c1">// Retourne le contenu HTML à partir de la fin du tag body</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="k">parent</span><span class="o">::</span><span class="nf">RenduPied</span><span class="p">(</span><span class="nv">$zone</span><span class="p">)</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span> 
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="intégration-dans-la-zone-web">Intégration dans la zone web</h3>
+
+<p>D’abord, vous devez mettre la propriété <strong>UtiliserDocumentWeb</strong> à 1.
+Ensuite, déclarez chaque document dans la méthode <strong>ChargeConfig()</strong> de la zone web.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZoneWeb</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$UtiliserDocumentWeb</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">ChargeConfig</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">Parent</span><span class="o">::</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Le 1er document web créé est utilisé pour</span>
+<span class="c1">// tous les scripts</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">DocumentsWeb</span><span class="p">[</span><span class="s2">"defaut"</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MonDocumentWeb1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">DocumentsWeb</span><span class="p">[</span><span class="s2">"impression"</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MonDocumentWeb2</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Le 1er document web déclaré sera utilisé par défaut pour tous les scripts. Dans le cas ci-dessus, c’est le document web “defaut”.</p>
+
+<h3 id="affectation-à-un-script">Affectation à un script</h3>
+
+<p>Pour définir le document web du script, renseignez la propriété <strong>NomDocumentWeb</strong> du script.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScriptWeb3</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="c1">// …</span>
+<span class="k">public</span> <span class="nv">$NomDocumentWeb</span> <span class="o">=</span> <span class="s2">"impression"</span> <span class="p">;</span>
+<span class="c1">// …</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="actions-web">Actions Web</h2>
+
+<h3 id="définition">Définition</h3>
+
+<p>Une Action Web est un ensemble d’instructions qui s’exécute dans la Zone Web. Elle ne se limite pas à afficher un contenu HTML, comme les scripts web.
+Elle peut également :</p>
+<ul>
+  <li>déclencher le téléchargement d’un fichier</li>
+  <li>renvoyer un fichier RSS, JS ou CSS</li>
+  <li>renvoyer une réponse JSON</li>
+  <li>exécuter un code précis, avant d’afficher le script web</li>
+</ul>
+
+<h3 id="déclaration-1">Déclaration</h3>
+
+<p>Vous pouvez déclarer les actions dans plusieurs méthodes :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Objet</th>
+      <th>Méthode	Contexte</th>
+      <th>Description</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Zone web</td>
+      <td>InsereActionPrinc($nom, $action)</td>
+      <td>Utiliser dans la méthode <strong>ChargeConfig()</strong></td>
+      <td>Les actions principales s’exécutent avant d’exécuter le script en cours</td>
+    </tr>
+    <tr>
+      <td>Zone web</td>
+      <td>InsereActionAvantRendu($nom, $action)</td>
+      <td>Utiliser dans la méthode <strong>ChargeConfig()</strong>.</td>
+      <td>S’exécutent avant d’afficher le script en cours</td>
+    </tr>
+    <tr>
+      <td>Script web</td>
+      <td>InsereActionAvantRendu($nom, $action)</td>
+      <td>Utiliser dans la méthode <strong>DetermineEnvironnement()</strong></td>
+      <td>Déclare l’action uniquement lorsque le script doit être affiché. Le nom de l’action sera basé sur l’ID Instance du script et le nom de l’action.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereActionAvantRendu</span><span class="p">(</span><span class="s2">"action1"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MonAction1</span><span class="p">())</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MonAction1</span> <span class="kd">extends</span> <span class="nc">PvActionWeb</span>
+<span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>La zone web exécute une action web à partir du paramètre GET <strong>appelleAction</strong>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>?appelleScript=script1&amp;appelleAction=action1
+</code></pre></div></div>
+
+<h3 id="types-daction">Types d’action</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Description</th>
+      <th>Utilisation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PvActionBaseZoneWebSimple / PvActionWeb</td>
+      <td>Classe de base</td>
+      <td>Réécrire la méthode <strong>Execute()</strong></td>
+    </tr>
+    <tr>
+      <td>PvActionNotificationWeb</td>
+      <td>Exécute des instructions et garde le résultat (succès/echec et message d’exécution)</td>
+      <td>Réécrire la méthode <strong>Execute()</strong></td>
+    </tr>
+    <tr>
+      <td>PvActionResultatJSONZoneWeb / PvActionEnvoiJSON</td>
+      <td>Affiche un contenu JSON dans le navigateur</td>
+      <td>Réécrire la méthode <strong>Execute()</strong>. A l’intérieur, définissez la propriété Resultat. Cette propriété sera le retour JSON.</td>
+    </tr>
+    <tr>
+      <td>PvActionTelechargFichier</td>
+      <td>Démarre le téléchargement du fichier</td>
+      <td>Réécrire la méthode <strong>Execute()</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="utilisation-pvactionnotificationweb">Utilisation PvActionNotificationWeb</h4>
+
+<p>Vous devez réécrire la méthode <strong>Execute()</strong>. A l’intérieur, utiliser ces méthodes pour définir le résultat :</p>
+<ul>
+  <li><strong>ConfirmeSucces($msg)</strong></li>
+  <li><strong>RenseigneErreur($msg)</strong>
+Dans le script ou la zone, utilisez la propriété <strong>TypeErreur</strong> et méthode <strong>ObtientMessage()</strong> de l’instance Action pour afficher le résultat. Pour tester si l’action a ramené un résultat, utilisez la méthode <strong>PossedeMessage()</strong></li>
+</ul>
+
+<h4 id="utilisation-pvactiontelechargfichier">Utilisation PvActionTelechargFichier</h4>
+
+<p>Renseignez la propriété <strong>NomFichierAttache</strong> dans la fonction <strong>DetermineFichierAttache</strong> pour définir le nom du fichier téléchargé.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonAction1</span> <span class="kd">extends</span> <span class="nc">PvActionTelechargFichier</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">DetermineFichierAttache</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomFichierAttache</span> <span class="o">=</span> <span class="s2">"resultats.txt"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Réécrivez la méthode <strong>AfficheContenu</strong> pour envoyez le contenu du fichier. A l’intérieur, utilisez les fonctions PHP <strong>echo</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonAction1</span> <span class="kd">extends</span> <span class="nc">PvActionTelechargFichier</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">AfficheContenu</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"texte à afficher..."</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<ul>
+  <li>Si le fichier existe déjà, utilisez <strong>CheminFichierSource</strong> pour le charger.</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonAction1</span> <span class="kd">extends</span> <span class="nc">PvActionTelechargFichier</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">DetermineFichierAttache</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">NomFichierAttache</span> <span class="o">=</span> <span class="s2">"resultats.txt"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">CheminFichierSource</span> <span class="o">=</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span><span class="mf">.</span><span class="s2">"/mondossier/resultats.txt"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Si vous voulez renseigner des entêtes spécifiques, réécrivez la méthode <strong>AfficheEntetes</strong></li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonAction1</span> <span class="kd">extends</span> <span class="nc">PvActionTelechargFichier</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">AfficheEntetes</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nb">Header</span><span class="p">(</span><span class="s2">"HTTP/1.1 404 Not found"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nb">Header</span><span class="p">(</span><span class="s2">"MonEntete1"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="utilisation-pvactionredirigefichier">Utilisation PvActionRedirigeFichier</h3>
+
+<p>Cette action redirige vers un fichier. Si vous avez des problèmes d’encodage avec l’action <strong>PvActionTelechargFichier</strong>, utilisez cette classe.</p>
+
+<p>Renseignez la propriété <strong>CheminFichierSource</strong> dans la fonction <strong>DetermineFichierSource</strong> pour le chemin du fichier à atteindre.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonAction1</span> <span class="kd">extends</span> <span class="nc">PvActionTelechargFichier</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">DetermineFichierSource</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">CheminFichierSource</span> <span class="o">=</span> <span class="s2">"files/resultats.txt"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="les-filtres-de-données-http">Les filtres de données http</h2>
+
+<h3 id="présentation-1">Présentation</h3>
+
+<p>Ils sont surtout utilisés dans les formulaires et les tableaux de données.
+Ils vous proposent des champs de saisie, qui seront soumis après validation.</p>
+
+<h3 id="propriétés-et-méthodes-principales-1">Propriétés et Méthodes principales</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété / Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$Libelle</td>
+      <td>Libellé</td>
+    </tr>
+    <tr>
+      <td>$EstEtiquette</td>
+      <td>Si la valeur est 1, le filtre affichera la valeur au lieu du champ de saisie.</td>
+    </tr>
+    <tr>
+      <td>$ValeurVide</td>
+      <td>Valeur NULLE du filtre.</td>
+    </tr>
+    <tr>
+      <td>$ValeurParDefaut</td>
+      <td>Valeur par défaut</td>
+    </tr>
+    <tr>
+      <td>$NePasLierParametre</td>
+      <td>Renvoie toujours la valeur par défaut du filtre.</td>
+    </tr>
+    <tr>
+      <td>$NomParametreLie</td>
+      <td>Nom du paramètre soumis par http</td>
+    </tr>
+    <tr>
+      <td>$NePasLireColonne</td>
+      <td>N’utilise pas la valeur de la colonne liée sur le paramètre. Utilisée dans les formulaires de données.</td>
+    </tr>
+    <tr>
+      <td>$AliasParametreDonnees</td>
+      <td>Expression pour decoder la valeur de la colonne liée. Ex. UNHEX(&lt;self&gt;)</td>
+    </tr>
+    <tr>
+      <td>$ExpressionDonnees</td>
+      <td>Condition SQL lorsque le filtre est utilisé dans une recherche. Ex : MON_CHAMP = &lt;self&gt;</td>
+    </tr>
+    <tr>
+      <td>$NomColonneLiee</td>
+      <td>Nom de la colonne dans la table, pour un filtre d’édition</td>
+    </tr>
+    <tr>
+      <td>$ExpressionColonneLiee</td>
+      <td>Expression de la colonne dans la table, pour un filtre d’édition. Ex. HEX(&lt;self&gt;)</td>
+    </tr>
+    <tr>
+      <td>$LectureSeule</td>
+      <td>Passer la valeur par défaut du filtre de données, et la soumettre dans le formulaire.</td>
+    </tr>
+    <tr>
+      <td>$Invisible</td>
+      <td>Le filtre ne sera pas affiché sur la page. Il renvoie toujours sa valeur par défaut</td>
+    </tr>
+    <tr>
+      <td>$NePasIntegrerParametre</td>
+      <td>Empêche le formulaire de données d’utiliser ce filtre pour la recherche.</td>
+    </tr>
+    <tr>
+      <td>Lie()</td>
+      <td>Définit la valeur soumise à partir du formulaire. Elle est utilisée après clic sur une commande de formulaire donnée ou le bouton « Rechercher » du tableau de données</td>
+    </tr>
+    <tr>
+      <td>$DejaLie</td>
+      <td>Signale si le filtre a été lié auparavant.</td>
+    </tr>
+    <tr>
+      <td>$ValeurParametre</td>
+      <td>Valeur liée. Utilisez plutôt la méthode Lie().</td>
+    </tr>
+    <tr>
+      <td>$Role</td>
+      <td>Type du filtre de données.</td>
+    </tr>
+    <tr>
+      <td>$TypeLiaisonParametre</td>
+      <td>Contient la valeur “get”, valeur issue de $_GET ou “post”, valeur issue de $_POST</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$flt</span> <span class="o">=</span> <span class="nv">$form</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">,</span> <span class="s2">"champ1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$flt</span><span class="o">-&gt;</span><span class="nc">AliasParametreDonnees</span> <span class="o">=</span> <span class="s2">"BASE64_DECODE(UNHEX(&lt;self&gt;))"</span> <span class="p">;</span>
+<span class="nv">$flt</span><span class="o">-&gt;</span><span class="nc">ExpressionColonneLiee</span> <span class="o">=</span> <span class="s2">"HEX(BASE64_ENCODE(&lt;self&gt;))"</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="correcteur-de-valeur">Correcteur de valeur</h3>
+
+<p>C’est une propriété qui encode/décode la valeur brute d’un filtre.
+Vous devez étendre la classe <strong>PvCorrecteurValeurFiltreBase</strong> et réécrire les méthodes clées.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonCorrectValFiltre1</span> <span class="kd">extends</span> <span class="nc">PvCorrecteurValeurFiltreBase</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">Applique</span><span class="p">(</span><span class="nv">$valeur</span><span class="p">,</span> <span class="o">&amp;</span> <span class="nv">$filtre</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$valeur</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// ...</span>
+<span class="nv">$form</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFormulaireDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nv">$flt1</span> <span class="o">=</span> <span class="nv">$form</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"flt1"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$flt1</span><span class="o">-&gt;</span><span class="nc">CorrecteurValeur</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MonCorrectValFiltre1</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Il existe des correcteurs de valeurs déjà déclarés.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PvCorrecteurValeurFiltreBase</td>
+      <td>Correcteur de valeur par défaut</td>
+    </tr>
+    <tr>
+      <td>PvCorrecteurValeurSansAccent</td>
+      <td>Enlève tous les caractères spéciaux.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="composant-de-filtre">Composant de filtre</h3>
+
+<h4 id="présentation-2">Présentation</h4>
+
+<p>Le composant de filtre de données est le champ de saisie. Vous le définissez ainsi :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DeclareComposant($nomClasseComposant)</td>
+      <td>Définit le composant à partir du nom de la classe</td>
+    </tr>
+    <tr>
+      <td>RemplaceComposant($composant)</td>
+      <td>Définit le composant à partir de l’instance</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Exemple :</p>
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$flt1</span> <span class="o">=</span> <span class="nv">$form</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"monchamp"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Le composant est dans la variable $comp1</span>
+<span class="nv">$comp1</span> <span class="o">=</span> <span class="nv">$flt1</span><span class="o">-&gt;</span><span class="nf">DeclareComposant</span><span class="p">(</span><span class="s2">"PvZoneMultiligneHtml"</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h4 id="composants-eléments-html">Composants Eléments HTML</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PvZoneTexteHtml</td>
+      <td>Composant par défaut affectée au filtre. Affiche un champ INPUT</td>
+    </tr>
+    <tr>
+      <td>PvZoneMultiligneHtml</td>
+      <td>Affiche un champ TEXTAREA</td>
+    </tr>
+    <tr>
+      <td>PvZoneMotPasseHtml</td>
+      <td>Affiche un champ PASSWORD</td>
+    </tr>
+    <tr>
+      <td>PvZoneEtiquetteHtml</td>
+      <td>Affiche un champ en lecture seule.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="composants-de-liste">Composants de liste</h4>
+
+<p>Les composants de liste utilisent un fournisseur de données pour leur rendu.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$comp1</span> <span class="o">=</span> <span class="nv">$flt1</span><span class="o">-&gt;</span><span class="nf">DeclareComposant</span><span class="p">(</span><span class="s2">"PvZoneSelectHtml"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Définition du fournisseur de données</span>
+<span class="nv">$comp1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesSql</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$comp1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$comp1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="c1">// Définition des valeur</span>
+<span class="nv">$comp1</span><span class="o">-&gt;</span><span class="nc">NomColonneValeur</span> <span class="o">=</span> <span class="s2">"id"</span> <span class="p">;</span>
+<span class="nv">$comp1</span><span class="o">-&gt;</span><span class="nc">NomColonneLibelle</span> <span class="o">=</span> <span class="s2">"monchamp1"</span> <span class="p">;</span>
+<span class="c1">// Afficher une valeur par defaut s'il n'y a aucune valeur</span>
+<span class="nv">$comp1</span><span class="o">-&gt;</span><span class="nc">InclureElementHorsLigne</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="nv">$comp1</span><span class="o">-&gt;</span><span class="nc">ValeurElementHorsLigne</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">;</span> 
+<span class="nv">$comp1</span><span class="o">-&gt;</span><span class="nc">LibelleElementHorsLigne</span> <span class="o">=</span> <span class="s2">" – Aucun --"</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PvZoneBoiteSelectHtml</td>
+      <td>Affiche une zone SELECT</td>
+    </tr>
+    <tr>
+      <td>PvZoneBoiteOptionsRadioHtml</td>
+      <td>Affiche une zone de plusieurs options RADIO à cocher.</td>
+    </tr>
+    <tr>
+      <td>PvZoneBoiteOptionsCocherHtml</td>
+      <td>Affiche une zone de plusieurs options CHECKBOX à cocher. Pour récupérer toutes les valeurs cochées, utilisez la propriété $ValeurBrute du filtre.</td>
+    </tr>
+    <tr>
+      <td>PvZoneCadreOptionsRadioHtml</td>
+      <td>Affiche une zone de plusieurs options RADIO à cocher, qui sont dans un IFRAME HTML</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="formatage-de-libellé">Formatage de libellé</h3>
+<p>Si le filtre de données est en étiquette, son champ de saisie ne sera pas éditable.
+Pour personnaliser ce rendu, utilisez la méthode <strong>DefinitFmtLbl</strong>. Etendez la classe <strong>PvFmtLblBase</strong> et réécrivez sa méthode <strong>Rendu($valeur, &amp; $composant)</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonFmtLbl1</span> <span class="kd">extends</span> <span class="nc">PvFmtLblBase</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">Rendu</span><span class="p">(</span><span class="nv">$valeur</span><span class="p">,</span> <span class="o">&amp;</span> <span class="nv">$composant</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="nb">base64_decode</span><span class="p">(</span><span class="nv">$valeur</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Ensuite, affectez ce format au composant avec la méthode <strong>DefinitFmtLbl()</strong> du filtre. Vous devez déclarer le composant avant d’utiliser cette méthode.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$comp</span> <span class="o">=</span> <span class="nv">$flt1</span><span class="o">-&gt;</span><span class="nf">DeclareComposant</span><span class="p">(</span><span class="s2">"PvZoneTexteHtml"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// …</span>
+<span class="nv">$flt1</span><span class="o">-&gt;</span><span class="nf">DefinitFmtLbl</span><span class="p">(</span><span class="k">new</span> <span class="nc">MonFmtLbl1</span><span class="p">())</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p>Voici des formats déjà définis :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PvFmtLblBase</td>
+      <td>Classe de base.</td>
+    </tr>
+    <tr>
+      <td>PvFmtLblWeb</td>
+      <td>Classe affectée par défaut</td>
+    </tr>
+    <tr>
+      <td>PvFmtLblDateFr</td>
+      <td>Affiche au format date français</td>
+    </tr>
+    <tr>
+      <td>PvFmtLblDateTimeFr</td>
+      <td>Affiche au format date et heure français</td>
+    </tr>
+    <tr>
+      <td>PvFmtMonnaie</td>
+      <td>Affiche au format monétaire</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="le-filtre-de-données-upload">Le filtre de données Upload</h3>
+
+<p>Le filtre de données Upload télécharge un fichier.</p>
+
+<h4 id="propriétés--méthodes-principales">Propriétés / Méthodes principales</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété / Méthodes</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$NettoyerCaractsFichier</td>
+      <td>Enlève les caractères spéciaux du nom fichier téléchargé.</td>
+    </tr>
+    <tr>
+      <td>$ExtensionsAcceptees</td>
+      <td>Tableau contenant les extensions uniquement acceptées. Si le fichier soumis n’a pas une extension, il ne sera pas copié dans le répertoire</td>
+    </tr>
+    <tr>
+      <td>$ExtensionsRejetees</td>
+      <td>Tableau contenant les extensions à rejeter systématiquement.</td>
+    </tr>
+    <tr>
+      <td>$FormatFichierTelech</td>
+      <td>Format du nom de fichier téléchargé.</td>
+    </tr>
+    <tr>
+      <td>$SourceTelechargement</td>
+      <td>Contient les valeurs “post” si aucun fichier n’est soumis ou “files” si un fichier a été soumis.</td>
+    </tr>
+    <tr>
+      <td>$InfosTelechargement</td>
+      <td>Contient les détails du fichier téléchargé.</td>
+    </tr>
+    <tr>
+      <td>$ToujoursRenseignerFichier</td>
+      <td>Renvoie une erreur dans le formulaire de données, si aucun fichier n’est soumis.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="variables-format-de-fichier-téléchargé">Variables Format de fichier téléchargé</h4>
+
+<p>Les variables disponibles sont :</p>
+<ul>
+  <li><strong>Cle</strong> : Identifiant Unique</li>
+  <li><strong>NombreAleatoire</strong> : Nombre compris entre 1 et 10000</li>
+  <li><strong>NomFichier</strong> : Nom d’origine du fichier</li>
+  <li><strong>Timestamp</strong> : Timestamp actuel</li>
+  <li><strong>Date</strong> : Date au format YmdHis</li>
+</ul>
+
+<p>Ex : “Bon-Commande-${Cle}”</p>
+
+<h4 id="caractéristiques-du-composant">Caractéristiques du Composant</h4>
+
+<p>Le composant par défaut de ce filtre est le composant <strong>PvZoneUploadHtml</strong>.
+Ses propriétés principales sont :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$InclureErreurTelecharg</td>
+      <td>Afficher l’erreur survenue lors du téléchargement</td>
+    </tr>
+    <tr>
+      <td>$InclureCheminCoteServeur</td>
+      <td>Afficher le chemin relatif du fichier téléchargé</td>
+    </tr>
+    <tr>
+      <td>$InclureZoneSelectFichier</td>
+      <td>Afficher les informations sur le fichier téléchargé</td>
+    </tr>
+    <tr>
+      <td>$CheminCoteServeurEditable</td>
+      <td>Autoriser la modification du chemin relatif sur le serveur</td>
+    </tr>
+    <tr>
+      <td>$InclureApercu</td>
+      <td>Définit l’affichage de l’aperçu.</td>
+    </tr>
+    <tr>
+      <td>$LargeurCadreApercu</td>
+      <td>Largeur HTML du cadre d’aperçu</td>
+    </tr>
+    <tr>
+      <td>$HauteurCadreApercu</td>
+      <td>Hauteur HTML du cadre d’aperçu.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="valeurs-inclure-aperçu">Valeurs Inclure Aperçu</h4>
+
+<p>Valeurs possibles :</p>
+<ul>
+  <li>0 : Ne pas autoriser d’aperçu</li>
+  <li>1 : Affiche un lien pour afficher dans le navigateur</li>
+  <li>2 : Afficher le fichier dans un cadre, si c’est possible</li>
+</ul>
+
+<h2 id="tâches-web">Tâches Web</h2>
+
+<h3 id="définition-1">Définition</h3>
+
+<p>Une tâche web est une tâche planifiée, qui exécute des instructions.
+La tâche démarre automatiquement quand vous affichez n’importe script de la zone web, une fois son délai d’attente dépassé.
+Elle s’exécute dans un autre processus http que celui du script.</p>
+
+<h3 id="déclaration-2">Déclaration</h3>
+
+<p>Veuillez créer votre tâche à partir de la classe <strong>PvTacheWebBaseSimple</strong>. Définissez la propriété « <strong>DelaiExecution</strong> » (en heure) et réécrivez la méthode <strong>ExecuteInstructions()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaTacheWeb1</span> <span class="kd">extends</span> <span class="nc">PvTacheWebBaseSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$DelaiExecution</span> <span class="o">=</span> <span class="mf">0.05</span> <span class="p">;</span> <span class="c1">// S'exécute après 180 secondes</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">Echo</span> <span class="s2">"OK, ma tache est executee"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Les membres utiles dans la méthode <strong>ExecuteInstructions()</strong> sont :</p>
+<ul>
+  <li><strong>ApplicationParent</strong> : Renvoie l’Application</li>
+  <li><strong>ZoneParent</strong> : Renvoie la zone contenant la tâche web</li>
+</ul>
+
+<h3 id="le-gestionnaire-de-tâches-web">Le gestionnaire de tâches web</h3>
+
+<p>La zone web possède un gestionnaire de tâches web, dont les rôles sont :</p>
+<ul>
+  <li>Contenir les tâches web</li>
+  <li>Définir l’emplacement de sauvegardes des états de chaque tâche (en cours, terminé, date d’exécution, …)</li>
+</ul>
+
+<p>Pour personnaliser le gestionnaire de tâches web, veuillez réécrire la méthode <strong>ChargeGestTachesWeb()</strong>.</p>
+
+<p>La propriété <strong>GestTachesWeb</strong> représente le gestionnaire de tâches. Ses membres et méthodes utiles sont :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>NomDossierTaches</td>
+      <td>Chemin du répertoire contenant l’état de chaque tâche web. Le chemin est relatif au chemin du fichier PHP de la zone web.</td>
+    </tr>
+    <tr>
+      <td>InsereTacheWeb($nom, $tache)</td>
+      <td>Inscrit la tâche programmée dans la zone web</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZoneWeb1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="c1">// ...</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeGestTachesWeb</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">GestTachesWeb</span><span class="o">-&gt;</span><span class="nc">NomDossierTaches</span> <span class="o">=</span> <span class="s2">"taches/data"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereTacheWeb</span><span class="p">(</span><span class="s1">'tache1'</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MaTacheWeb1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Vous pouvez tester la tâche web avec le lien de la zone et le paramètre GET <strong>appelleTache</strong>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>?appelleTache=tache1
+</code></pre></div></div>
+
+<h3 id="le-fichier-etat-de-la-tâche-web">Le fichier Etat de la tâche web</h3>
+
+<p>L’état de la tâche est sauvegardé dans le fichier de ce format :
+<strong>&lt;NomDossierTaches-du-GestTachesWeb&gt;/&lt;IDInstanceCalc-tache-web&gt;.dat</strong>
+Si vous supprimez ce fichier, la tâche web sera exécutée au prochain affichage de la zone web.</p>
+
+<h2 id="composants-iu">Composants IU</h2>
+
+<p>Les composants IU permettent d’interagir avec les utilisateurs.</p>
+
+<h3 id="utilisation-1">Utilisation</h3>
+
+<p>Vous devez suivre ce procédé :</p>
+
+<ol>
+  <li>Initier le composant
+    <div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$comp</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFormulaireDonnesHtml</span><span class="p">()</span> <span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Renseigner ses propriétés d’initiation, s’il en possède
+    <div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$comp</span><span class="o">-&gt;</span><span class="nc">InscrireCommandeExecuter</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Adoptez le script ou la zone contexte par les méthodes AdopteScript($nom, &amp; $script) ou AdopteZone($nom, $zone).
+    <div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$comp</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"monComposant"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Charger la configuration du composant par la méthode ChargeConfig()
+    <div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$comp</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Renseigner ses autres propriétés
+    <div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$comp</span><span class="o">-&gt;</span><span class="nc">CommandeExecuter</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"VALIDER"</span> <span class="p">;</span>
+<span class="nv">$comp</span><span class="o">-&gt;</span><span class="nc">SuccesMessageExecution</span> <span class="o">=</span> <span class="s2">"La page a été modifiée"</span> <span class="p">;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Invoquer le Rendu du composant par la méthode RenduDispositif()
+    <div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ctn</span> <span class="o">=</span> <span class="nv">$comp</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+</code></pre></div>    </div>
+    <h3 id="définition-2">Définition</h3>
+  </li>
+</ol>
+
+<p>Vous devez déclarer les composants IU dans la zone web, le document web ou le script web.
+Pour le définir (étape 1. à 5 de l’utilisation), utilisez ces méthodes :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Méthode</th>
+      <th>Directives</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Document Web</td>
+      <td>PrepareRendu(&amp; $zone)</td>
+      <td>Aucun</td>
+    </tr>
+    <tr>
+      <td>Zone Web</td>
+      <td>DetermineEnvironnement(&amp; $script)</td>
+      <td>Invoquer parent::DetermineEnvironnement($script) après avoir défini le composant</td>
+    </tr>
+    <tr>
+      <td>Script Web</td>
+      <td>DetermineEnvironnement()</td>
+      <td>Aucun</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Vous invoquez le rendu séparément :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Méthode</th>
+      <th>Directives</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Document Web</td>
+      <td>RenduEntete(&amp; $zone)</td>
+      <td>Invoquer parent::RenduEntete($zone) avant le rendu du composant</td>
+    </tr>
+    <tr>
+      <td>Document Web</td>
+      <td>RenduPied(&amp; $zone)</td>
+      <td>Invoquer parent::RenduPied($zone) après le rendu du composant</td>
+    </tr>
+    <tr>
+      <td>Zone Web</td>
+      <td>RenduContenuCorpsDocument ()</td>
+      <td>Aucun</td>
+    </tr>
+    <tr>
+      <td>Script Web</td>
+      <td>protected RenduDispositifBrut()</td>
+      <td>Aucun</td>
+    </tr>
+    <tr>
+      <td>Script Web</td>
+      <td>RenduSpecifique()</td>
+      <td>Aucun</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Cas d'un script</span>
+<span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvTableauDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="types-de-composant">Types de composant</h3>
+
+<h4 id="données">Données</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Classe</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tableau de données Html</td>
+      <td>PvTableauDonneesHtml</td>
+      <td>Affiche sous forme de tableau des données</td>
+    </tr>
+    <tr>
+      <td>Grille de données Html</td>
+      <td>PvGrilleDonneesHtml</td>
+      <td>Affiche sous forme de grille des données</td>
+    </tr>
+    <tr>
+      <td>Répéteur de données Html</td>
+      <td>PvRepeteurDonneesHtml</td>
+      <td>Similaire à la grille de données, sans organiser par ligne / colonne</td>
+    </tr>
+    <tr>
+      <td>Formulaire de données Html</td>
+      <td>PvFormulaireDonneesHtml</td>
+      <td>Affiche sous forme de formulaire de données</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="graphiques-et-statistiques">Graphiques et statistiques</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Classe</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Chart pChart</td>
+      <td>PvPChart</td>
+      <td>Chart réalisée avec la librairie PHP pChart 2.0</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="sliders">Sliders</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Classe</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Slider JQuery Camera</td>
+      <td>PvJQueryCamera</td>
+      <td>Slider réalisé à partir de la librairie Javascript jQuery Camera</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="le-tableau-de-données">Le Tableau de Données</h2>
+
+<h3 id="présentation-3">Présentation</h3>
+
+<p>Le tableau de données est un composant IU. Il affiche :</p>
+<ul>
+  <li>Un formulaire de champs pour filtrer les résultats</li>
+  <li>Un bloc de commandes, pour l’exportation des résultats à un format précis…</li>
+  <li>Un tableau des résultats de la recherche
+La classe de ce composant est <strong>PvTableauDonnesHtml</strong>.</li>
+</ul>
+
+<p><img src="images/tabldonneeshtml.png" alt="Apercu tableau données" /></p>
+
+<h3 id="utilisation-2">Utilisation</h3>
+
+<p>Il utilise toujours un fournisseur de données pour le rendu.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvTableauDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des filtres de sélection</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"expression"</span><span class="p">,</span> <span class="s2">"champ1 like concat(&lt;self&gt;, '%')"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Expression"</span> <span class="p">;</span>
+<span class="c1">// Définition des colonnes</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefColCachee</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">,</span> <span class="s2">"Champ 1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">,</span> <span class="s2">"Champ 2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Définition du fournisseur de données</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesSql</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="filtres-de-sélection">Filtres de sélection</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InsereFltSelectHttpGet($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http GET</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectHttpPost($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http POST</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectHttpUpload($nom, $cheminDossierDest=””, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http UPLOAD. Tous les fichiers téléchargés seront déposés dans le répertoire $cheminDossierDest</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectSession($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre contenant la valeur d’une session</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectFixe($nom, $valeur, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre basé sur une valeur fixe</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectCookie($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre contenant la valeur d’un cookie</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvTableauDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des filtres de sélection</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"expression"</span><span class="p">,</span> <span class="s2">"champ1 like concat(&lt;self&gt;, '%')"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Expression"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectFixe</span><span class="p">(</span><span class="s2">"est_actif"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"active = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+</code></pre></div></div>
+
+<h3 id="définitions-de-colonne">Définitions de colonne</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété / Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$DefinitionColonnes</td>
+      <td>Tableau des définitions de colonne</td>
+    </tr>
+    <tr>
+      <td>InsereDefColCachee($nomDonnees, $aliasDonnees=””)</td>
+      <td>Inscrit une définition de colonne cachée.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColInvisible($nomDonnees, $aliasDonnees=””)</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>InsereDefCol($nomDonnees, $libelle=””, $aliasDonnees=””)</td>
+      <td>Inscrit une définition de colonne, avec un libellé.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColBool($nomDonnees, $libelle=””, $aliasDonnees=””, $valPositive=””, $valNegative=””)</td>
+      <td>Inscrit une définition de colonne qui affiche un libellé en fonction d’une valeur booléenne.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColChoix($nomDonnees, $libelle=””, $aliasDonnees=””, $valsChoix=array())</td>
+      <td>Inscrit une définition de colonne qui affiche un libellé en fonction d’une valeur.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColMonnaie($nomDonnees, $libelle=””, $aliasDonnees=””)</td>
+      <td>Inscrit une définition de colonne au format monétaire</td>
+    </tr>
+    <tr>
+      <td>InsereDefColMoney($nomDonnees, $libelle=””, $aliasDonnees=””)</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>InsereDefColDateFr($nomDonnees, $libelle=””, $inclureHeure=0)</td>
+      <td>Inscrit une définition de colonne au format Français (dd/mm/yyyy). Si $inclureHeure est égal à 1, l’heure sera affichée également.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColDateTimeFr($nomDonnees, $libelle=””, $aliasDonnees=””)</td>
+      <td>Inscrit une définition de colonne au format Français (dd/mm/yyyy hh:mi:ss)</td>
+    </tr>
+    <tr>
+      <td>InsereDefColDetail($nomDonnees, $libelle=””, $aliasDonnees=””)</td>
+      <td>Inscrit une définition de colonne, qui affiche les 1ers caractères de la ligne. Si vous posez le curseur sur cette cellule, un bloc contenant le texte intégral apparaîtra.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColHtml($modeleHtml=””, $libelle=””)</td>
+      <td>Inscrit une définition de colonne qui affichera un contenu HTML.</td>
+    </tr>
+    <tr>
+      <td>InsereDefColTimestamp($nomDonnees, $libelle=””, $formatDate=”d/m/Y H:i:s”)</td>
+      <td>Inscrit une définition de colonne qui affichera une date à partir d’un timestamp</td>
+    </tr>
+    <tr>
+      <td>InsereDefColActions($libelle, $actions=array())</td>
+      <td>Inscrit une définition de colonne affichera des liens.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvTableauDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="c1">// Définition des colonnes</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefColCachee</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">,</span> <span class="s2">"Champ 1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefColMoney</span><span class="p">(</span><span class="s2">"total"</span><span class="p">,</span> <span class="s2">"Total TTC"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefColHtml</span><span class="p">(</span><span class="s1">'&lt;p&gt;&lt;b&gt;#${id}. ${champ1}&lt;/b&gt;&lt;/p&gt;'</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+</code></pre></div></div>
+
+<h3 id="source-de-valeurs-supplémentaires">Source de valeurs supplémentaires</h3>
+
+<p>Vous pouvez étendre les lignes calculées dans le tableau de données. Utilisez la propriété <strong>$SourceValeursSuppl</strong>. Etendez la classe <strong>PvSrcValsSupplLgnDonnees</strong> pour réécrire sa méthode <strong>Applique(&amp; $composant, $ligneDonnees)</strong>.
+Vous utiliserez ces nouvelles valeurs uniquement dans une définition de colonne HTML.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">SrcValsSuppl1</span> <span class="kd">extends</span> <span class="nc">PvSrcValsSupplLgnDonnees</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">Applique</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$composant</span><span class="p">,</span> <span class="nv">$ligneDonnees</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$results</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s1">'menu'</span> <span class="o">=&gt;</span> <span class="s1">'&lt;a href="?appelleScript=developper&amp;id='</span><span class="mf">.</span><span class="nb">urlencode</span><span class="p">(</span><span class="nv">$ligneDonnees</span> <span class="p">[</span><span class="s2">"id"</span><span class="p">])</span><span class="mf">.</span><span class="s1">'"&gt;+&lt;/a&gt;'</span><span class="p">)</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nb">array_merge</span><span class="p">(</span><span class="nv">$ligneDonnees</span><span class="p">,</span> <span class="nv">$results</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvTableauDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">SourceValeursSuppl</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SrcValsSuppl1</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefColCachee</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefColHtml</span><span class="p">(</span><span class="s1">'${menu} ${id}'</span><span class="p">,</span> <span class="s1">'Actions'</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="autres-propriétés">Autres propriétés</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété / Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$Largeur</td>
+      <td>Largeur du formulaire de filtres</td>
+    </tr>
+    <tr>
+      <td>$LargeurFormulaireFiltres</td>
+      <td>Largeur du formulaire de filtres</td>
+    </tr>
+    <tr>
+      <td>$AlignFormulaireFiltres</td>
+      <td>Alignement du formulaire de filtres</td>
+    </tr>
+    <tr>
+      <td>$AlignBoutonSoumettreFormulaireFiltres</td>
+      <td>Alignement du bouton Soumettre du formulaire de filtres</td>
+    </tr>
+    <tr>
+      <td>$TitreBoutonSoumettreFormulaireFiltres</td>
+      <td>Libellé du bouton Soumettre du formulaire de filtres</td>
+    </tr>
+    <tr>
+      <td>$MessageAucunElement</td>
+      <td>Message lorsqu’il n’y a aucun élément trouvé</td>
+    </tr>
+    <tr>
+      <td>$ElementsEnCours</td>
+      <td>Tableau contenant toutes les lignes trouvées</td>
+    </tr>
+    <tr>
+      <td>$AlerterAucunElement</td>
+      <td>Affichera le message s’il n’y a aucun élément</td>
+    </tr>
+    <tr>
+      <td>$TriPossible</td>
+      <td>Permettra le tri</td>
+    </tr>
+    <tr>
+      <td>$TotalElements</td>
+      <td>Nombre de lignes retournées</td>
+    </tr>
+    <tr>
+      <td>$CacherNavigateurRangees</td>
+      <td>Cacher le navigateur de rangées</td>
+    </tr>
+    <tr>
+      <td>$CacherFormulaireFiltres</td>
+      <td>Cacher le formulaire de filtres</td>
+    </tr>
+    <tr>
+      <td>$CacherBlocCommandes</td>
+      <td>Cacher le bloc de commandes</td>
+    </tr>
+    <tr>
+      <td>$MaxElementsPossibles = array(20)</td>
+      <td>Nombres maximum de lignes par rangée</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvTableauDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">CacherNavigateurRangees</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">TriPossible</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">MessageAucunElement</span> <span class="o">=</span> <span class="s2">"Aucune facture trouv&amp;eacute;e"</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="liens-daction">Liens d’action</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InsereLienAction(&amp; $col, $formatUrl=’’, $formatLib=’’)</td>
+      <td>Inscrit un lien dans la colonne Action $col.</td>
+    </tr>
+    <tr>
+      <td>InsereLienActionAvant(&amp; $col, $index, $formatUrl=’’, $formatLib=’’)</td>
+      <td>Inscrit un lien dans la colonne Action $col à la position $index</td>
+    </tr>
+    <tr>
+      <td>InsereIconeAction(&amp; $col, $formatUrl=’’, $formatCheminIcone=’’, $formatLib=’’)</td>
+      <td>Inscrit une icône dans la colonne Action $col.</td>
+    </tr>
+    <tr>
+      <td>InsereIconeActionAvant(&amp; $col, $index, $formatUrl=’’, $formatCheminIcone=’’, $formatLib=’’)</td>
+      <td>Inscrit une icône dans la colonne Action $col à la position $index</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvTableauDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nv">$defColActs</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefColActions</span><span class="p">(</span><span class="s2">"Actions"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Définition des liens</span>
+<span class="nv">$lien1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereLienAction</span><span class="p">(</span><span class="nv">$defColActs</span><span class="p">,</span> <span class="s1">'?appelleScript=${id}'</span><span class="p">,</span> <span class="s1">'Modifier ${titre}'</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="commandes">Commandes</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété / Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$Commandes</td>
+      <td>Tableau contenant toutes les commandes</td>
+    </tr>
+    <tr>
+      <td>InsereCommande($nom, $commande)</td>
+      <td>Inscrit une commande dans le tableau</td>
+    </tr>
+    <tr>
+      <td>InscritCmdRafraich($libelle=’Actualiser’, $cheminIcone=’’)</td>
+      <td>Inscrit une commande qui soumet le formulaire de filtres</td>
+    </tr>
+    <tr>
+      <td>InsereCmdRedirectUrl($nomCmd, $url, $libelle=’’)</td>
+      <td>Inscrit une commande qui redirige sur une URL</td>
+    </tr>
+    <tr>
+      <td>InsereCmdRedirectScript($nomCmd, $nomScript, $libelle=’’, $params=array())</td>
+      <td>Inscrit une commande qui redirige sur un script de la zone</td>
+    </tr>
+    <tr>
+      <td>InsereCmdScriptSession($nomCmd, $libelle=’’, $urlDefaut=array())</td>
+      <td>Inscrit une commande qui redirige sur le script session de la zone</td>
+    </tr>
+    <tr>
+      <td>InsereCmdExportTexte($nomCmd, $libelle=’’)</td>
+      <td>Inscrit une commande qui exporte les résultats au format texte (CSV)</td>
+    </tr>
+    <tr>
+      <td>InsereCmdExportExcel($nomCmd, $libelle=’’)</td>
+      <td>Inscrit une commande qui exporte les résultats au format HTML pour Excel</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvTableauDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nv">$cmd1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereCmdExportTexte</span><span class="p">(</span><span class="s2">"cmdTxt"</span><span class="p">,</span> <span class="s2">"CSV"</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="rendu-du-tableau-de-données">Rendu du tableau de données</h3>
+
+<p>Vous pouvez personnaliser le rendu du tableau de données avec sa propriété <strong>$DessinateurFiltresSelection</strong>.
+Référez-vous au rendu des filtres d’édition du formulaire de données pour l’utilisation.</p>
+
+<h3 id="caractéristiques-après-rendu">Caractéristiques après rendu</h3>
+
+<p>Après le rendu du tableau de données, plusieurs informations sont disponibles comme propriétés.</p>
+
+<h2 id="la-grille-de-données">La Grille de Données</h2>
+
+<h3 id="utilisation-3">Utilisation</h3>
+
+<p>La grille de données se base sur le tableau de données. Ce composant affiche les cellules dans une grille.</p>
+
+<p>Pour définir la grille, utilisez ces propriétés :</p>
+
+<ul>
+  <li><strong>MaxColonnes</strong> : Nombre de colonnes</li>
+  <li><strong>ContenuLigneModele</strong> : Contenu de chaque cellule. Vous pouvez ajouter chaque colonne de données à partir de la syntaxe ${nom_colonne}.</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvGrilleDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"Grille1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des filtres de sélection</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"expression"</span><span class="p">,</span> <span class="s2">"champ1 like concat(&lt;self&gt;, '%')"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Expression"</span> <span class="p">;</span>
+<span class="c1">// Définition des colonnes</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nf">InsereDefColCachee</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">,</span> <span class="s2">"Champ 1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">,</span> <span class="s2">"Champ 2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nc">ContenuLigneModele</span> <span class="o">=</span> <span class="s1">'&lt;h3&gt;${id}. ${champ1}&lt;/h3&gt;
+&lt;p&gt;${champ2}&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="c1">// Définition du fournisseur de données</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesSql</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="propriétés-spécifiques">Propriétés spécifiques</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété / Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AlignVCellule</td>
+      <td>Alignement vertical de la cellule. Correspond à l’attribut HTML <strong>valign</strong>.</td>
+    </tr>
+    <tr>
+      <td>AlignCellule</td>
+      <td>Alignement horizontal de la cellule. Correspond à l’attribut HTML <strong>align</strong>.</td>
+    </tr>
+    <tr>
+      <td>EmpilerValeursSiModLigVide</td>
+      <td>Empile les valeurs des définitions de colonnes si l’attribut <strong>ContenuLigneModele</strong> est vide. Possède la valeur 1 par défaut.</td>
+    </tr>
+    <tr>
+      <td>OrientationValeursEmpilees</td>
+      <td>Orientation des valeurs empilées si <strong>ContenuLigneModele</strong> est vide. Possède la valeur “vertical” par défaut.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvGrilleDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"Grille1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des propriétés</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nc">AlignVCellule</span> <span class="o">=</span> <span class="s2">"top"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Grille1</span><span class="o">-&gt;</span><span class="nc">EmpilerValeursSiModLigVide</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+</code></pre></div></div>
+
+<h2 id="le-répéteur-de-données">Le Répéteur de données</h2>
+
+<h3 id="utilisation-4">Utilisation</h3>
+
+<p>Le répéteur de données se base sur la grille de données. Il affiche les cellules successivement, sans les placer dans une grille ou insérer des marges entre elles.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvGrilleDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"Repet1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des filtres de sélection</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"expression"</span><span class="p">,</span> <span class="s2">"champ1 like concat(&lt;self&gt;, '%')"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Expression"</span> <span class="p">;</span>
+<span class="c1">// Définition des colonnes</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nf">InsereDefColCachee</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">,</span> <span class="s2">"Champ 1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">,</span> <span class="s2">"Champ 2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nc">ContenuLigneModele</span> <span class="o">=</span> <span class="s1">'&lt;h3&gt;${id}. ${champ1}&lt;/h3&gt;
+&lt;p&gt;${champ2}&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="c1">// Définition du fournisseur de données</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesSql</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Repet1</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="le-formulaire-de-données">Le Formulaire de Données</h2>
+
+<h3 id="présentation-4">Présentation</h3>
+
+<p>Le formulaire de données est un composant IU.
+Il affiche :</p>
+<ul>
+  <li>Un message d’exécution :</li>
+  <li>Un formulaire de filtres : Il contiendra des champs qui seront soumis par la méthode « POST ».</li>
+  <li>Un bloc de commandes : Il contiendra des boutons, qui recevront les valeurs du formulaire</li>
+</ul>
+
+<p><img src="images/formulairedonneeshtml.png" alt="Apercu formulaire données" /></p>
+
+<p>La classe du formulaire de données est <strong>PvFormulaireDonneesHtml</strong>.</p>
+
+<h3 id="utilisation-5">Utilisation</h3>
+
+<p>Voici un exemple d’utilisation.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript2</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Form1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Flt1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Flt2</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Initiation</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFormulaireDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Toujours afficher le formulaire</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureElementEnCours</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureTotalElements</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="c1">// Définir la classe commande "Executer"</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">NomClasseCommandeExecuter</span> <span class="o">=</span> <span class="s2">"MaCmdExecScript2"</span> <span class="p">;</span>
+<span class="c1">// Liaison avec le script en cours</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"form1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des autres propriétés</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Champ 1"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Champ 2"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="c1">// Rendu du formulaire de donnees</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MaCmdExecScript2</span> <span class="kd">extends</span> <span class="nc">PvCommandeExecuterBase</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">ConfirmeSucces</span><span class="p">(</span><span class="s2">"Commande exécutée avec succès"</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="interaction-avec-base-de-données">Interaction avec base de données</h3>
+
+<p>Vous pouvez manipuler les bases de données avec son fournisseur de données.</p>
+
+<h4 id="ajout-denregistrement">Ajout d’enregistrement</h4>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript2</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Initiation</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFormulaireDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Toujours afficher le formulaire</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureElementEnCours</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureTotalElements</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="c1">// Définir la classe commande "Executer"</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">NomClasseCommandeExecuter</span> <span class="o">=</span> <span class="s2">"PvCommandeAjoutElement"</span> <span class="p">;</span>
+<span class="c1">// Liaison avec le script en cours</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"form1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des autres propriétés</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"colonne1"</span><span class="p">,</span> <span class="s2">"colonne1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Colonne 1"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"colonne2"</span><span class="p">,</span> <span class="s2">"colonne2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Colonne 2"</span> <span class="p">;</span>
+<span class="c1">// Définition du fournisseur de données</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesSql</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">TableEdition</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="modification-denregistrement">Modification d’enregistrement</h4>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript2</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Initiation</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFormulaireDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Afficher le formulaire s'il y a un enregistrement</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureElementEnCours</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureTotalElements</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="c1">// Définir la classe commande "Executer"</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">NomClasseCommandeExecuter</span> <span class="o">=</span> <span class="s2">"PvCommandeModifElement"</span> <span class="p">;</span>
+<span class="c1">// Liaison avec le script en cours</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"form1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des filtres de sélection</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Cle1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"macle1"</span><span class="p">,</span> <span class="s2">"cle1 = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Définition des autres propriétés</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"colonne1"</span><span class="p">,</span> <span class="s2">"colonne1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Colonne 1"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"colonne2"</span><span class="p">,</span> <span class="s2">"colonne2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Colonne 2"</span> <span class="p">;</span>
+<span class="c1">// Définition du fournisseur de données</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesSql</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">TableEdition</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="suppression-denregistrement">Suppression d’enregistrement</h4>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript2</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Initiation</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFormulaireDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Afficher le formulaire s'il y a un enregistrement</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureElementEnCours</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureTotalElements</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="c1">// Empêcher l'édition des filtres</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">Editable</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="c1">// Définir la classe commande "Executer"</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">NomClasseCommandeExecuter</span> <span class="o">=</span> <span class="s2">"PvCommandeSupprElement"</span> <span class="p">;</span>
+<span class="c1">// Liaison avec le script en cours</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"form1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des filtres de sélection</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Cle1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"macle1"</span><span class="p">,</span> <span class="s2">"cle1 = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Définition des autres propriétés</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"colonne1"</span><span class="p">,</span> <span class="s2">"colonne1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Colonne 1"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"colonne2"</span><span class="p">,</span> <span class="s2">"colonne2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Colonne 2"</span> <span class="p">;</span>
+<span class="c1">// Définition du fournisseur de données</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesSql</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">TableEdition</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="propriétés-dinitiation">Propriétés d’initiation</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$InclureElementEnCours</td>
+      <td>Le formulaire sera disponible si le fournisseur de données contient au moins un enregistrement</td>
+    </tr>
+    <tr>
+      <td>$InclureTotalElement</td>
+      <td>Comptera le nombre d’enregistrement du fournisseur de données.</td>
+    </tr>
+    <tr>
+      <td>$InscrireCommandeExecuter</td>
+      <td>Crée une commande « Exécuter » au chargement de  config du composant</td>
+    </tr>
+    <tr>
+      <td>$LibelleCommandeExecuter</td>
+      <td>Libellé de la commande « Exécuter »</td>
+    </tr>
+    <tr>
+      <td>$NomClasseCommandeExecuter</td>
+      <td>Nom de la classe commande « Exécuter »</td>
+    </tr>
+    <tr>
+      <td>$InscrireCommandeAnnuler</td>
+      <td>Crée une commande « Annuler » au chargement de  config du composant</td>
+    </tr>
+    <tr>
+      <td>$LibelleCommandeAnnuler</td>
+      <td>Libellé de la commande « Annuler »</td>
+    </tr>
+    <tr>
+      <td>$NomClasseCommandeAnnuler</td>
+      <td>Nom de la classe commande « Annuler »</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="filtres-de-sélection-1">Filtres de sélection</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InsereFltLgSelectHttpGet($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http GET</td>
+    </tr>
+    <tr>
+      <td>InsereFltLgSelectHttpPost($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http POST</td>
+    </tr>
+    <tr>
+      <td>InsereFltLgSelectHttpUpload($nom, $cheminDossierDest=””, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http UPLOAD. Tous les fichiers téléchargés seront déposés dans le dossier $cheminDossierDest.</td>
+    </tr>
+    <tr>
+      <td>InsereFltLgSelectSession($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre contenant la valeur d’une session</td>
+    </tr>
+    <tr>
+      <td>InsereFltLgSelectFixe($nom, $valeur, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre basé sur une valeur fixe</td>
+    </tr>
+    <tr>
+      <td>InsereFltLgSelectCookie($nom, $exprDonnees=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre contenant la valeur d’un cookie</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="filtres-dédition">Filtres d’édition</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InsereFltEditHttpGet($nom, $colLiee=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http GET</td>
+    </tr>
+    <tr>
+      <td>InsereFltEditHttpPost($nom, $colLiee=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http POST</td>
+    </tr>
+    <tr>
+      <td>InsereFltEditHttpUpload($nom, $cheminDossierDest=””, $colLiee=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre http UPLOAD. Tous les fichiers téléchargés seront déposés dans le dossier $cheminDossierDest</td>
+    </tr>
+    <tr>
+      <td>InsereFltEditSession($nom, $colLiee=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre contenant la valeur d’une session</td>
+    </tr>
+    <tr>
+      <td>InsereFltEditFixe($nom, $valeur, $colLiee=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre basé sur une valeur fixe</td>
+    </tr>
+    <tr>
+      <td>InsereFltEditCookie($nom, $colLiee=’’, $nomClsComp=’’)</td>
+      <td>Ajoute un filtre contenant la valeur d’un cookie</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="autres-propriétés-1">Autres propriétés</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété / Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$CacherBlocCommandes</td>
+      <td>N’affiche pas le bloc de commandes</td>
+    </tr>
+    <tr>
+      <td>$CacherFormulaireFiltres</td>
+      <td>N’affiche pas le formulaire des filtres</td>
+    </tr>
+    <tr>
+      <td>$MessageAucunElement</td>
+      <td>Message à afficher si le formulaire ne trouve pas d’élément</td>
+    </tr>
+    <tr>
+      <td>$CacherFormulaireFiltresApresCmd</td>
+      <td>Cache le formulaire de filtres si une commande est exécutée</td>
+    </tr>
+    <tr>
+      <td>$Largeur</td>
+      <td>Largeur du formulaire</td>
+    </tr>
+    <tr>
+      <td>$ElementsEnCours</td>
+      <td>Lignes retournées après le rendu</td>
+    </tr>
+    <tr>
+      <td>$ElementEnCours</td>
+      <td>1ère Ligne retournée après le rendu</td>
+    </tr>
+    <tr>
+      <td>RedirigeCmdAnnulerVersUrl($url)</td>
+      <td>Redirige la page vers l’URL lorsque vous cliquerez sur le bouton « Annuler » du formulaire</td>
+    </tr>
+    <tr>
+      <td>RedirigeCmdExecuterVersUrl($url)</td>
+      <td>Redirige la page vers l’URL lorsque vous cliquerez sur le bouton « Executer » du formulaire</td>
+    </tr>
+    <tr>
+      <td>FigeFiltresEdition()</td>
+      <td>Fixe tous les filtres édition en lecture seule</td>
+    </tr>
+    <tr>
+      <td>CacheFiltresEdition()</td>
+      <td>Cache tous les filtres édition</td>
+    </tr>
+    <tr>
+      <td>DoitInclureElement()</td>
+      <td>Confirme si les propriétés $InclureElementEnCours &amp; $InclureTotalElements sont vraies.</td>
+    </tr>
+    <tr>
+      <td>AnnuleLiaisonParametres()</td>
+      <td>Interdit les filtres d’édition de récupérer les valeurs de leurs paramètres.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="commandes-1">Commandes</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Classe</th>
+      <th>Prérequis</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PvCommandeAnnulerBase</td>
+      <td>Aucun</td>
+      <td>Commande pour annuler l’édition du formulaire de données</td>
+    </tr>
+    <tr>
+      <td>PvCommandeExecuterBase</td>
+      <td>Aucun</td>
+      <td>Commande pour exécuter le formulaire de données. Veuillez étendre cette classe.</td>
+    </tr>
+    <tr>
+      <td>PvCommandeAjoutElement</td>
+      <td>Les propriétés InclureElementEnCours &amp; InclureTotalElements doivent avoir la valeur 0</td>
+      <td>Commande pour insérer un enregistrement dans le fournisseur de données du formulaire</td>
+    </tr>
+    <tr>
+      <td>PvCommandeModifElement</td>
+      <td>Les propriétés InclureElementEnCours &amp; InclureTotalElements doivent avoir la valeur 1</td>
+      <td>Commande pour modifier un enregistrement dans le fournisseur de données du formulaire</td>
+    </tr>
+    <tr>
+      <td>PvCommandeSupprElement</td>
+      <td>Les propriétés InclureElementEnCours &amp; InclureTotalElements doivent avoir la valeur 1</td>
+      <td>Commande pour supprimer un enregistrement dans le fournisseur de données du formulaire</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="rendu-du-formulaire-de-filtres">Rendu du formulaire de filtres</h3>
+
+<p>Vous pouvez personnaliser le rendu du formulaire de filtres avec sa propriété <strong>$DessinateurFiltresEdition</strong>.
+Veuillez créer une classe héritant de <strong>PvDessinFiltresDonneesHtml</strong> et réécrire sa méthode publique <strong>Execute(&amp; $script, &amp; $composant, $parametres)</strong>.
+Vous avez 2 méthodes dans la nouvelle classe, pour chaque filtre de données :</p>
+<ul>
+  <li><strong>RenduLibelleFiltre(&amp; $filtre)</strong> pour le libellé du filtre de données</li>
+  <li><strong>RenduFiltre(&amp; $filtre, &amp; $composant)</strong> pour le composant du filtre de données</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Form1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Flt1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Flt2</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Initiation</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFormulaireDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Toujours afficher le formulaire</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureElementEnCours</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureTotalElements</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="c1">// Definir le dessinateur de filtres edition</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">DessinateurFiltresEdition</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MonDessinFiltresDonnees</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Liaison avec le script en cours</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"form1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des autres propriétés</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Champ 1"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Champ 2"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="c1">// Rendu du formulaire de donnees</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MonDessinFiltresDonnees</span> <span class="kd">extends</span> <span class="nc">PvDessinFiltresDonneesHtml</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">Execute</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$script</span><span class="p">,</span> <span class="o">&amp;</span> <span class="nv">$composant</span><span class="p">,</span> <span class="nv">$parametres</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;p&gt;&lt;b&gt;'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">RenduLibelleFiltre</span><span class="p">(</span><span class="nv">$script</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="p">)</span><span class="mf">.</span><span class="s1">'&lt;b&gt;&lt;br&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">RenduFiltre</span><span class="p">(</span><span class="nv">$script</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="p">,</span> <span class="nv">$composant</span><span class="p">)</span><span class="mf">.</span><span class="s1">'&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;hr&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;p&gt;&lt;b&gt;'</span><span class="mf">.</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">RenduLibelleFiltre</span><span class="p">(</span><span class="nv">$script</span><span class="o">-&gt;</span><span class="nc">Flt2</span><span class="p">)</span><span class="mf">.</span><span class="s1">'&lt;b&gt;&lt;br&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">RenduFiltre</span><span class="p">(</span><span class="nv">$script</span><span class="o">-&gt;</span><span class="nc">Flt2</span><span class="p">,</span> <span class="nv">$composant</span><span class="p">)</span><span class="mf">.</span><span class="s1">'&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="rendu-du-bloc-de-commandes">Rendu du bloc de commandes</h3>
+
+<p>Pour personnaliser le rendu du bloc des commandes, utilisez la propriété <strong>$DessinateurBlocCommandes</strong>.
+Veuillez créer une classe héritant de PvDessinCommandesHtml et réécrire sa méthode publique <strong>Execute(&amp; $script, &amp; $composant, $parametres)</strong>.
+Cette nouvelle classe donne le rendu d’une commande avec la méthode <strong>RenduCommande(&amp; $commande)</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Form1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Flt1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Flt2</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Initiation</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFormulaireDonneesHtml</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Toujours afficher le formulaire</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureElementEnCours</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureTotalElements</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="c1">// Definir le dessinateur de commandes</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">DessinateurBlocCommandes</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MonDessinCommandes</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Liaison avec le script en cours</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"form1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des autres propriétés</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Champ 1"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Champ 2"</span> <span class="p">;</span>
+<span class="c1">// Commandes</span>
+<span class="c1">// …</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="c1">// Rendu du formulaire de donnees</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MonDessinCommandes</span> <span class="kd">extends</span> <span class="nc">PvDessinCommandesHtml</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">Execute</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$script</span><span class="p">,</span> <span class="o">&amp;</span> <span class="nv">$composant</span><span class="p">,</span> <span class="nv">$parametres</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;p&gt;'</span> <span class="p">;</span>
+<span class="c1">// Le formulaire est dans la variable $composant</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">RenduCommande</span><span class="p">(</span><span class="nv">$composant</span><span class="o">-&gt;</span><span class="nc">CommandeAnnuler</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;hr /&gt;'</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">RenduCommande</span><span class="p">(</span><span class="nv">$composant</span><span class="o">-&gt;</span><span class="nc">CommandeExecuter</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+:ET

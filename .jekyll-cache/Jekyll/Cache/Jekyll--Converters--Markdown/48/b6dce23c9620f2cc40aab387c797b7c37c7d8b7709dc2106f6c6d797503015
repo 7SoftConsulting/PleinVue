@@ -1,0 +1,392 @@
+I"�k<h1 id="les-classes-base-de-données---php-pv">Les classes base de données - PHP-PV</h1>
+
+<h2 id="présentation">Présentation</h2>
+
+<p>PHP-PV inclut les classes de base de données <strong>CommonDB</strong>.
+Ces bases de données offrent les avantages suivants :</p>
+<ul>
+  <li>Elles ferment automatiquement les connexions à la fin du script PHP, ou après chaque exécution d’une requête.</li>
+  <li>Elles possèdent des méthodes pour sélectionner, insérer, modifier et supprimer des lignes à partir de tableau</li>
+  <li>Elles possèdent des méthodes pour invoquer les fonctions SQL Natives (fonction pour obtenir la date du jour, …)</li>
+</ul>
+
+<h2 id="paramètres-de-connexion">Paramètres de connexion</h2>
+
+<p>Vous pouvez déclarer les paramètres de connexions dans le tableau <strong>$ConnectionParams</strong>. Les clés sont :</p>
+<ul>
+  <li>server : Hote du serveur de base de données</li>
+  <li>schema : Nom de la base de données</li>
+  <li>user : Login de l’utilisateur</li>
+  <li>password : Mot de passe de l’utilisateur.
+Ces informations sont interprétées différemment du type de base de données.</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MysqliDB</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'server'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"localhost"</span> <span class="p">;</span>
+<span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'schema'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"gestion_produits"</span> <span class="p">;</span>
+<span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'user'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"root"</span> <span class="p">;</span>
+<span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'password'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"mysql"</span> <span class="p">;</span>
+</code></pre></div></div>
+<p>Vous pouvez déclarer ces paramètres dans une classe spécialisée. Réécrivez la méthode <strong>InitConnectionParams()</strong>. C’est idéal car vous ne définissez pas les paramètres pour chaque usage.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaBD</span> <span class="kd">extends</span> <span class="nc">MysqliDB</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">InitConnectionParams</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'server'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"localhost"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'schema'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"gestion_produits"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'user'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"root"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'password'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"mysql"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="propriétés-et-méthodes-principales">Propriétés et Méthodes principales</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Rôle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$ConnectionParams = array()</td>
+      <td>Contient les paramètres de connexion à la base de données.</td>
+    </tr>
+    <tr>
+      <td>InitConnectionParams()</td>
+      <td>Définit les paramètres de connexion.</td>
+    </tr>
+    <tr>
+      <td>InitConnection()</td>
+      <td>Ouvre la connexion sur la base de données</td>
+    </tr>
+    <tr>
+      <td>FinalConnection()</td>
+      <td>Ferme la connexion à la base de données</td>
+    </tr>
+    <tr>
+      <td>$ParamPrefix</td>
+      <td>Préfixe natif des paramètres de la base de données</td>
+    </tr>
+    <tr>
+      <td>$AutoCloseConnection</td>
+      <td>Ferme automatiquement les connexions après l’exécution d’une requête SQL. Valeur par défaut : true</td>
+    </tr>
+    <tr>
+      <td>RunSql($sql, $params=array())</td>
+      <td>Exécute le requête $sql sur la base de données, en appliquant les paramètres $params. Renvoie un résultat Booléen.</td>
+    </tr>
+    <tr>
+      <td>FetchSqlRows($sql, $params=array())</td>
+      <td>Exécute la requête $sql sur la base de données, en appliquant les paramètres $params. Renvoie un tableau contenant les résultats. Chaque ligne trouvée est un tableau associatif dont les clés sont les colonnes de la requête.</td>
+    </tr>
+    <tr>
+      <td>FetchSqlRow ($sql, $params=array())</td>
+      <td>Exécute la requête $sql sur la base de données, en appliquant les paramètres $params. Renvoie la 1ère ligne. Cette ligne est un tableau associatif dont les clés sont les colonnes de la requête. Elle ramène false s’il y a une exception.</td>
+    </tr>
+    <tr>
+      <td>InsertRow($tableName, $row=array())</td>
+      <td>Insère la ligne $row dans la table $tableName. Les clés de la ligne $row doivent être celles des colonnes de $tableName. L’insertion s’appliquera uniquement sur les colonnes renseignées.</td>
+    </tr>
+    <tr>
+      <td>UpdateRow($tableName, $row=array(), $where, $params=array())</td>
+      <td>Mets à jour la ligne $row dans la $tableName, quand la condition $where est respectée.</td>
+    </tr>
+    <tr>
+      <td>DeleteRow($tableName, $where, $params=array())</td>
+      <td>Supprime les lignes dans la $tableName, quand la condition $where est respectée.</td>
+    </tr>
+    <tr>
+      <td>RunStoredProc($procName, $params=array())</td>
+      <td>Exécute la procédure stockée $procName avec les paramètres $params.</td>
+    </tr>
+    <tr>
+      <td>FetchStoredProcRows($procName, $params=array())</td>
+      <td>Exécute et renvoie les résultats de la procédure $procName avec les paramètres $params.</td>
+    </tr>
+    <tr>
+      <td>FetchStoredProcRow($procName, $params=array())</td>
+      <td>Exécute et renvoie la 1ère ligne résultat de la procédure $procName avec les paramètres $params.</td>
+    </tr>
+    <tr>
+      <td>OpenQuery($sql, $params=array())</td>
+      <td>Ouvre un curseur sur la base de données, pour une lecture progressive</td>
+    </tr>
+    <tr>
+      <td>ReadQuery($query)</td>
+      <td>Retourne l’enregistrement disponible sur le curseur ouvert avec <strong>OpenQuery</strong>. Renvoie NULL s’il n’y a aucun. L’enregistrement est un tableau dont les champs sont les clés.</td>
+    </tr>
+    <tr>
+      <td>CloseQuery($query)</td>
+      <td>Ferme le curseur ouvert avec <strong>OpenQuery</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Ajout d'une ligne</span>
+<span class="nv">$ok</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">InsertRow</span><span class="p">(</span><span class="s2">"ma_table"</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span><span class="s2">"champ1"</span> <span class="o">=&gt;</span> <span class="nv">$val1</span><span class="p">,</span> <span class="s2">"champ2"</span> <span class="o">=&gt;</span> <span class="s2">"val2"</span><span class="p">))</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$ok</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">die</span><span class="p">(</span><span class="s2">"Exception SQL : "</span><span class="mf">.</span><span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionException</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Mise à jour de ligne</span>
+<span class="nv">$ok</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">UpdateRow</span><span class="p">(</span>
+	<span class="s2">"ma_table"</span><span class="p">,</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"champ1"</span> <span class="o">=&gt;</span> <span class="nv">$val1</span><span class="p">,</span> <span class="s2">"champ2"</span> <span class="o">=&gt;</span> <span class="s2">"val2"</span><span class="p">),</span>
+	<span class="s2">"id = :id"</span><span class="p">,</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$ok</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">die</span><span class="p">(</span><span class="s2">"Exception SQL : "</span><span class="mf">.</span><span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionException</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Suppression de ligne</span>
+<span class="nv">$ok</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">DeleteRow</span><span class="p">(</span>
+	<span class="s2">"ma_table"</span><span class="p">,</span>
+	<span class="s2">"id = :id"</span><span class="p">,</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$ok</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">die</span><span class="p">(</span><span class="s2">"Exception SQL : "</span><span class="mf">.</span><span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionException</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Exécution d'une requete SQL</span>
+<span class="nv">$ok</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">RunSql</span><span class="p">(</span>
+	<span class="s2">"update ma_table set mon_champ1 = :val1 where id = :id"</span><span class="p">,</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"val1"</span> <span class="o">=&gt;</span> <span class="s2">"ma valeur N.1"</span><span class="p">,</span> <span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$ok</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">die</span><span class="p">(</span><span class="s2">"Exception SQL : "</span><span class="mf">.</span><span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionException</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Sélection de la 1ere ligne uniquement</span>
+<span class="nv">$lgn</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">FetchSqlRow</span><span class="p">(</span>
+	<span class="s2">"select * from ma_table where id = :id"</span><span class="p">,</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nb">is_array</span><span class="p">(</span><span class="nv">$lgn</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="k">die</span><span class="p">(</span><span class="s2">"Exception SQL : "</span><span class="mf">.</span><span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionException</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">echo</span> <span class="nv">$lgn</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span> <span class="p">;</span>
+<span class="c1">// Sélection de toutes les lignes</span>
+<span class="nv">$lgns</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">FetchSqlRows</span><span class="p">(</span>
+	<span class="s2">"select * from ma_table where id = :id"</span><span class="p">,</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nb">is_array</span><span class="p">(</span><span class="nv">$lgns</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="k">die</span><span class="p">(</span><span class="s2">"Exception SQL : "</span><span class="mf">.</span><span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionException</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">foreach</span><span class="p">(</span><span class="nv">$lgns</span> <span class="k">as</span> <span class="nv">$i</span> <span class="o">=&gt;</span> <span class="nv">$lgn</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="nv">$lgn</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="mf">.</span><span class="s2">"&lt;br&gt;"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// Parcours des lignes, 1 par 1</span>
+<span class="nv">$query</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">OpenQuery</span><span class="p">(</span>
+	<span class="s2">"select * from ma_table where id = :id"</span><span class="p">,</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$query</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">while</span><span class="p">((</span><span class="nv">$lgn</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">ReadQuery</span><span class="p">(</span><span class="nv">$query</span><span class="p">))</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">echo</span> <span class="s2">"ID : "</span><span class="mf">.</span><span class="nv">$lgn</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="mf">.</span><span class="s2">"&lt;br&gt;"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">CloseQuery</span><span class="p">(</span><span class="nv">$query</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="méthodes-natives-sql">Méthodes Natives SQL</h2>
+
+<p>Ces méthodes ramènent la fonction SQL adéquate.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Méthode</th>
+      <th>Paramètres</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SqlConcat</td>
+      <td>$list</td>
+      <td>Concatène les éléments du tableau $list</td>
+    </tr>
+    <tr>
+      <td>SqlNow</td>
+      <td> </td>
+      <td>Ramène la date et heure actuelle</td>
+    </tr>
+    <tr>
+      <td>SqlToDateTime</td>
+      <td>$expr</td>
+      <td>Convertit la valeur $expr en datetime.</td>
+    </tr>
+    <tr>
+      <td>SqlToTimestamp</td>
+      <td>$expr</td>
+      <td>Convertit la valeur $expr en timestamp</td>
+    </tr>
+    <tr>
+      <td>SqlAddSeconds</td>
+      <td>$expr, $val</td>
+      <td>Ajoute la valeur $val secondes à la valeur $expr</td>
+    </tr>
+    <tr>
+      <td>SqlAddMinutes</td>
+      <td>$expr, $val</td>
+      <td>Ajoute la valeur $val minutes à la valeur $expr</td>
+    </tr>
+    <tr>
+      <td>SqlAddHours</td>
+      <td>$expr, $val</td>
+      <td>Ajoute la valeur $val heures à la valeur $expr</td>
+    </tr>
+    <tr>
+      <td>SqlAddDays</td>
+      <td>$expr, $val</td>
+      <td>Ajoute la valeur $val jours à la valeur $expr</td>
+    </tr>
+    <tr>
+      <td>SqlAddMonths</td>
+      <td>$expr, $val</td>
+      <td>Ajoute la valeur $val mois à la valeur $expr</td>
+    </tr>
+    <tr>
+      <td>SqlAddYears</td>
+      <td>$expr, $val</td>
+      <td>Ajoute la valeur $val années à la valeur $expr</td>
+    </tr>
+    <tr>
+      <td>SqlDateDiff</td>
+      <td>$expr1, $expr2</td>
+      <td>Calcule le nombre de secondes entre $expr1 et $expr2</td>
+    </tr>
+    <tr>
+      <td>SqlLength</td>
+      <td>$expr</td>
+      <td>Retourne le nombre de caractères dans la chaîne $expr</td>
+    </tr>
+    <tr>
+      <td>SqlSubstr</td>
+      <td>$expr, $start, $length=0</td>
+      <td>Extrait dans $expr la chaine commençant par $start, de taille $length.</td>
+    </tr>
+    <tr>
+      <td>SqlIndexOf</td>
+      <td>$expr, $search, $start=0</td>
+      <td>Renvoie l’indice de l’occurrence de $search à partir de $start. valeur minimale 0 dans $expr.</td>
+    </tr>
+    <tr>
+      <td>SqlIsNull</td>
+      <td>$expr</td>
+      <td>Vérifie si $expr est la valeur Nulle de la base de données</td>
+    </tr>
+    <tr>
+      <td>SqlStrToDateTime</td>
+      <td>$dateName</td>
+      <td>Convertit la chaine $dateName au format datetime de la base de données</td>
+    </tr>
+    <tr>
+      <td>SqlDateToStrFr</td>
+      <td>$dateName, $includeHour=0</td>
+      <td>Convertit la date $dateName au type chaine de caractère de la base de données. Si $includeHour est 1, l’heure sera convertie également. Le format supporté est dd/mm/yyyy.</td>
+    </tr>
+    <tr>
+      <td>SqlToInt</td>
+      <td>$expression</td>
+      <td>Convertit l’expression $expression au type INTEGER de la base de données</td>
+    </tr>
+    <tr>
+      <td>SqlToDouble</td>
+      <td>$expression</td>
+      <td>Convertit l’expression $expression au type DOUBLE de la base de données</td>
+    </tr>
+    <tr>
+      <td>SqlToString</td>
+      <td>$expression</td>
+      <td>Convertit l’expression $expression au type Chaine de Caractères de la base de données</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ok</span> <span class="o">=</span> <span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">RunSql</span><span class="p">(</span>
+	<span class="s2">"update ma_table set mon_champ1 = "</span><span class="mf">.</span><span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">SqlToInt</span><span class="p">(</span><span class="s2">":val1"</span><span class="p">)</span><span class="mf">.</span><span class="s2">", date_modif="</span><span class="mf">.</span><span class="nv">$bd</span><span class="o">-&gt;</span><span class="nf">SqlNow</span><span class="p">()</span><span class="mf">.</span><span class="s2">" where id = :id"</span><span class="p">,</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"val1"</span> <span class="o">=&gt;</span> <span class="s2">"ma valeur N.1"</span><span class="p">,</span> <span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nv">$ok</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">die</span><span class="p">(</span><span class="s2">"Exception SQL : "</span><span class="mf">.</span><span class="nv">$bd</span><span class="o">-&gt;</span><span class="nc">ConnectionException</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="mysql">MySQL</h2>
+
+<h3 id="mysqlpdodb">MysqlPdoDB</h3>
+
+<p>La classe est <strong>MysqlPdoDB</strong> utilise les classes PDO pour accéder aux bases de données MySQL.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaBD</span> <span class="kd">extends</span> <span class="nc">MysqlPdoDB</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">InitConnectionParams</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'server'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"localhost"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'schema'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"gestion_produits"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'user'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"root"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ConnectionParams</span><span class="p">[</span><span class="s1">'password'</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"mysql"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nv">$bd</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// </span>
+</code></pre></div></div>
+
+<h3 id="mysqlidb">MysqliDB</h3>
+
+<p>La classe est <strong>MysqliDB</strong>. Elle utilise l’extension PHP Mysqli.
+Pour recevoir les données encodés en iso-8859-1, modifiez la classe ainsi :</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MysqlDBIso</span> <span class="kd">extends</span> <span class="nc">MysqliDB</span> <span class="c1">// Changer le nom de la classe</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AutoSetCharacterEncoding</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$MustSetCharacterEncoding</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$SetCharacterEncodingOnFetch</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$CharacterEncoding</span> <span class="o">=</span> <span class="s1">'utf8'</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DecodeRowValue</span><span class="p">(</span><span class="nv">$value</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nb">is_string</span><span class="p">(</span><span class="nv">$value</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="k">parent</span><span class="o">::</span><span class="nf">DecodeRowValue</span><span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="nb">html_entity_decode</span><span class="p">(</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$value</span><span class="p">,</span> <span class="no">ENT_COMPAT</span><span class="p">,</span> <span class="s1">'ISO-8859-1'</span><span class="p">))</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">EncodeParamValue</span><span class="p">(</span><span class="nv">$value</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">if</span><span class="p">(</span><span class="o">!</span> <span class="nb">is_string</span><span class="p">(</span><span class="nv">$value</span><span class="p">))</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="k">parent</span><span class="o">::</span><span class="nf">EncodeParamValue</span><span class="p">(</span><span class="nv">$value</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="nb">html_entity_decode</span><span class="p">(</span><span class="nb">htmlentities</span><span class="p">(</span><span class="nv">$value</span><span class="p">,</span> <span class="no">ENT_COMPAT</span><span class="p">,</span> <span class="s1">'UTF-8'</span><span class="p">),</span> <span class="no">ENT_COMPAT</span><span class="p">,</span> <span class="s1">'ISO-8859-1'</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="oracle">Oracle</h2>
+
+<p>La classe <strong>OciDB</strong> permet de manipuler une base de données Oracle de 8g à 12c.
+Elle utilise l’extension PHP <strong>oci8-11g</strong>.</p>
+
+<h2 id="sql-server">Sql Server</h2>
+
+<p>La classe <strong>SqlSrvDB</strong> manipule une base de données SQL Server. Elle utilise l’extension PHP <strong>sqlsrv</strong>.</p>
+
+:ET

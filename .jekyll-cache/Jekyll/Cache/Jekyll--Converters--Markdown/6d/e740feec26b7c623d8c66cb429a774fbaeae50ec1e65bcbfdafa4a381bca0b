@@ -1,0 +1,147 @@
+I"/<h1 id="mon-premier-projet">Mon premier projet</h1>
+
+<h2 id="création-du-dossier-solution">Création du dossier solution</h2>
+
+<p>Téléchargez le code source de PHP-PV sur GITHUB. Décompressez le fichier <strong>php-pv-master.zip</strong>. Copiez le contenu du dossier <strong>php-pv-master</strong> à la racine de votre site web <strong>/</strong>
+Vous allez créer un dossier <strong>Solution1</strong> pour votre solution, au même niveau que le dossier <strong>php-pv-master</strong>.</p>
+
+<p>Ainsi, vous aurez :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/php-pv-master
+/Solution1
+	index.php
+</code></pre></div></div>
+
+<p>Ensuite, créez un fichier index.php dans le dossier <strong>Solution1</strong>.
+Comme première instruction, incluez le fichier « <strong>../php-pv-master/Pv/Base.class.php</strong> »</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">include</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span><span class="mf">.</span><span class="s2">"/../php-pv-master/Pv/Base.class.php"</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="déclaration-de-lapplication">Déclaration de l’application</h2>
+
+<p>Dans ce fichier PHP, déclarez votre classe <strong>ApplicationSolution1</strong>, qui héritera de la classe <strong>PvApplication</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ApplicationSolution1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span> <span class="p">{</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="déclaration-de-la-zone-web">Déclaration de la zone Web</h2>
+
+<p>Juste après, déclarez la zone web.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ZoneWebSolution1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span> <span class="p">{</span>
+	<span class="c1">// Forcer l’affichage de la zone web, sans tenir compte du chemin du script</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Retournez dans votre classe <strong>ApplicationSolution1</strong>, réécrivez la méthode <strong>ChargeIHMs()</strong>. Vous invoquerez la méthode <strong>InsereIHM()</strong> pour inscrire la Zone Web.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ApplicationSolution1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span> <span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeIHMs</span><span class="p">()</span> <span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s2">"zoneWeb"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">ZoneWebSolution1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="déclaration-du-script-par-défaut">Déclaration du script par défaut</h2>
+
+<p>Créez maintenant un script web, qui affichera « Hello World ».
+Ce script héritera de la classe <strong>PvScriptWebSimple</strong>. Réécrivez sa méthode <strong>RenduSpecifique()</strong> pour retourner le texte à afficher.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptAccueilSolution1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="s2">"Hello World"</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Maintenant réécrivez la méthode <strong>ChargeScripts()</strong> de la zone web au-dessus. Utilisez à l’intérieur la méthode <strong>InsereScriptParDefaut()</strong> pour inscrire le Script que vous avez créé.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ZoneWebSolution1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span> <span class="p">{</span>
+	<span class="c1">// Forcer l’affichage de la zone web, sans tenir compte du chemin du script</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeScripts</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScriptParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">ScriptAccueilSolution1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="démarrer-lapplication">Démarrer l’application</h2>
+
+<p>Il ne vous reste plus qu’à démarrer l’application.
+Créez une variable de type <strong>ApplicationSolution1</strong>, puis invoquez sa méthode <strong>Execute()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$app</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ApplicationSolution1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$app</span><span class="o">-&gt;</span><span class="nf">Execute</span><span class="p">()</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p>Voici le code source complet :</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="k">include</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span><span class="mf">.</span><span class="s2">"/../PHP-PV/Pv/Base.class.php"</span> <span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">ApplicationSolution1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span> <span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeIHMs</span><span class="p">()</span> <span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s2">"zoneWeb"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">ZoneWebSolution1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">ZoneWebSolution1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span> <span class="p">{</span>
+	<span class="c1">// Forcer l’affichage de la zone web, sans tenir compte du chemin du script</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeScripts</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScriptParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">ScriptAccueilSolution1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">ScriptAccueilSolution1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="s2">"Hello World"</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nv">$app</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ApplicationSolution1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$app</span><span class="o">-&gt;</span><span class="nf">Execute</span><span class="p">()</span> <span class="p">;</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<p>Pour visualiser le retour, ouvrez votre navigateur (Internet Explorer, IE Edge, Chrome, Firefox).</p>
+
+<p>Exécutez l’adresse du script PHP.
+http://localhost/Solution1/index.php</p>
+
+<p>Vous verrez le résultat ainsi :</p>
+
+<p><img src="images/premierprojet.png" alt="Résultat premier projet" /></p>
+
+<h2 id="inscrire-dautres-scripts-web">Inscrire d’autres scripts web</h2>
+
+<p>Dans une zone, vous pouvez inscrire plusieurs Scripts. Ainsi ces scripts seront accessibles à partir du paramètre GET « <strong>appelleScript</strong> ».
+Nous allons ajouter un script « <strong>a_propos</strong> ». A l’interieur du fichier PHP, déclarez le script <strong>ScriptAProposSolution1</strong> après <strong>ScriptAccueilSolution1</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ScriptAProposSolution1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span> <span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="s2">"A Propos de notre entreprise !"</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Ensuite, insérez ce script dans la méthode <strong>ChargeScripts()</strong> de <strong>ZoneWebSolution1</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">ZoneWebSolution1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span> <span class="p">{</span>
+<span class="c1">// Forcer l’affichage de la zone web, sans tenir compte du chemin du script</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeScripts</span><span class="p">()</span> <span class="p">{</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScriptParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">ScriptAccueilSolution1</span><span class="p">())</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScript</span><span class="p">(</span><span class="s2">"a_propos"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">ScriptAProposSolution1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Affichez ce lien pour voir le résultat :
+http://localhost/Solution1/index.php?appelleScript=a_propos</p>
+:ET

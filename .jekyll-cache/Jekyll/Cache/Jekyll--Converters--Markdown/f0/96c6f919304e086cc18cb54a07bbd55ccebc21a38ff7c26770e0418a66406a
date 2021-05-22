@@ -1,0 +1,54 @@
+I"<h1 id="configuration-php-pv">Configuration PHP-PV</h1>
+
+<p><strong>PHP-PV</strong> fonctionne en mode CLI et WEB.</p>
+
+<h2 id="téléchargement">Téléchargement</h2>
+
+<p>Veuillez télécharger la dernière version sur https://github.com/PvSolutions/php-pv/archive/master.zip.</p>
+
+<h2 id="installation-sur-serveur-web">Installation sur serveur web</h2>
+
+<p>Décompressez le contenu à la racine du dossier www du serveur web.</p>
+
+<h2 id="installation-en-mode-cli">Installation en mode CLI</h2>
+
+<p>Décompressez le contenu dans n’importe quel répertoire.</p>
+
+<h2 id="hello-world">Hello world</h2>
+
+<p>Créez un fichier <strong>hellopv.php</strong> au même niveau que le dossier <strong>php-pv-master</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Inclure la librairie</span>
+<span class="k">include</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span><span class="mf">.</span><span class="s2">"/php-pv-master/Pv/Base.class.php"</span> <span class="p">;</span>
+<span class="c1">// Définir la classe de l'application</span>
+<span class="kd">class</span> <span class="nc">ApplicationHelloPV</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+<span class="p">{</span>
+	<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeIHMs</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ZonePrinc</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s2">"zonePrinc"</span><span class="p">,</span> <span class="k">new</span> <span class="nc">ZonePrincHelloPV</span><span class="p">())</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">ZonePrincHelloPV</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+	<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeScripts</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ScriptAccueil</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScriptParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">ScriptAccueilHelloPV</span><span class="p">)</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">ScriptAccueilHelloPV</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+	<span class="k">protected</span> <span class="k">function</span> <span class="n">RenduDispositifBrut</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="k">return</span> <span class="s1">'&lt;h1&gt;HELLO WORLD&lt;/h1&gt;'</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Exécuter l'application</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ApplicationHelloPV</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$app</span><span class="o">-&gt;</span><span class="nf">Execute</span><span class="p">()</span> <span class="p">;</span>
+</code></pre></div></div>
+<p>Résultat :</p>
+
+<p><img src="images/hellopv.png" alt="Aperçu Hello World avec PHP-PV" /></p>
+
+:ET

@@ -1,0 +1,315 @@
+I"�L<h1 id="la-route-restful-individuelle---php-pv">La Route Restful Individuelle - PHP-PV</h1>
+
+<h2 id="présentation">Présentation</h2>
+
+<p>La route individuelle est <strong>PvRouteIndividuelRestful</strong> (ou <strong>PvRouteSingleRestful</strong>). Elle traite les éditions dans une table et/ou renvoie une ligne.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteEdit1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteSingleRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">TableEdition</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"id = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpCorps</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">,</span> <span class="s2">"champ1"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpCorps</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">,</span> <span class="s2">"champ2"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltEditFixe</span><span class="p">(</span><span class="s2">"champ3"</span><span class="p">,</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="s2">"champ3"</span><span class="p">)</span> <span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><img src="../images/api_rest_single_present.png" alt="Présentation route individuelle" /></p>
+
+<p>Requête CURL d’ajout</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl --location --request PUT 'localhost/mon_api_rest/api.php/matable1' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'champ1=Livre' \
+--data-urlencode 'champ2=Peau'
+</code></pre></div></div>
+
+<p>Requête CURL de modification</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl --location --request PATCH 'localhost/mon_api_rest/api.php/matable1?id=3' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'champ1=Livre' \
+--data-urlencode 'champ2=Peau'
+</code></pre></div></div>
+
+<p>Requête CURL de suppression</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl --location --request DELETE 'localhost/mon_api_rest/api.php/matable1?id=3'
+</code></pre></div></div>
+
+<p>Requête CURL de sélection</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl --location --request GET 'localhost/mon_api_rest/api.php/matable1?id=2'
+</code></pre></div></div>
+
+<h2 id="propriétés-dinitiation">Propriétés d’initiation</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$AutoriserSelect</td>
+      <td>Active la sélection de ligne dans cette route</td>
+    </tr>
+    <tr>
+      <td>$AutoriserAjout</td>
+      <td>Active l’ajout dans cette route</td>
+    </tr>
+    <tr>
+      <td>$AutoriserModif</td>
+      <td>Active la modification dans cette route</td>
+    </tr>
+    <tr>
+      <td>$AutoriserSuppr</td>
+      <td>Active la suppression dans cette route</td>
+    </tr>
+    <tr>
+      <td>$AutoriserDesact</td>
+      <td>Active la désactivation dans cette route, au lieu de supprimer la ligne. Valeur par défaut : false.</td>
+    </tr>
+    <tr>
+      <td>$ValeursDesact</td>
+      <td>Valeurs des colonnes qui appliquent dans la désactivation dans la table.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteEdit1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteSingleRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="nv">$AutoriserAjout</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">;</span>
+	<span class="k">public</span> <span class="nv">$AutoriserSelect</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">;</span>
+	<span class="k">public</span> <span class="nv">$AutoriserDesact</span> <span class="o">=</span> <span class="kc">true</span> <span class="p">;</span>
+	<span class="k">public</span> <span class="nv">$ValeursDesact</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="s2">"est_actif"</span> <span class="o">=&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">;</span>
+	<span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="filtres-de-données-sélection">Filtres de données sélection</h2>
+
+<p>La route possède les filtres de sélection dans sa propriété <strong>$FiltresSelection</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteSingle1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteIndividuelRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InserFltSelectHttpGet</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"id = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FiltresSelection</span><span class="p">)</span><span class="mf">.</span><span class="s2">" colonnes trouvees"</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Plusieurs méthodes sont disponibles pour inscrire un filtre de données.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InsereFltSelectFixe($nom, $valeur, $exprDonnees=’’)</td>
+      <td>Inscrit un filtre avec la valeur fixe $valeur</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectHttpGet($nom, $exprDonnees=’’)</td>
+      <td>Inscrit un filtre issu d’un paramètre GET</td>
+    </tr>
+    <tr>
+      <td>InsereFltSelectHttpCorps($nom, $exprDonnees=’’)</td>
+      <td>Inscrit un filtre issu d’un paramètre soumis dans le corps de le requête</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteSingle1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteIndividuelRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectFixe</span><span class="p">(</span><span class="s2">"est_actif"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"active = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"id = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="filtres-de-données-édition">Filtres de données édition</h2>
+
+<p>La route possède les filtres de édition dans sa propriété <strong>$FiltresEdition</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteSingle1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteIndividuelRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpCorps</span><span class="p">(</span><span class="s2">"titre"</span><span class="p">,</span> <span class="s2">"titre"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpCorps</span><span class="p">(</span><span class="s2">"description"</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltEditFixe</span><span class="p">(</span><span class="s2">"id_categorie"</span><span class="p">,</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s2">"id_categorie"</span><span class="p">])</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FiltresEdition</span><span class="p">)</span><span class="mf">.</span><span class="s2">" colonnes trouvees"</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Plusieurs méthodes sont disponibles pour inscrire un filtre de données.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>InsereFltEditFixe($nom, $valeur, $exprDonnees=’’)</td>
+      <td>Inscrit un filtre avec la valeur fixe $valeur</td>
+    </tr>
+    <tr>
+      <td>InsereFltEditHttpGet($nom, $exprDonnees=’’)</td>
+      <td>Inscrit un filtre issu d’un paramètre GET</td>
+    </tr>
+    <tr>
+      <td>InsereFltEditHttpCorps($nom, $exprDonnees=’’)</td>
+      <td>Inscrit un filtre issu d’un paramètre soumis dans le corps de le requête</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteSingle1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteIndividuelRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltEditFixe</span><span class="p">(</span><span class="s2">"est_actif"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"active = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpGet</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"id = &lt;self&gt;"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="validation-des-filtres">Validation des filtres</h2>
+
+<p>Pour vérifier si les filtres sont bien renseignés, réécrivez la méthode <strong>ValideFiltresExecution()</strong> et placez le message d’erreur dans <strong>$MessageErreurExecution</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteSingle1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteIndividuelRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FltTitre</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"titre"</span><span class="p">,</span> <span class="s2">"Titre"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ValideFiltresExecution</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">FltTitre</span><span class="o">-&gt;</span><span class="nf">Lie</span><span class="p">()</span> <span class="o">==</span> <span class="s2">""</span><span class="p">)</span>
+		<span class="p">{</span>
+			<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">MessageErreurExecution</span> <span class="o">=</span> <span class="s2">"Veuillez renseigner un titre"</span> <span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="propriétésméthodes-spécifiques">Propriétés/méthodes spécifiques</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SelectionEnCours()</td>
+      <td>Confirme si la requête reçue est pour une selection</td>
+    </tr>
+    <tr>
+      <td>AjoutEnCours()</td>
+      <td>Confirme si la requête reçue est pour un ajout</td>
+    </tr>
+    <tr>
+      <td>ModifEnCours()</td>
+      <td>Confirme si la requête reçue est pour un modification</td>
+    </tr>
+    <tr>
+      <td>SupprEnCours()</td>
+      <td>Confirme si la requête reçue est pour une suppression</td>
+    </tr>
+    <tr>
+      <td>DesactEnCours()</td>
+      <td>Confirme si la requête reçue est pour une suppression</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteSingle1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteIndividuelRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">ExecuteInstructions</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="c1">// ...</span>
+		<span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">PourAjout</span><span class="p">())</span>
+		<span class="p">{</span>
+			<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereFltEditFixe</span><span class="p">(</span><span class="s2">"date_creation"</span><span class="p">,</span> <span class="nb">date</span><span class="p">(</span><span class="s2">"Y-m-d H:i:s"</span><span class="p">,</span> <span class="s2">"date_creation"</span><span class="p">))</span> <span class="p">;</span>
+		<span class="p">}</span>
+		<span class="c1">// ...</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="propriétésméthodes-après-rendu">Propriétés/méthodes après rendu</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$ElementsEnCours</td>
+      <td>Lignes renvoyées depuis le fournisseur de données</td>
+    </tr>
+    <tr>
+      <td>$ElementEnCours</td>
+      <td>1ère ligne renvoyée depuis le fournisseur de données</td>
+    </tr>
+    <tr>
+      <td>$ElementEnCoursTrouve</td>
+      <td>Signale si aucune erreur n’est survenue pendant l’opération demandée</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">RouteSingle1Restful1</span> <span class="kd">extends</span> <span class="nc">PvRouteIndividuelRestful</span>
+<span class="p">{</span>
+	<span class="k">public</span> <span class="k">function</span> <span class="n">TermineExecution</span><span class="p">()</span>
+	<span class="p">{</span>
+		<span class="k">parent</span><span class="o">::</span><span class="nf">TermineExecution</span><span class="p">()</span> <span class="p">;</span>
+		<span class="k">if</span><span class="p">(</span><span class="nb">is_array</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ElementEnCours</span><span class="p">))</span>
+		<span class="p">{</span>
+			<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">ContenuReponse</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="s2">"date_action"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">date</span><span class="p">(</span><span class="s2">"Y-m-d H:i:s"</span><span class="p">)</span> <span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="autres-liens">Autres liens</h2>
+
+<ul>
+  <li><a href="../apirestful/routage.html">Routage</a></li>
+  <li><a href="../apirestful/collection.html">La route Collection</a></li>
+</ul>
+
+:ET

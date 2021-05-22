@@ -1,0 +1,678 @@
+I"5�<h1 id="zone-bootstrap-4---php-pv">Zone Bootstrap 4 - PHP-PV</h1>
+
+<h2 id="pre-requis">Pre-Requis</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Librairie</th>
+      <th>Lien</th>
+      <th>Requis</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>JQuery</td>
+      <td>https://www.jquery.com</td>
+      <td>Oui</td>
+    </tr>
+    <tr>
+      <td>Bootstrap4</td>
+      <td>https://www.getbootstrap.com</td>
+      <td>Oui</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="installation">Installation</h2>
+
+<ul>
+  <li>Téléchargez le code source de PHP-PV sur GITHUB. Décompressez le fichier <strong>php-pv-master.zip</strong>. Copiez le contenu du dossier <strong>php-pv-master</strong> dans <strong>/</strong></li>
+  <li>Copiez le fichier <strong>jquery-3.x.x.min.js</strong> dans <strong>/js/jquery.min.js</strong></li>
+  <li>Copiez le fichier <strong>jquery-migrate-1.x.x.min.js</strong> dans <strong>/js/jquery-migrate.min.js</strong></li>
+  <li>Décompressez le fichier <strong>bootstrap-4.x.x-dist.zip</strong>. Copiez :
+    <ul>
+      <li><strong>bootstrap-4.x.x-dist/css/bootstrap.min.css</strong> vers <strong>/css/bootstrap.min.css</strong></li>
+      <li><strong>bootstrap-4.x.x-dist/js/bootstrap.min.js</strong> vers <strong>/js/bootstrap.min.js</strong></li>
+    </ul>
+  </li>
+  <li>Décompressez le fichier <strong>fontawesome-free-5.x.x-web.zip</strong>. Copiez le contenu du dossier <strong>fontawesome-free-5.x.x-web/</strong> dans <strong>/vendor/fontawesome/</strong></li>
+</ul>
+
+<p>Vous devez avoir la structure suivante :</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/php-pv-master
+/css
+	bootstrap.min.css
+/js
+	bootstrap.min.js
+	jquery-migrate.min.js
+	jquery.min.js
+/vendor
+	fontawesome
+</code></pre></div></div>
+
+<p>Créez votre fichier <strong>/mazone1.php</strong> avec ce contenu :</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="c1">// Librairie PHP-PV par defaut</span>
+<span class="k">include</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span><span class="mf">.</span><span class="s2">"/php-pv-master/Pv/Base.class.php"</span> <span class="p">;</span>
+<span class="c1">// Librairie Bootstrap 4</span>
+<span class="k">include</span> <span class="nb">dirname</span><span class="p">(</span><span class="k">__FILE__</span><span class="p">)</span><span class="mf">.</span><span class="s2">"/php-pv-master/Pv/IHM/Bootstrap4.class.php"</span> <span class="p">;</span>
+<span class="c1">// Déclarer la classe Application</span>
+<span class="kd">class</span> <span class="nc">MonApplication1</span> <span class="kd">extends</span> <span class="nc">PvApplication</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeIHMs</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Inscrire la zone bootstrap dans l'application</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereIHM</span><span class="p">(</span><span class="s1">'mazone1'</span><span class="p">,</span> <span class="k">new</span> <span class="nc">MaZone1</span><span class="p">)</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Déclarer la zone Bootstrap</span>
+<span class="kd">class</span> <span class="nc">MaZone1</span> <span class="kd">extends</span> <span class="nc">PvZoneBaseBootstrap4</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AccepterTousChemins</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">ChargeScripts</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Inscrire le script index de la zone</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nf">InsereScriptParDefaut</span><span class="p">(</span><span class="k">new</span> <span class="nc">MonScript1</span><span class="p">())</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Déclarer le script index</span>
+<span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="k">return</span> <span class="s2">"Hello, ma zone 1"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// Afficher la zone dans le navigateur</span>
+<span class="nv">$app</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MonApplication1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$app</span><span class="o">-&gt;</span><span class="nf">Execute</span><span class="p">()</span> <span class="p">;</span>
+
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<p>Résultat dans un navigateur :</p>
+
+<p><img src="images/zonebootstrap4_apercu1.png" alt="Resultat zone bootstrap 4" /></p>
+
+<p>Voici le code source de cette page dans le navigateur :</p>
+
+<p><img src="images/zonebootstrap4_codesource1.png" alt="Code source zone bootstrap 4" /></p>
+
+<h2 id="scripts-membership">Scripts Membership</h2>
+
+<p>Les scripts membership de la Zone ont été adaptés pour Bootstrap 4.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom du script</th>
+      <th>Classe script web</th>
+      <th>Pré-requis</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>connexion</td>
+      <td>PvScriptConnexionBootstrap4</td>
+      <td>Aucun</td>
+      <td>Page de connexion</td>
+    </tr>
+    <tr>
+      <td>deconnexion</td>
+      <td>PvScriptDeconnexionBootstrap4</td>
+      <td>Aucun</td>
+      <td>Page de déconnexion</td>
+    </tr>
+    <tr>
+      <td>recouvreMP</td>
+      <td>PvScriptRecouvreMPBootstrap4</td>
+      <td>Aucun</td>
+      <td>Page pour récupérer son mot de passe, à partir du login et du mot de passe</td>
+    </tr>
+    <tr>
+      <td>inscription</td>
+      <td>PvScriptInscriptionBootstrap4</td>
+      <td>Mettre la propriété $AutoriserInscription à 1</td>
+      <td>Page d’inscription d’un membre</td>
+    </tr>
+    <tr>
+      <td>modifPrefs</td>
+      <td>PvScriptModifPrefsBootstrap4</td>
+      <td>Mettre la propriété $AutoriserModifPrefs à 1</td>
+      <td>Page pour modifier les informations du membre (nom, prénom, …)</td>
+    </tr>
+    <tr>
+      <td>doitChangerMotPasse</td>
+      <td>PvScriptDoitChangerMotPasseBootstrap4</td>
+      <td>Aucun</td>
+      <td>Page qui force le membre connecté à changer son mot de passe</td>
+    </tr>
+    <tr>
+      <td>changeMotPasse</td>
+      <td>PvScriptChangeMotPasseBootstrap4</td>
+      <td>Aucun</td>
+      <td>Page pour modifier le mot de passe</td>
+    </tr>
+    <tr>
+      <td>ajoutMembre</td>
+      <td>PvScriptAjoutMembreMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Ajouter un membre</td>
+    </tr>
+    <tr>
+      <td>importMembre</td>
+      <td>PvScriptImportMembreMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Importe des membres à partir d’un fichier CSV</td>
+    </tr>
+    <tr>
+      <td>modifMembre</td>
+      <td>PvScriptModifMembreMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Modifie un membre</td>
+    </tr>
+    <tr>
+      <td>supprMembre</td>
+      <td>PvScriptSupprMembreMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Désactive le membre</td>
+    </tr>
+    <tr>
+      <td>listeMembres</td>
+      <td>PvScriptListeMembresMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Liste les membres</td>
+    </tr>
+    <tr>
+      <td>ajoutProfil</td>
+      <td>PvScriptAjoutProfilMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Ajoute un profil</td>
+    </tr>
+    <tr>
+      <td>modifProfil</td>
+      <td>PvScriptModifProfilMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Modifie un profil</td>
+    </tr>
+    <tr>
+      <td>supprProfil</td>
+      <td>PvScriptSupprProfilMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Désactive le profil</td>
+    </tr>
+    <tr>
+      <td>listeProfils</td>
+      <td>PvScriptListeProfilsMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Liste les profils</td>
+    </tr>
+    <tr>
+      <td>ajoutRole</td>
+      <td>PvScriptAjoutRoleMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Ajoute un rôle</td>
+    </tr>
+    <tr>
+      <td>modifRole</td>
+      <td>PvScriptModifRoleMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Modifie un rôle</td>
+    </tr>
+    <tr>
+      <td>supprRole</td>
+      <td>PvScriptSupprRoleMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Désactive un rôle</td>
+    </tr>
+    <tr>
+      <td>listeRoles</td>
+      <td>PvScriptListeRolesMSBootstrap4</td>
+      <td>Aucun</td>
+      <td>Liste les rôles</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="composants-web-membership">Composants web Membership</h3>
+
+<p>Plusieurs scripts de membership utilisent un tableau de données ou un formulaire de données spécifique.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom du script</th>
+      <th>Classe script web</th>
+      <th>Classe composant</th>
+      <th>Propriété composant</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>recouvreMP</td>
+      <td>PvScriptRecouvreMPWeb</td>
+      <td>PvFormulaireRecouvreMPBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>inscription</td>
+      <td>PvScriptInscriptionWeb</td>
+      <td>PvFormulaireInscriptionMembreBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>modifPrefs</td>
+      <td>PvScriptModifPrefsWeb</td>
+      <td>PvFormulaireModifInfosBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>doitChangerMotPasse</td>
+      <td>PvScriptDoitChangerMotPasseWeb</td>
+      <td>PvFormulaireDoitChangerMotPasseBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>changeMotPasse</td>
+      <td>PvScriptChangeMotPasseWeb</td>
+      <td>PvFormulaireChangeMotPasseBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>ajoutMembre</td>
+      <td>PvScriptAjoutMembreBootstrap4</td>
+      <td>PvFormulaireAjoutMembreBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>modifMembre</td>
+      <td>PvScriptModifMembreBootstrap4</td>
+      <td>PvFormulaireModifMembreBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>supprMembre</td>
+      <td>PvScriptSupprMembreBootstrap4</td>
+      <td>PvFormulaireSupprMembreBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>listeMembres</td>
+      <td>PvScriptListeMembresBootstrap4</td>
+      <td>PvTableauMembresBootstrap4Html</td>
+      <td>$NomClasseTableauDonnees</td>
+    </tr>
+    <tr>
+      <td>ajoutProfil</td>
+      <td>PvScriptAjoutProfilBootstrap4</td>
+      <td>PvFormulaireAjoutProfilBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>modifProfil</td>
+      <td>PvScriptModifProfilBootstrap4</td>
+      <td>PvFormulaireModifProfilBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>supprProfil</td>
+      <td>PvScriptSupprProfilBootstrap4</td>
+      <td>PvFormulaireSupprProfilBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>listeProfils</td>
+      <td>PvScriptListeProfilsBootstrap4</td>
+      <td>PvTableauProfilsBootstrap4</td>
+      <td>$NomClasseTableauDonnees</td>
+    </tr>
+    <tr>
+      <td>ajoutRole</td>
+      <td>PvScriptAjoutRoleBootstrap4</td>
+      <td>PvFormulaireAjoutRoleBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>modifRole</td>
+      <td>PvScriptModifRoleBootstrap4</td>
+      <td>PvFormulaireModifRoleBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>supprRole</td>
+      <td>PvScriptSupprRoleBootstrap4</td>
+      <td>PvFormulaireSupprRoleBootstrap4</td>
+      <td>$NomClasseFormulaireDonnees</td>
+    </tr>
+    <tr>
+      <td>listeRoles</td>
+      <td>PvScriptListeRolesBootstrap4</td>
+      <td>PvTableauAjoutRoleBootstrap4</td>
+      <td>$NomClasseTableauDonnees</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MaZoneWeb1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$AutoriserModifPrefs</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">;</span> 
+<span class="k">public</span> <span class="nv">$NomClasseScriptConnexion</span> <span class="o">=</span> <span class="s2">"MonScriptModifPrefs"</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">FormModifPrefs1</span> <span class="kd">extends</span> <span class="nc">PvFormulaireModifInfosBootstrap4</span>
+<span class="p">{</span>
+<span class="p">}</span>
+<span class="kd">class</span> <span class="nc">MonScriptModifPrefs</span> <span class="kd">extends</span> <span class="nc">PvScriptModifPrefsWeb</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$NomClasseFormulaireDonnees</span> <span class="o">=</span> <span class="s2">"FormModifPrefs1"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="tableau-de-données">Tableau de données</h2>
+
+<h3 id="utilisation">Utilisation</h3>
+
+<p>La classe tableau de données est <strong>PvTableauDonneesBootstrap4</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvTableauDonneesBootstrap4</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des filtres de sélection</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"expression"</span><span class="p">,</span> <span class="s2">"champ1 like concat(&lt;self&gt;, '%')"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Expression"</span> <span class="p">;</span>
+<span class="c1">// Définition des colonnes</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefColCachee</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">,</span> <span class="s2">"Champ 1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">,</span> <span class="s2">"Champ 2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Définition du fournisseur de données</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesSql</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="propriétés--méthodes-spécifiques">Propriétés / Méthodes spécifiques</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$ClasseCSSRangee</td>
+      <td>Classe CSS tableau de la rangée. Par défaut “table-striped”</td>
+    </tr>
+    <tr>
+      <td>$ClsBstBoutonSoumettre</td>
+      <td>Classe CSS du bouton “Rechercher” pour filtrer les résultats. Par défaut “btn-success”</td>
+    </tr>
+    <tr>
+      <td>$ClsBstFormFiltresSelect</td>
+      <td>Classe CSS de la largeur du formulaire des filtres. Par défaut “col-12 col-sm-8 col-md-6”</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvTableauDonneesBootstrap4</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Propriétés spécifiques</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">ClasseCSSRangee</span> <span class="o">=</span> <span class="s2">"table-bordered"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">ClsBstBoutonSoumettre</span> <span class="o">=</span> <span class="s2">"btn-info"</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="grille-de-données">Grille de données</h2>
+
+<h3 id="utilisation-1">Utilisation</h3>
+
+<p>La classe Grille de données est <strong>PvGrilleDonneesBootstrap4</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvGrilleDonneesBootstrap4</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"gril1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des filtres de sélection</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereFltSelectHttpGet</span><span class="p">(</span><span class="s2">"expression"</span><span class="p">,</span> <span class="s2">"champ1 like concat(&lt;self&gt;, '%')"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Expression"</span> <span class="p">;</span>
+<span class="c1">// Définition des colonnes</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefColCachee</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">,</span> <span class="s2">"Champ 1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">InsereDefCol</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">,</span> <span class="s2">"Champ 2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">ContenuLigneModele</span> <span class="o">=</span> <span class="s1">'&lt;p&gt;${champ1}&lt;/p&gt;
+&lt;p&gt;Champ 2 : ${champ2}&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="c1">// Définition du fournisseur de données</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFournisseurDonneesSql</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">BaseDonnees</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD1</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">FournisseurDonnees</span><span class="o">-&gt;</span><span class="nc">RequeteSelection</span> <span class="o">=</span> <span class="s2">"matable1"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="propriétés--méthodes-spécifiques-1">Propriétés / Méthodes spécifiques</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$ClasseCSSRangee</td>
+      <td>Classe CSS tableau de la rangée. Par défaut “table-striped”</td>
+    </tr>
+    <tr>
+      <td>$ClsBstBoutonSoumettre</td>
+      <td>Classe CSS du bouton “Rechercher” pour filtrer les résultats. Par défaut “btn-success”</td>
+    </tr>
+    <tr>
+      <td>$ClsBstFormFiltresSelect</td>
+      <td>Classe CSS de la largeur du formulaire des filtres. Par défaut “col-12 col-sm-8 col-md-6”</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvGrilleDonneesBootstrap4</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Propriétés spécifiques</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">ClasseCSSRangee</span> <span class="o">=</span> <span class="s2">"table-bordered"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">ClsBstBoutonSoumettre</span> <span class="o">=</span> <span class="s2">"btn-info"</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"tabl1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="formulaire-de-données">Formulaire de données</h2>
+
+<h3 id="utilisation-2">Utilisation</h3>
+
+<p>La classe formulaire de données est <strong>PvFormulaireDonneesBootstrap4</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript2</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="nv">$Form1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Flt1</span> <span class="p">;</span>
+<span class="k">public</span> <span class="nv">$Flt2</span> <span class="p">;</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Initiation</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFormulaireDonneesBootstrap4</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Toujours afficher le formulaire</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureElementEnCours</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureTotalElements</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="c1">// Définir la classe commande "Executer"</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">NomClasseCommandeExecuter</span> <span class="o">=</span> <span class="s2">"MaCmdExecScript2"</span> <span class="p">;</span>
+<span class="c1">// Liaison avec le script en cours</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"form1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Définition des autres propriétés</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"champ1"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt1</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Champ 1"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">InsereFltEditHttpPost</span><span class="p">(</span><span class="s2">"champ2"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Flt2</span><span class="o">-&gt;</span><span class="nc">Libelle</span> <span class="o">=</span> <span class="s2">"Champ 2"</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">''</span> <span class="p">;</span>
+<span class="c1">// Rendu du formulaire de donnees</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">RenduDispositif</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="propriétés--méthodes-spécifiques-2">Propriétés / Méthodes spécifiques</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$ClasseCSSSucces</td>
+      <td>Classe CSS Bootstrap du message succès de l’exécution d’une commande. Par défaut “alert alert-primary”</td>
+    </tr>
+    <tr>
+      <td>$ClasseCSSErreur</td>
+      <td>Classe CSS Bootstrap du message erreur de l’exécution d’une commande. Par défaut “alert alert-danger”</td>
+    </tr>
+    <tr>
+      <td>$ClasseCSSCommandeExecuter</td>
+      <td>Classe CSS Bootstrap du bouton “Exécuter”. Par défaut “btn-primary”</td>
+    </tr>
+    <tr>
+      <td>$ClasseCSSCommandeAnnuler</td>
+      <td>Classe CSS Bootstrap du bouton “Annuler”. Par défaut “btn-danger”</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Initiation</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvFormulaireDonneesBootstrap4</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Toujours afficher le formulaire</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureElementEnCours</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">InclureTotalElements</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">ClasseCSSErreur</span> <span class="o">=</span> <span class="s2">"btn-warning"</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nc">ClasseCSSCommandeExecuter</span> <span class="o">=</span> <span class="s2">"btn-info"</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Form1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"form1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="dessinateur-de-filtres">Dessinateur de filtres</h2>
+
+<h3 id="utilisation-3">Utilisation</h3>
+
+<p>Le dessinateur de filtres fournit le rendu des filtres selection d’un tableau de données et filtres édition du formulaire de données.
+Pour Bootstrap 4, utilisez la classe <strong>PvDessinFiltresDonneesBootstrap4</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">DessinFiltres1</span> <span class="kd">extends</span> <span class="nc">PvDessinFiltresDonneesBootstrap4</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">DetermineEnvironnement</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="c1">// Déclaration</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PvGrilleDonneesBootstrap4</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// Chargement de la config</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">AdopteScript</span><span class="p">(</span><span class="s2">"gril1"</span><span class="p">,</span> <span class="nv">$this</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nf">ChargeConfig</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Tabl1</span><span class="o">-&gt;</span><span class="nc">DessinateurFiltresSelection</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DessinFiltres1</span><span class="p">()</span> <span class="p">;</span>
+<span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="propriétés-principales">Propriétés principales</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$ColXs</td>
+      <td>Classe CSS Bootstrap Xs du bloc des filtres pour les petits écrans</td>
+    </tr>
+    <tr>
+      <td>$ColSm</td>
+      <td>Classe CSS Bootstrap Sm du bloc des filtres</td>
+    </tr>
+    <tr>
+      <td>$ColMd</td>
+      <td>Classe CSS Bootstrap Md du bloc des filtres</td>
+    </tr>
+    <tr>
+      <td>$ColLd</td>
+      <td>Classe CSS Bootstrap Ld du bloc des filtres</td>
+    </tr>
+    <tr>
+      <td>$UtiliserContainerFluid</td>
+      <td>Utiliser le container fluid</td>
+    </tr>
+    <tr>
+      <td>$EditeurSurligne</td>
+      <td>Mettre l’éditeur sur une autre ligne</td>
+    </tr>
+    <tr>
+      <td>$ColXsLibelle</td>
+      <td>Classe CSS Bootstrap Xs du libellé</td>
+    </tr>
+    <tr>
+      <td>$ClsBstLibelle</td>
+      <td>Classe CSS Bootstrap complémentaire du libellé</td>
+    </tr>
+    <tr>
+      <td>$AlignLibelle</td>
+      <td>Alignement html du libellé</td>
+    </tr>
+    <tr>
+      <td>$ColXsEditeur</td>
+      <td>Classe CSS Bootstrap complémentaire de l’éditeur</td>
+    </tr>
+    <tr>
+      <td>$AlignEditeur</td>
+      <td>Alignment html de l’éditeur</td>
+    </tr>
+  </tbody>
+</table>
+:ET

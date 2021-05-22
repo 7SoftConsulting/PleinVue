@@ -1,0 +1,147 @@
+I"�<h1 id="le-service-dauthentification---php-pv">Le service d’authentification - PHP-PV</h1>
+
+<h2 id="fonctionnement">Fonctionnement</h2>
+
+<p>Le Membership est le service d’authentification dans la zone.
+Il se base sur les modèles relationnels suivants :</p>
+
+<ul>
+  <li>Sans Support LDAP :</li>
+</ul>
+
+<p><img src="images/membership_struct1.png" alt="Structure sans LDAP" /></p>
+
+<ul>
+  <li>Avec Support LDAP :</li>
+</ul>
+
+<p><img src="images/membership_struct2.png" alt="Structure avec LDAP" /></p>
+
+<p>Pour l’installer, vous devez créer une base de données et les tables nécessaires.
+Vous trouverez les scripts SQL dans le code source :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Fichier</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>install-membership-pv-mysql.sql</td>
+      <td>Tables de membership pour MySQL</td>
+    </tr>
+    <tr>
+      <td>install-membership-pv-mysql-ad.sql</td>
+      <td>Tables de membership pour MySQL, avec authentification Active Directory</td>
+    </tr>
+    <tr>
+      <td>install-membership-pv-orcl.sql</td>
+      <td>Tables de membership pour Oracle</td>
+    </tr>
+    <tr>
+      <td>install-membership-pv-orcl-ad.sql</td>
+      <td>Tables de membership pour Oracle, avec authentification Active Directory</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="déclaration">Déclaration</h2>
+
+<p>Tout service d’authentification doit hériter de la classe <strong>AkSqlMembership</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. Déclarer la base de données</span>
+<span class="kd">class</span> <span class="nc">MaBD</span> <span class="kd">extends</span> <span class="nc">MysqlDB</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="c1">// 2. Déclarer le Membership</span>
+<span class="kd">class</span> <span class="nc">MonMembership</span> <span class="kd">extends</span> <span class="nc">AkSqlMembership</span>
+<span class="p">{</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="n">InitConfig</span><span class="p">(</span><span class="o">&amp;</span> <span class="nv">$parent</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="k">parent</span><span class="o">::</span><span class="nf">InitConfig</span><span class="p">(</span><span class="nv">$parent</span><span class="p">)</span> <span class="p">;</span>
+<span class="c1">// Affecter la base de données du Membership</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="nc">Database</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MaBD</span><span class="p">()</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">class</span> <span class="nc">MaZone1</span> <span class="kd">extends</span> <span class="nc">PvZoneWebSimple</span>
+<span class="p">{</span>
+<span class="c1">// ...</span>
+<span class="c1">// 3. Affecter le membership à la Zone</span>
+<span class="k">Public</span> <span class="nv">$NomClasseMembership</span> <span class="o">=</span> <span class="s2">"MonMembership"</span> <span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="propriétés-et-méthodes-principales">Propriétés et méthodes principales</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$Database</td>
+      <td>Base de données qui contient les tables de membership. Type accepté : CommonDB</td>
+    </tr>
+    <tr>
+      <td>$RootMemberId</td>
+      <td>ID Membre du super administrateur</td>
+    </tr>
+    <tr>
+      <td>$GuestMemberId</td>
+      <td>ID Membre de l’invité</td>
+    </tr>
+    <tr>
+      <td>$MemberTable</td>
+      <td>Nom de la table des membres dans la base de données</td>
+    </tr>
+    <tr>
+      <td>$ProfileTable</td>
+      <td>Nom de la table des profils dans la base de données</td>
+    </tr>
+    <tr>
+      <td>$RoleTable</td>
+      <td>Nom de la table des rôles dans la base de données</td>
+    </tr>
+    <tr>
+      <td>$PrivilegeTable</td>
+      <td>Nom de la table des privilèges dans la base de données</td>
+    </tr>
+    <tr>
+      <td>$SessionSource</td>
+      <td>Source de la session.</td>
+    </tr>
+    <tr>
+      <td>$SessionMemberKey</td>
+      <td>Clé de la session PHP ($_SESSION) qui contient l’ID du membre connecté</td>
+    </tr>
+    <tr>
+      <td>LogonMember($memberId)</td>
+      <td>Connecte l’ID du Membre dans la session</td>
+    </tr>
+    <tr>
+      <td>LogoutMember($memberId)</td>
+      <td>Déconnecte l’ID du Membre dans la session</td>
+    </tr>
+    <tr>
+      <td>ValidateConnection($login, $password)</td>
+      <td>Vérifie si les accès du membre sont corrects</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="sources-de-la-session">Sources de la session</h2>
+
+<p>Les valeurs possibles de la propriété <strong>$SessionSource</strong> sont :</p>
+<ul>
+  <li>“SESSION” : variable $_SESSION</li>
+  <li>“COOKIE” : variable $_COOKIES</li>
+</ul>
+
+:ET

@@ -1,0 +1,53 @@
+I"�<h1 id="php-pv">PHP-PV</h1>
+
+<h2 id="introduction">Introduction</h2>
+
+<p><strong>PHP-PV</strong> signifie <strong>PHP-Pleine Vue</strong>. C’est un ensemble de librairies PHP pour réaliser des applications robustes.</p>
+
+<h2 id="caractéristiques">Caractéristiques</h2>
+
+<ul>
+  <li>Orientée Objet</li>
+  <li>Ecrit en Francais</li>
+  <li>Convention de Nommage : PascalCase</li>
+  <li>Inspiré de la VCL de Microsoft .NET 4.0</li>
+</ul>
+
+<h2 id="installation">Installation</h2>
+
+<ul>
+  <li><a href="prerequis.html">Pré-requis</a></li>
+  <li><a href="configuration.html">Configuration</a></li>
+  <li><a href="premierprojet.html">Premier projet</a></li>
+</ul>
+
+<h2 id="fonctionnement">Fonctionnement</h2>
+
+<ul>
+  <li><a href="application.html">L’Application</a></li>
+  <li><a href="commondb.html">Les bases de données</a></li>
+  <li><a href="membership.html">Le service d’authentification</a></li>
+  <li>Les Zones web
+    <ul>
+      <li>La Zone Web Simple
+        <ul>
+          <li><a href="zonewebsimple.html">Caractéristiques</a></li>
+          <li><a href="zoneweb/scriptsmembership.html">Personnalisation scripts membership</a></li>
+          <li><a href="zoneweb/chartjs.html">Le composant ChartJS</a></li>
+        </ul>
+      </li>
+      <li><a href="zonebootstrap4.html">La Zone Bootstrap 4</a></li>
+      <li><a href="zonebootstrap5.html">La Zone Bootstrap 5</a></li>
+    </ul>
+  </li>
+  <li><a href="passerellepaiement.md">Les passerelles de paiement</a></li>
+  <li><a href="servicespersistants.md">Les services persistants</a></li>
+  <li><a href="tachesprogs.md">Les tâches programmées</a></li>
+</ul>
+
+<h2 id="autres-librairies">Autres librairies</h2>
+
+<ul>
+  <li><a href="utilitaires.md">Utilitaires</a></li>
+</ul>
+:ET

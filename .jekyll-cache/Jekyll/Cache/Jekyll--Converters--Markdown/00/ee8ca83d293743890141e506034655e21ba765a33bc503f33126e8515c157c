@@ -1,0 +1,428 @@
+I"^<h1 id="utilitaires-php-pv">Utilitaires PHP-PV</h1>
+
+<h2 id="common-httpsession">Common HttpSession</h2>
+
+<h3 id="présentation">Présentation</h3>
+
+<p>La classe <strong>HttpSession</strong> vous permet de télécharger le contenu d’une URL. Ses avantages :</p>
+
+<ul>
+  <li>Il sauvegarde le contenu brut HTTP de la dernière requête et réponse</li>
+  <li>Il envoie les requêtes avec n’importe quelle méthode et type de contenu</li>
+  <li>Il gère les sessions avec les Cookie</li>
+</ul>
+
+<p>Vous devez inclure le fichier <strong>/Common/HttpSession.class.php</strong> pour l’utiliser.</p>
+
+<h3 id="téléchargement-durl">Téléchargement d’URL</h3>
+
+<p>Pour télécharger des fichiers, utilisez la méthode <strong>GetPage</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">include</span> <span class="s2">"php-pv-master/Common/HttpSession.class.php"</span> <span class="p">;</span>
+<span class="nv">$httpSession</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HttpSession</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$resultat</span> <span class="o">=</span> <span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nf">GetPage</span><span class="p">(</span>
+	<span class="s2">"http://monsite/fichier.aspx"</span><span class="p">,</span> <span class="c1">// URL</span>
+	<span class="k">array</span><span class="p">(</span><span class="s2">"id"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">),</span> <span class="c1">// Paramètres</span>
+	<span class="k">array</span><span class="p">(</span>
+		<span class="s2">"X-My-Header1"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>
+		<span class="s2">"X-My-Header2"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>
+	<span class="p">),</span> <span class="c1">// Entêtes</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="k">echo</span> <span class="nv">$resultat</span> <span class="p">;</span> <span class="c1">// Contenu Body recu</span>
+</code></pre></div></div>
+
+<p>Vous pouvez mettre directement la chaine de requête dans le 1er paramètre de cette méthode.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$httpSession</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HttpSession</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$resultat</span> <span class="o">=</span> <span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nf">GetPage</span><span class="p">(</span>
+	<span class="s2">"http://monsite/fichier.aspx?id=2"</span><span class="p">,</span> <span class="c1">// URL</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="k">echo</span> <span class="nv">$resultat</span> <span class="p">;</span> <span class="c1">// Contenu Body recu</span>
+</code></pre></div></div>
+
+<h3 id="soumettre-des-données">Soumettre des données</h3>
+
+<p>Pour poster un formulaire, utilisez la méthode <strong>PostData()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$httpSession</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HttpSession</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$resultat</span> <span class="o">=</span> <span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nf">PostData</span><span class="p">(</span>
+	<span class="s2">"http://monsite/fichier.aspx?id=2"</span><span class="p">,</span> <span class="c1">// URL</span>
+	<span class="k">array</span><span class="p">(</span>
+		<span class="s2">"param1"</span> <span class="o">=&gt;</span> <span class="s2">"valeur 1"</span><span class="p">,</span>
+		<span class="s2">"param2"</span> <span class="o">=&gt;</span> <span class="s2">"valeur 2"</span><span class="p">,</span>
+		<span class="s2">"param3"</span> <span class="o">=&gt;</span> <span class="s2">"valeur 3"</span><span class="p">,</span>
+	<span class="p">),</span> <span class="c1">// Paramètres</span>
+	<span class="k">array</span><span class="p">(</span>
+		<span class="s2">"X-My-Header1"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>
+		<span class="s2">"X-My-Header2"</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">,</span>
+	<span class="p">),</span> <span class="c1">// Entêtes</span>
+<span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="soumettre-des-fichiers">Soumettre des fichiers</h3>
+
+<p>Vous pouvez joindre des fichiers également avec la méthode <strong>PostData()</strong>.</p>
+
+<p>Un fichier correspond à un tableau avec les clés :</p>
+
+<ul>
+  <li>filename : chemin local du fichier</li>
+  <li>type : type de contenu. facultatif</li>
+  <li>binary : transférer en mode binaire. facultatif</li>
+</ul>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$httpSession</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HttpSession</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$resultat</span> <span class="o">=</span> <span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nf">PostData</span><span class="p">(</span>
+	<span class="s2">"http://monsite/fichier.aspx?id=2"</span><span class="p">,</span> <span class="c1">// URL</span>
+	<span class="k">array</span><span class="p">(</span>
+		<span class="s2">"param1"</span> <span class="o">=&gt;</span> <span class="s2">"valeur 1"</span><span class="p">,</span>
+		<span class="s2">"param2"</span> <span class="o">=&gt;</span> <span class="s2">"valeur 2"</span><span class="p">,</span>
+		<span class="s2">"fichier1"</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span>
+			<span class="s2">"filename"</span> <span class="o">=&gt;</span> <span class="s2">"C:/Mon Dossier/Monfichier.jpg"</span><span class="p">,</span>
+		<span class="p">),</span>
+	<span class="p">),</span> <span class="c1">// Paramètres</span>
+	<span class="k">array</span><span class="p">(</span>
+		<span class="s2">"X-My-Header1"</span> <span class="o">=&gt;</span> <span class="mi">2</span><span class="p">,</span>
+		<span class="s2">"X-My-Header2"</span> <span class="o">=&gt;</span> <span class="mi">3</span><span class="p">,</span>
+	<span class="p">),</span> <span class="c1">// Entêtes</span>
+<span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="propriétésméthodes-principales">Propriétés/Méthodes principales</h3>
+
+<p>Vous pouvez manipuler la requête HTTP avec la classe <strong>HttpSession</strong>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$UserAgent</td>
+      <td>User Agent. Par défaut “PHP Http Session v1.0”</td>
+    </tr>
+    <tr>
+      <td>$RequestHeaders</td>
+      <td>Tableau des entêtes de la requête à soumettre</td>
+    </tr>
+    <tr>
+      <td>$RequestMethod</td>
+      <td>Méthode HTTP à soumettre</td>
+    </tr>
+    <tr>
+      <td>$RequestVersion</td>
+      <td>Version HTTP de la requête.</td>
+    </tr>
+    <tr>
+      <td>$RequestContentType</td>
+      <td>Type de contenu de la requête.</td>
+    </tr>
+    <tr>
+      <td>$DownloadResponse</td>
+      <td>Valeur booléen. Confirme le téléchargement de la réponse.</td>
+    </tr>
+    <tr>
+      <td>$ResponseParseBodyEnabled</td>
+      <td>Valeur booléen. Télécharger le corps de la réponse également, en plus des entêtes.</td>
+    </tr>
+    <tr>
+      <td>$AutoSetContentType</td>
+      <td>Valeur booléen. Définit automatiquement le type de contenu de la requête.</td>
+    </tr>
+    <tr>
+      <td>$ConnectTimeout</td>
+      <td>Délai, en sécondes pour ouvrir une connexion à l’URL</td>
+    </tr>
+    <tr>
+      <td>$DownloadTimeout</td>
+      <td>Délai, en sécondes pour lire le contenu de la réponse</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$httpSession</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HttpSession</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nc">ConnectTimeout</span> <span class="o">=</span> <span class="mi">120</span> <span class="p">;</span>
+<span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nc">ResponseParseBodyEnabled</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">;</span>
+<span class="nv">$resultat</span> <span class="o">=</span> <span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nf">PostData</span><span class="p">(</span>
+	<span class="s2">"http://monsite/fichier.aspx?id=2"</span><span class="p">,</span> <span class="c1">// URL</span>
+	<span class="k">array</span><span class="p">(</span>
+		<span class="s2">"param1"</span> <span class="o">=&gt;</span> <span class="s2">"valeur 1"</span><span class="p">,</span>
+		<span class="s2">"param2"</span> <span class="o">=&gt;</span> <span class="s2">"valeur 2"</span>
+	<span class="p">)</span>
+<span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<p>Après avoir soumis votre appel HTTP, certaines propriétés vous seront utiles.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Propriété/Méthode</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>GetRequestContents()</td>
+      <td>Retourne le contenu brut de la requête</td>
+    </tr>
+    <tr>
+      <td>GetResponseContents()</td>
+      <td>Retourne le contenu brut de la réponse</td>
+    </tr>
+    <tr>
+      <td>$ResponseHttpStatusCode</td>
+      <td>Code HTTP du statut de la réponse</td>
+    </tr>
+    <tr>
+      <td>$ResponseHttpStatusDesc</td>
+      <td>Description HTTP du statut de la réponse</td>
+    </tr>
+    <tr>
+      <td>$ResponseHeaders</td>
+      <td>Tableau des entêtes HTTP de la réponse</td>
+    </tr>
+    <tr>
+      <td>$ResponseData</td>
+      <td>Corps de la réponse</td>
+    </tr>
+    <tr>
+      <td>$ResponseHeadersData</td>
+      <td>Contenu brut des entêtes de la réponse</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$httpSession</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HttpSession</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$resultat</span> <span class="o">=</span> <span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nf">PostData</span><span class="p">(</span>
+	<span class="s2">"http://monsite/fichier.aspx?id=2"</span><span class="p">,</span> <span class="c1">// URL</span>
+	<span class="k">array</span><span class="p">(</span>
+		<span class="s2">"param1"</span> <span class="o">=&gt;</span> <span class="s2">"valeur 1"</span><span class="p">,</span>
+		<span class="s2">"param2"</span> <span class="o">=&gt;</span> <span class="s2">"valeur 2"</span>
+	<span class="p">)</span>
+<span class="p">)</span> <span class="p">;</span>
+<span class="nv">$requeteBrut</span> <span class="o">=</span> <span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nf">GetRequestContents</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$reponseBrut</span> <span class="o">=</span> <span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nf">GetResponseContents</span><span class="p">()</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="requêtes-avec-type-de-contenu-spécifique">Requêtes avec Type de contenu spécifique</h3>
+
+<p>Spécifiez le type de contenu de la requête avec la propriété <strong>$RequestContentType</strong>. Alors, soumettez votre requête avec <strong>SubmitData()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$httpSession</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HttpSession</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nc">RequestContentType</span> <span class="o">=</span> <span class="s2">"application/json"</span> <span class="p">;</span>
+<span class="nv">$resultat</span> <span class="o">=</span> <span class="nv">$httpSession</span><span class="o">-&gt;</span><span class="nf">SubmitData</span><span class="p">(</span>
+	<span class="s1">'http://localhost'</span><span class="p">,</span>
+	<span class="s1">'{ param1 : "valeur 1", param2 : 12}'</span>
+<span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="bibliothèques-externes">Bibliothèques externes</h3>
+
+<p>La classe <strong>HttpSession</strong> utilise la librairie <strong>url_to_absolute</strong> pour les liens relatifs.</p>
+
+<p>Le site internet de l’auteur n’existe plus.</p>
+
+<h2 id="autres-fonctions">Autres Fonctions</h2>
+
+<p>PHP-PV offre des fonctions pour faciliter votre solution.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Fonction</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>_GET_def($param, $defaultValue=null)</td>
+      <td>Renvoie le paramètre $_GET[<strong>$param</strong>] sinon <strong>$defaultValue</strong></td>
+    </tr>
+    <tr>
+      <td>_POST_def($param, $defaultValue=null)</td>
+      <td>Renvoie le paramètre $_POST[<strong>$param</strong>] sinon <strong>$defaultValue</strong></td>
+    </tr>
+    <tr>
+      <td>send_plain_mail($to, $subject, $text, $from=’’, $cc=’’, $bcc=’’)</td>
+      <td>Envoie un mail au format Texte à l’adresse <strong>$to</strong>. Renseignez l’expéditeur avec le paramètre <strong>$from</strong></td>
+    </tr>
+    <tr>
+      <td>send_html_mail($to, $subject, $text, $from=’’, $cc=’’, $bcc=’’)</td>
+      <td>Envoie un mail au format HTML à l’adresse <strong>$to</strong>. Renseignez l’expéditeur avec le paramètre <strong>$from</strong></td>
+    </tr>
+    <tr>
+      <td>date_fr($date)</td>
+      <td>Retourne la date au format Français dd/mm/yyyy.</td>
+    </tr>
+    <tr>
+      <td>date_time_fr($date)</td>
+      <td>Retourne la date et heure au format Français dd/mm/yyyy hh:ii:ss.</td>
+    </tr>
+    <tr>
+      <td>format_money($number, $decimal_count=2, $max_length=5)</td>
+      <td>Retourne le nombre au format monétaire Français</td>
+    </tr>
+    <tr>
+      <td>svc_json_encode($param)</td>
+      <td>Encode au format JSON <strong>$param</strong>. Alternative à la fonction PHP native <strong>json_encode()</strong></td>
+    </tr>
+    <tr>
+      <td>svc_json_decode($param)</td>
+      <td>Décode au format JSON <strong>$param</strong>. Alternative à la fonction PHP native <strong>json_decode()</strong></td>
+    </tr>
+    <tr>
+      <td>get_current_url()</td>
+      <td>Retourne l’URL du script en cours</td>
+    </tr>
+    <tr>
+      <td>get_current_url_dir()</td>
+      <td>Retourne l’URL du répertoire contenant le script en cours</td>
+    </tr>
+    <tr>
+      <td>update_url_params($url, $params=array(), $encodeValues=1, $forceDecodeParams=0)</td>
+      <td>Retourne l’URL <strong>$url</strong>, avec les clé/valeurs de <strong>$params</strong> dans la chaine de requête (query_string). <strong>$encodeValues</strong> force l’encodage des valeurs, et <strong>$forceDecodeParams</strong> analysera la chaine de requête avant d’inclure les valeurs de <strong>$params</strong>.</td>
+    </tr>
+    <tr>
+      <td>update_current_url_params($params=array(), $encodeValues=1, $forceDecodeParams=0)</td>
+      <td>Retourne l’URL du script en cours, avec les clé/valeurs de <strong>$params</strong> dans la chaine de requête (query_string).</td>
+    </tr>
+    <tr>
+      <td>update_url_param($ParamName, $ParamValue, $URL)</td>
+      <td>Retourne l’URL <strong>$URL</strong>, avec la paire <strong>$ParamName</strong>=<strong>$ParamValue</strong> dans la chaine de requête (query_string).</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">MonScript1</span> <span class="kd">extends</span> <span class="nc">PvScriptWebSimple</span>
+<span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="n">RenduSpecifique</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="nv">$verifier</span> <span class="o">=</span> <span class="nf">_GET_def</span><span class="p">(</span><span class="s2">"verifier"</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$ctn</span> <span class="mf">.</span><span class="o">=</span> <span class="s1">'&lt;p&gt;Bienvenue sur ce site&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="nv">$verifier</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="nv">$ctn</span> <span class="o">=</span> <span class="s1">'&lt;p&gt;&lt;a href="'</span><span class="mf">.</span><span class="nf">update_current_url_params</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="s2">"verifier"</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">))</span><span class="mf">.</span><span class="s1">'"&gt;Vérifier&lt;/a&gt;&lt;/p&gt;'</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="nv">$ctn</span> <span class="p">;</span>
+<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="expat-xml-parser">Expat Xml Parser</h2>
+
+<h3 id="présentation-1">Présentation</h3>
+
+<p>La classe <strong>ExpatXmlParser</strong> vous permet d’analyser les fichiers XML. Elle utilise l’extension native PHP expat xml.</p>
+
+<p>Vous devez inclure le fichier <strong>/ExpatXml/ExpatXml.class.php</strong> pour l’utiliser.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">include</span> <span class="s2">"php-pv-master/ExpatXml/ExpatXml.class.php"</span> <span class="p">;</span>
+
+<span class="nv">$xmlparser</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ExpatXmlParser</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$docXml</span> <span class="o">=</span> <span class="nv">$xmlparser</span><span class="o">-&gt;</span><span class="nf">ParseContent</span><span class="p">(</span><span class="s1">'&lt;?xml version="1.0"?&gt;
+&lt;main&gt;
+&lt;node&gt;Test&lt;/node&gt;
+&lt;/main&gt;'</span><span class="p">)</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="analyse-du-contenu">Analyse du contenu</h3>
+
+<p>Deux méthodes analysent le XML :</p>
+
+<ul>
+  <li><strong>ParseContent($content)</strong> analyse le contenu en paramètre</li>
+  <li><strong>ParseFile($path)</strong> analyse le fichier en paramètre</li>
+</ul>
+
+<p>Elles retournent un objet avec le noeud XML <strong>RootNode()</strong>.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">include</span> <span class="s2">"php-pv-master/ExpatXml/ExpatXml.class.php"</span> <span class="p">;</span>
+
+<span class="nv">$xmlparser</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ExpatXmlParser</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$docXml</span> <span class="o">=</span> <span class="nv">$xmlparser</span><span class="o">-&gt;</span><span class="nf">ParseFile</span><span class="p">(</span><span class="s1">'monfichier.xml'</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$rootNode</span> <span class="o">=</span> <span class="nv">$docXml</span><span class="o">-&gt;</span><span class="nf">RootNode</span><span class="p">()</span> <span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="parcours-dun-noeud">Parcours d’un noeud</h3>
+
+<p>Les classes Noeud XML ont ces propriétés :</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Fonction</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$Name</td>
+      <td>Nom du tag XML</td>
+    </tr>
+    <tr>
+      <td>$ElementType</td>
+      <td>Type du tag XML : text, attribute, node</td>
+    </tr>
+    <tr>
+      <td>$ElementID</td>
+      <td>Valeur de l’attribut ID de l’élément, si elle existe.</td>
+    </tr>
+    <tr>
+      <td>$Attributes</td>
+      <td>Tableau des attributs du Noeud XML</td>
+    </tr>
+    <tr>
+      <td>GetAttribute($name)</td>
+      <td>Retourne la valeur de l’attribut <strong>$name</strong>, sinon null.</td>
+    </tr>
+    <tr>
+      <td>$ChildNodes</td>
+      <td>Tableau des noeuds contenus par le Noeud XML</td>
+    </tr>
+    <tr>
+      <td>ChildNodeCount()</td>
+      <td>Retourne le nombre de noeuds enfants</td>
+    </tr>
+    <tr>
+      <td>GetElementById($id)</td>
+      <td>Retourne le 1er noeud XML contenu, dont l’attribut “ID” est <strong>$id</strong></td>
+    </tr>
+    <tr>
+      <td>GetChildNodesByName($name)</td>
+      <td>Retourne les noeuds XML contenus, dont l’attribut “NAME” est <strong>$name</strong></td>
+    </tr>
+    <tr>
+      <td>GetChildNodesByTagName($name)</td>
+      <td>Retourne les noeuds XML contenus, dont le nom du tag est <strong>$name</strong></td>
+    </tr>
+    <tr>
+      <td>GetFirstNodeByTagName($name)</td>
+      <td>Retourne le 1er noeud XML contenu, dont le nom du tag est <strong>$name</strong></td>
+    </tr>
+    <tr>
+      <td>ChildNodeToHash()</td>
+      <td>Retourne le tableau des noeuds contenus</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">include</span> <span class="s2">"php-pv-master/ExpatXml/ExpatXml.class.php"</span> <span class="p">;</span>
+<span class="nv">$xmlparser</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ExpatXmlParser</span><span class="p">()</span> <span class="p">;</span>
+<span class="nv">$docXml</span> <span class="o">=</span> <span class="nv">$xmlparser</span><span class="o">-&gt;</span><span class="nf">ParseContent</span><span class="p">(</span><span class="s1">'&lt;?xml version="1.0"?&gt;
+&lt;main&gt;
+&lt;mytag&gt;Test&lt;/mytag&gt;
+&lt;othertag&gt;123&lt;/othertag&gt;
+&lt;/main&gt;'</span><span class="p">)</span> <span class="p">;</span>
+<span class="nv">$rootNode</span> <span class="o">=</span> <span class="nv">$docXml</span><span class="o">-&gt;</span><span class="nf">RootNode</span><span class="p">()</span> <span class="p">;</span>
+<span class="k">print</span> <span class="s2">"Root tagName : "</span><span class="mf">.</span><span class="nv">$rootNode</span><span class="o">-&gt;</span><span class="nc">Name</span><span class="mf">.</span><span class="s2">"&lt;br&gt;"</span> <span class="p">;</span>
+<span class="nb">print_r</span><span class="p">(</span><span class="nv">$rootNode</span><span class="o">-&gt;</span><span class="nf">GetChildNodesByTagName</span><span class="p">(</span><span class="s2">"OTHERTAG"</span><span class="p">))</span> <span class="p">;</span>
+<span class="k">foreach</span><span class="p">(</span><span class="nv">$rootNode</span><span class="o">-&gt;</span><span class="nc">ChildNodes</span> <span class="k">as</span> <span class="nv">$i</span> <span class="o">=&gt;</span> <span class="nv">$childNode</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="c1">// traiter le noeud enfant...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+:ET

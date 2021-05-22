@@ -1,0 +1,152 @@
+I"�
+<h2 id="php">PHP</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Version</th>
+      <th>Statut</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PHP5</td>
+      <td>A partir de PHP 5.2</td>
+    </tr>
+    <tr>
+      <td>PHP7.0</td>
+      <td>Supporté</td>
+    </tr>
+    <tr>
+      <td>PHP7.1</td>
+      <td>Supporté</td>
+    </tr>
+    <tr>
+      <td>PHP7.2</td>
+      <td>Supporté</td>
+    </tr>
+    <tr>
+      <td>PHP7.3</td>
+      <td>Supporté</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="bibliothèques-externes">Bibliothèques externes</h2>
+
+<p>PHP-PV inclut des bibliothèques externes pour son bon fonctionnement.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Bibliothèque</th>
+      <th>Version</th>
+      <th>URL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>phpmailer</td>
+      <td>5.1</td>
+      <td>https://github.com/PHPMailer/PHPMailer</td>
+    </tr>
+    <tr>
+      <td>pChart</td>
+      <td>1.27d</td>
+      <td>http://www.pchart.net/</td>
+    </tr>
+    <tr>
+      <td>HTMLSax3</td>
+      <td>1.2</td>
+      <td>https://pear.php.net/package/XML_HTMLSax3</td>
+    </tr>
+    <tr>
+      <td>SafeHTML</td>
+      <td>1.2</td>
+      <td>http://pear.php.net/package/SafeHTML</td>
+    </tr>
+    <tr>
+      <td>Zip</td>
+      <td>1.62</td>
+      <td>http://www.phpclasses.org/browse/package/2322.html</td>
+    </tr>
+    <tr>
+      <td>Services JSON</td>
+      <td>1.31</td>
+      <td>http://pear.php.net/pepr/pepr-proposal-show.php?id=198</td>
+    </tr>
+    <tr>
+      <td>Simple Html Dom</td>
+      <td>1.5</td>
+      <td>http://sourceforge.net/projects/simplehtmldom/</td>
+    </tr>
+    <tr>
+      <td>PHP Secure Lib</td>
+      <td>1.0.18</td>
+      <td>http://phpseclib.sourceforge.net</td>
+    </tr>
+    <tr>
+      <td>xmlrpc</td>
+      <td>1.174</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="serveur-web">Serveur web</h2>
+
+<h3 id="apache">Apache</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Version</th>
+      <th>Statut</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Apache 2.0.x</td>
+      <td>Non testé</td>
+    </tr>
+    <tr>
+      <td>Apache 2.1.x</td>
+      <td>Supporté</td>
+    </tr>
+    <tr>
+      <td>Apache 2.2.x</td>
+      <td>Supporté</td>
+    </tr>
+    <tr>
+      <td>Apache 2.4.x</td>
+      <td>Supporté</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="nginx">Nginx</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Version</th>
+      <th>Statut</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Nginx 0.7.x</td>
+      <td>Supporté</td>
+    </tr>
+    <tr>
+      <td>Nginx 1.x</td>
+      <td>Supporté</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="autres-serveurs-web">Autres serveurs web</h3>
+
+<p>PHP-PV se base sur les extensions natives apache.
+Il fonctionnera sur les serveurs qui le supportent.</p>
+:ET
